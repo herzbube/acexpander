@@ -275,24 +275,24 @@ public class AceExpanderTableView extends NSTableView
       {
          return false;
       }
-      
-       // Get the pasteboard and check whether it contains dragged data
-       // of the type FilenamesPboardType
-       NSPasteboard pboard = sender.draggingPasteboard();
-       String type = pboard.availableTypeFromArray(new NSArray(NSPasteboard.FilenamesPboardType));
-       if (null == type)
-       {
-          return false;
-       }
-       
-       // Check what type of drag the source allows. We accept any type.
-       if (sender.draggingSourceOperationMask() == NSDraggingInfo.DragOperationNone)
-       {
-          return false;
-       }
 
-       // Finally accept the drag
-       return true;
+      // Get the pasteboard and check whether it contains dragged data
+      // of the type FilenamesPboardType
+      NSPasteboard pboard = sender.draggingPasteboard();
+      String type = pboard.availableTypeFromArray(new NSArray(NSPasteboard.FilenamesPboardType));
+      if (null == type)
+      {
+         return false;
+      }
+
+      // Check what type of drag the source allows. We accept any type.
+      if (sender.draggingSourceOperationMask() == NSDraggingInfo.DragOperationNone)
+      {
+         return false;
+      }
+
+      // Finally accept the drag
+      return true;
    }
 
    // Add highlighting to drawing of box

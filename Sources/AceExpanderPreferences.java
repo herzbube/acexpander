@@ -63,6 +63,14 @@ public class AceExpanderPreferences
    public final static String DestinationFolderType = "DestinationFolderType";
    public final static String DestinationFolder = "DestinationFolder";
    public final static String CreateSurroundingFolder = "CreateSurroundingFolder";
+   public final static String LookIntoFolders = "LookIntoFolders";
+   public final static String TreatAllFilesAsArchives = "TreatAllFilesAsArchives";
+   public final static String OptionDefaultsRemembered = "OptionDefaultsRemembered";
+   public final static String OverwriteFilesOption = "OverwriteFilesOption";
+   public final static String ExtractWithFullPathOption = "ExtractWithFullPathOption";
+   public final static String AssumeYesOption = "AssumeYesOption";
+   public final static String ShowCommentsOption = "ShowCommentsOption";
+   public final static String ListVerboselyOption = "ListVerboselyOption";
 
    // The shared defaults object
    private NSUserDefaults m_userDefaults = null;
@@ -78,7 +86,9 @@ public class AceExpanderPreferences
    private NSButton m_alwaysQuitAfterExpandButton;
    private NSPopUpButton m_destinationFolderButton;
    private NSButton m_createSurroundingFolderButton;
-   
+   private NSButton m_lookIntoFoldersButton;
+   private NSButton m_treatAllFilesAsArchivesButton;
+
    // Other variables
    private boolean m_bPreferencesDialogCancelClicked = false;
    private String m_executablePath;   // Stores the entire path
@@ -197,6 +207,21 @@ public class AceExpanderPreferences
          m_createSurroundingFolderButton.setState(NSCell.OnState);
       else
          m_createSurroundingFolderButton.setState(NSCell.OffState);
+      
+      // ------------------------------------------------------------
+      // LookIntoFolders + TreatAllFilesAsArchives
+      if (m_userDefaults.booleanForKey(LookIntoFolders))
+         m_lookIntoFoldersButton.setState(NSCell.OnState);
+      else
+         m_lookIntoFoldersButton.setState(NSCell.OffState);
+
+      if (m_userDefaults.booleanForKey(TreatAllFilesAsArchives))
+         m_treatAllFilesAsArchivesButton.setState(NSCell.OnState);
+      else
+         m_treatAllFilesAsArchivesButton.setState(NSCell.OffState);
+
+      buttons = new NSButton[] {m_lookIntoFoldersButton, m_treatAllFilesAsArchivesButton};
+      enableButtonHierarchy(buttons);
    }
 
    // Analyzes the state of the various GUI elements and sets the
@@ -238,9 +263,15 @@ public class AceExpanderPreferences
       // ------------------------------------------------------------
       // CreateSurroundingFolder
       readDefaultsFromCheckbox(m_createSurroundingFolderButton, CreateSurroundingFolder);
+      
+      // ------------------------------------------------------------
+      // LookIntoFolders + TreatAllFilesAsArchives
+      readDefaultsFromCheckbox(m_lookIntoFoldersButton, LookIntoFolders);
+      readDefaultsFromCheckbox(m_treatAllFilesAsArchivesButton, TreatAllFilesAsArchives);
    }
 
    // Read the state of a single checkbox and write it back to the
+   // user defaults if it differs from the current value in the
    // user defaults
    private void readDefaultsFromCheckbox(NSButton checkbox, String key)
    {
@@ -405,6 +436,18 @@ public class AceExpanderPreferences
    }
 
    // ======================================================================
+   // Methods that are actions, related to LookIntoFolders
+   // ======================================================================
+
+   // Enable/disable the m_treatAllFilesAsArchivesButton,
+   // depending on whether the m_lookIntoFoldersButton is checked or not.
+   public void lookIntoFoldersButtonClicked(Object sender)
+   {
+      NSButton[] buttons = {m_lookIntoFoldersButton, m_treatAllFilesAsArchivesButton};
+      enableButtonHierarchy(buttons);
+   }
+
+   // ======================================================================
    // Methods
    // ======================================================================
 
@@ -461,7 +504,7 @@ public class AceExpanderPreferences
       }
    }
 
-   // Helper method.
+   // Internal helper method.
    // Enables the first button if the second button is checked.
    // Disables the first button if the second button is not checked.
    private void enableButtonDependingOnOtherButton(NSButton enableButton, NSButton dependButton)

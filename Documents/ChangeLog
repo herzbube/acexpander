@@ -1,3 +1,24 @@
+Mon July 05 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- released version 1.0
+- added two new menu items to the Options menu: "Remember as my defaults"
+  allows to save the current option settings to the user preferences;
+  "Forget my defaults" will restore the option settings to their
+  factory defaults
+
+Sun July 04 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- fixed bug where the preferences for "CreateSurroundingFolder" and
+  "DestinationFolderType" were examined for the List and Test commands
+- menu item Help-Homepage now opens http://aceexpander.herzbube.ch/
+  instead of the longer URL located beneath www.herzbube.ch
+- folders can now be dropped on the application icon, or selected through
+  the File-Open command
+- added preference items "LookIntoFolders" and "TreatAllFilesAsArchives"
+- if "LookIntoFolders" is turned on, folders are recursively scanned for
+  archives
+- if "LookIntoFolders" is turned off and a folder is opened with
+  AceExpander, the folder is now silently ignored (previously it was added
+  to the table of archives)
+
 Mon June 28 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - released version 0.9.1
 - added central handling for severe error conditions via the notification

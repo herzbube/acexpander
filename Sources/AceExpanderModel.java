@@ -70,10 +70,10 @@ public class AceExpanderModel
 
    // Options that need to be applied to the expansion process
    private boolean m_bOverwriteFiles = false;
-   private boolean m_bExtractFullPath = true;
+   private boolean m_bExtractFullPath = false;
    private boolean m_bAssumeYes = false;
-   private boolean m_bShowComments = true;
-   private boolean m_bListVerbosely = true;
+   private boolean m_bShowComments = false;
+   private boolean m_bListVerbosely = false;
    private boolean m_bUsePassword = false;
    private String m_password;
    private boolean m_bDebugMode = false;
@@ -107,22 +107,69 @@ public class AceExpanderModel
          NSImageCell iconCell = new NSImageCell();
          iconColumn.setDataCell(iconCell);
       }
+
+      updateMyDefaultsFromUserDefaults();
+
+      // Notify observers that the model has finished processing the
+      // awakeFromNib() method
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ModelHasFinishedAwakeFromNibNotification, null);
    }
 
    // ======================================================================
    // Accessor methods for manipulating the internal list of items
    // ======================================================================
 
-   public void addItem(String fileName)
+   public void addItem(String itemFileName)
    {
-      AceExpanderItem item = new AceExpanderItem(fileName, this);
-      m_itemList.addObject(item);
+      if (null == itemFileName)
+         return;   // TODO: give visual feedback
 
-      // Update the table
-      m_theTable.reloadData();
+      java.io.File itemFile = new java.io.File(itemFileName);
+      if (! itemFile.exists())
+         return;   // TODO: give visual feedback
 
-      // Let the document controller update the File-OpenRecent menu
-      m_theDocumentController.noteNewRecentDocumentURL(NSPathUtilities.URLWithPath(fileName));
+      // If the user defaults say so, check whether the item is a folder
+      // and if it is, recursively call this method for each item inside
+      // the folder
+      if (itemFile.isDirectory())
+      {
+         if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.LookIntoFolders))
+            return;   // throw away a folder if we should not look into it
+
+         java.io.File[] directoryContents;
+         if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.TreatAllFilesAsArchives))
+         {
+            directoryContents = itemFile.listFiles();
+         }
+         else
+         {
+            directoryContents = itemFile.listFiles(
+                                                   new java.io.FileFilter()
+                                                   {
+                                                      public boolean accept(java.io.File f)
+                                                   {
+                                                         if (f.isDirectory()) { return true; }
+                                                         return f.getName().endsWith(".ace");
+                                                   }
+                                                   });
+         }
+
+         for (int i = 0; i < directoryContents.length; i++)
+         {
+            addItem(directoryContents[i].getPath());
+         }
+      }
+      else
+      {
+         AceExpanderItem item = new AceExpanderItem(itemFileName, this);
+         m_itemList.addObject(item);
+
+         // Update the table
+         m_theTable.reloadData();
+
+         // Let the document controller update the File-OpenRecent menu
+         m_theDocumentController.noteNewRecentDocumentURL(NSPathUtilities.URLWithPath(itemFileName));
+      }
    }
 
    // Remove all items selected in the table
@@ -488,5 +535,34 @@ public class AceExpanderModel
    {
       // Update the table
       m_theTable.reloadData();
+   }
+
+   public void updateMyDefaultsFromUserDefaults()
+   {
+      // Get option settings from user defaults
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.OverwriteFilesOption))
+         m_bOverwriteFiles = true;
+      else
+         m_bOverwriteFiles = false;
+
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ExtractWithFullPathOption))
+         m_bExtractFullPath = true;
+      else
+         m_bExtractFullPath = false;
+
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.AssumeYesOption))
+         m_bAssumeYes = true;
+      else
+         m_bAssumeYes = false;
+
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ShowCommentsOption))
+         m_bShowComments = true;
+      else
+         m_bShowComments = false;
+
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ListVerboselyOption))
+         m_bListVerbosely = true;
+      else
+         m_bListVerbosely = false;
    }
 }

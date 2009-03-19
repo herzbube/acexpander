@@ -428,6 +428,13 @@ public class AceExpanderThread extends Thread
    {
       String destinationFolder = "";
 
+      // If we don't expand we ignore any destination folder settings
+      if (EXPAND != m_iCommand)
+      {
+         destinationFolder = NSPathUtilities.stringByDeletingLastPathComponent(archiveFileName);
+         return destinationFolder;
+      }
+
       String destinationFolderType = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.DestinationFolderType);
       if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeSameAsArchive))
       {

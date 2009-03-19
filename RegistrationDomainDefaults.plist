@@ -20,5 +20,21 @@
 	<false/>
 	<key>StartExpandingAfterLaunch</key>
 	<true/>
+	<key>LookIntoFolders</key>
+	<false/>
+	<key>TreatAllFilesAsArchives</key>
+	<false/>
+	<key>OptionDefaultsRemembered</key>
+	<false/>
+	<key>OverwriteFilesOption</key>
+	<false/>
+	<key>ExtractWithFullPathOption</key>
+	<true/>
+	<key>AssumeYesOption</key>
+	<false/>
+	<key>ShowCommentsOption</key>
+	<true/>
+	<key>ListVerboselyOption</key>
+	<true/>
 </dict>
 </plist>

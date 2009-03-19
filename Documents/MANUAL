@@ -123,17 +123,41 @@ locations:
   is expanded
 You can combine these with the option to let AceExpander create a folder
 for each archive that it is expanding and to place the archive's content
-within that folder. This so-called surrounding folder is created inside
+within that folder. This so-called "surrounding folder" is created inside
 the destination folder.
 
-All other preferences are self-explaining and are not discussed in this
-document.
+If you turn on the preference item "Look into folders" and then open a
+folder in AceExpander, the application will recursively scan that folder
+and all its sub-folders for ACE archives. By default, it will only accept
+files with the file name extension ".ace" as valid ACE archives during
+such a scan, however you may turn on the preference item
+"Treat all files as ACE archives" to make AceExpander accept all files.
+Note: this preference item does not affect the opening of individual
+files with AceExpander, the item only affects the "Look into folders"
+feature.
+
+All other items in the Preferences dialog should be self-explaining and are
+not discussed in this document.
+
+In addition to the items in the Preferences dialog, the following things are
+stored in the user preferences file
+(~/Library/Preferences/ch.herzbube.aceexpander.plist):
+
+- the sizes and positions of the main window and the result window when
+  the application is terminated
+- whether or not the result window is visible when the application is
+  terminated
+- if you select "Remember as my defaults" from the Options menu, the
+  current option settings are stored in the user preferences file
+- the last directory you selected in the File-Open dialog
+- the last items you opened in AceExpander (see the "Open Recent" sub-menu
+  in the File menu)
 
 
 Expand options
 --------------
 The following items from the Options menu pertain to the "Expand" command
-of AceExpander:
+of AceExpander.
 
 - Overwrite files
   If a file is extracted from an archive, but this file already exists,

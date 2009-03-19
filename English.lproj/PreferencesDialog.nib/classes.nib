@@ -3,6 +3,7 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
+                lookIntoFoldersButtonClicked = id; 
                 preferencesDialogCancelClicked = id; 
                 preferencesDialogOKClicked = id; 
                 quitAfterExpandButtonClicked = id; 
@@ -19,11 +20,13 @@
                 "m_alwaysQuitAfterExpandButton" = NSButton; 
                 "m_createSurroundingFolderButton" = NSButton; 
                 "m_destinationFolderButton" = NSPopUpButton; 
+                "m_lookIntoFoldersButton" = NSButton; 
                 "m_preferencesDialog" = NSPanel; 
                 "m_quitAfterExpandButton" = NSButton; 
                 "m_quitAppWhenMainWindowIsClosedButton" = NSButton; 
                 "m_setExecutablePathButton" = NSPopUpButton; 
                 "m_startExpandingAfterLaunchButton" = NSButton; 
+                "m_treatAllFilesAsArchivesButton" = NSButton; 
             }; 
             SUPERCLASS = "java.lang.Object"; 
         }, 

@@ -44,15 +44,15 @@ Version 0.9
 - list contents in drawer
 
 Version 1.0
-- current option settings should be saved to user defaults
+- current option settings are saved to user defaults
 - process entire folders
-- add a couple of UML diagrams to complete documentation
 
 Version 1.1
 - implement a better scheme for listing archive contents
 - archive items' state are displayed color-coded
 - archive items' state can be changed by directly clicking on the state
   displayed in the main table
+- add a couple of UML diagrams to complete documentation
 
 Version 1.2
 - rewrite application in Objective-C
@@ -61,6 +61,8 @@ Version 1.2
 Version 1.3
 - implement menu items "show info in finder" and "reveal in finder"
   (can probably be done only in Objective-C)
+- show only file name (instead of full path name) in main window table;
+  show path name in tooltip (can probably be done only in Objective-C)
 - German localization
 
 Version 1.4

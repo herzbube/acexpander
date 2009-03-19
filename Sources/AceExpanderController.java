@@ -77,13 +77,14 @@ public class AceExpanderController
    private final static String ChangeLogFileName = "ChangeLog";
    private final static String ReleasePlanFileName = "ReleasePlan";
    private final static String ToDoFileName = "TODO";
-   private final static String HomePageURL = "http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml";
+   private final static String HomePageURL = "http://aceexpander.herzbube.ch/";
    // Notifications
    public static final String ExpandThreadHasFinishedNotification = "ExpandThreadHasFinished";
    public static final String ErrorConditionOccurredNotification = "ErrorConditionOccurred";
    public static final String UpdateResultWindowNotification = "UpdateResultWindow";
    public static final String UpdateContentListDrawerNotification = "UpdateContentListDrawer";
-   
+   public static final String ModelHasFinishedAwakeFromNibNotification = "ModelHasFinishedAwakeFromNib";
+
    // These variables are outlets and therefore initialized in the .nib
    // --- from MainMenu.nib
    private AceExpanderModel m_theModel;
@@ -111,13 +112,17 @@ public class AceExpanderController
    private NSMenuItem m_homepageMenuItem;
    private NSMenuItem m_showInfoInFinderMenuItem;
    private NSMenuItem m_revealInFinderMenuItem;
+   private NSMenuItem m_rememberMyDefaultsMenuItem;
+   private NSMenuItem m_forgetMyDefaultsMenuItem;
    // --- from PasswordDialog.nib
    private NSPanel m_passwordDialog;
    private NSSecureTextField m_passwordTextField;
 
    // Other variables
+   private AceExpanderPreferences m_thePreferences = null;
+   private NSUserDefaults m_userDefaults = null;
    private boolean m_bPasswordDialogCancelClicked = true;
-   private AceExpanderPreferences m_thePreferences;
+   private boolean m_bMyDefaultsHaveChanged = false;
 
    // ======================================================================
    // Constructors
@@ -132,7 +137,9 @@ public class AceExpanderController
       // Next create the applications user defaults/preferences object.
       // It will provide sensible defaults in the NSRegistration domain.
       m_thePreferences = new AceExpanderPreferences();
-
+      // Store instance in a member variable because it is frequently used
+      m_userDefaults = NSUserDefaults.standardUserDefaults();
+      
       // Register for services in the Services system menu
       // We are not interested in receiving data of any type
       NSArray returnTypes = null;
@@ -162,6 +169,25 @@ public class AceExpanderController
       // -> we set this property here instead of in InterfaceBuilder
       m_progressIndicator.setDisplayedWhenStopped(false);
 
+      // These windows automatically restore their frame from the user
+      // defaults, and save it to the user defaults if any changes occur
+      m_mainWindow.setFrameAutosaveName(AceExpanderPreferences.MainWindowFrameName);
+      m_resultWindow.setFrameAutosaveName(AceExpanderPreferences.ResultWindowFrameName);
+
+      // Show the result window if the user defaults say so
+      if (m_userDefaults.booleanForKey(AceExpanderPreferences.ShowResultWindow))
+      {
+         m_resultWindow.makeKeyAndOrderFront(this);
+         m_mainWindow.makeKeyAndOrderFront(this);
+      }
+   }
+
+   // Is called by the notification center after the model announces that
+   // it has finished processing its awakeFromNib() method.
+   // Do stuff in this method that depends on the model having completely
+   // executed its awakeFromNib() method.
+   public void awakeFromNibAfterModel()
+   {
       // Initialize menu items that can be checked/unchecked with the
       // default state of the corresponding model data
       setMenuItemState(m_overwriteFilesMenuItem, m_theModel.getOverwriteFiles());
@@ -171,20 +197,8 @@ public class AceExpanderController
       setMenuItemState(m_listVerboselyMenuItem, m_theModel.getListVerbosely());
       setMenuItemState(m_usePasswordMenuItem, m_theModel.getUsePassword());
       setMenuItemState(m_debugModeMenuItem, m_theModel.getDebugMode());
-
-      // These windows automatically restore their frame from the user
-      // defaults, and save it to the user defaults if any changes occur
-      m_mainWindow.setFrameAutosaveName(AceExpanderPreferences.MainWindowFrameName);
-      m_resultWindow.setFrameAutosaveName(AceExpanderPreferences.ResultWindowFrameName);
-
-      // Show the result window if the user defaults say so
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ShowResultWindow))
-      {
-         m_resultWindow.makeKeyAndOrderFront(this);
-         m_mainWindow.makeKeyAndOrderFront(this);
-      }
    }
-
+   
    // ======================================================================
    // NSApplication delegate methods
    // ======================================================================
@@ -203,7 +217,7 @@ public class AceExpanderController
    {
       // If the user defaults say so, don't start automatically expanding
       // items on application launch
-      if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.StartExpandingAfterLaunch))
+      if (! m_userDefaults.booleanForKey(AceExpanderPreferences.StartExpandingAfterLaunch))
       {
          m_theModel.setInteractive(true);
          return;
@@ -234,14 +248,14 @@ public class AceExpanderController
       {
          // Depending on the user default, terminate the application when the
          // main window is closed
-         if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.QuitAppWhenMainWindowIsClosed))
+         if (m_userDefaults.booleanForKey(AceExpanderPreferences.QuitAppWhenMainWindowIsClosed))
          {
             NSApplication.sharedApplication().terminate(this);
          }
       }
       else if (window == m_resultWindow)
       {
-         NSUserDefaults.standardUserDefaults().setBooleanForKey(false, AceExpanderPreferences.ShowResultWindow);
+         m_userDefaults.setBooleanForKey(false, AceExpanderPreferences.ShowResultWindow);
       }
    }
 
@@ -250,7 +264,7 @@ public class AceExpanderController
       Object window = notification.object();
       if (window == m_resultWindow)
       {
-         NSUserDefaults.standardUserDefaults().setBooleanForKey(true, AceExpanderPreferences.ShowResultWindow);
+         m_userDefaults.setBooleanForKey(true, AceExpanderPreferences.ShowResultWindow);
       }
    }
 
@@ -302,6 +316,17 @@ public class AceExpanderController
                   menuItem == m_revealInFinderMenuItem)
          {
             return false;
+         }
+         else if (menuItem == m_rememberMyDefaultsMenuItem)
+         {
+            return m_bMyDefaultsHaveChanged;
+         }
+         else if (menuItem == m_forgetMyDefaultsMenuItem)
+         {
+            if (m_userDefaults.booleanForKey(AceExpanderPreferences.OptionDefaultsRemembered))
+               return true;
+            else
+               return false;
          }
          // Enable items in all other circumstances
          else
@@ -434,7 +459,7 @@ public class AceExpanderController
    {
       NSOpenPanel openPanel = NSOpenPanel.openPanel();
       openPanel.setAllowsMultipleSelection(true);
-      openPanel.setCanChooseDirectories(false);
+      openPanel.setCanChooseDirectories(true);
       String directory = null;
       String selectedFile = null;
       NSArray fileTypes = null;
@@ -531,6 +556,7 @@ public class AceExpanderController
       boolean bNewState = ! m_theModel.getAssumeYes();
       m_theModel.setAssumeYes(bNewState);
       setMenuItemState((NSMenuItem)sender, bNewState);
+      m_bMyDefaultsHaveChanged = true;
    }
 
    public void toggleExtractFullPath(Object sender)
@@ -538,6 +564,7 @@ public class AceExpanderController
       boolean bNewState = ! m_theModel.getExtractFullPath();
       m_theModel.setExtractFullPath(bNewState);;
       setMenuItemState((NSMenuItem)sender, bNewState);
+      m_bMyDefaultsHaveChanged = true;
    }
 
    public void toggleListVerbosely(Object sender)
@@ -545,6 +572,7 @@ public class AceExpanderController
       boolean bNewState = ! m_theModel.getListVerbosely();
       m_theModel.setListVerbosely(bNewState);;
       setMenuItemState((NSMenuItem)sender, bNewState);
+      m_bMyDefaultsHaveChanged = true;
    }
 
    public void toggleShowComments(Object sender)
@@ -552,6 +580,7 @@ public class AceExpanderController
       boolean bNewState = ! m_theModel.getShowComments();
       m_theModel.setShowComments(bNewState);;
       setMenuItemState((NSMenuItem)sender, bNewState);
+      m_bMyDefaultsHaveChanged = true;
    }
 
    public void toggleOverwriteFiles(Object sender)
@@ -559,6 +588,7 @@ public class AceExpanderController
       boolean bNewState = ! m_theModel.getOverwriteFiles();
       m_theModel.setOverwriteFiles(bNewState);;
       setMenuItemState((NSMenuItem)sender, bNewState);
+      m_bMyDefaultsHaveChanged = true;
 
       // Bug in unace: "assume yes" must always be turned on when
       // overwrite is turned on
@@ -641,6 +671,43 @@ public class AceExpanderController
    }
 
    // ======================================================================
+   // Methods that are actions, saving/removing options in user defaults
+   // ======================================================================
+
+   public void rememberMyDefaults(Object sender)
+   {
+      m_userDefaults.setBooleanForKey(m_theModel.getOverwriteFiles(), AceExpanderPreferences.OverwriteFilesOption);
+      m_userDefaults.setBooleanForKey(m_theModel.getExtractFullPath(), AceExpanderPreferences.ExtractWithFullPathOption);
+      m_userDefaults.setBooleanForKey(m_theModel.getAssumeYes(), AceExpanderPreferences.AssumeYesOption);
+      m_userDefaults.setBooleanForKey(m_theModel.getShowComments(), AceExpanderPreferences.ShowCommentsOption);
+      m_userDefaults.setBooleanForKey(m_theModel.getListVerbosely(), AceExpanderPreferences.ListVerboselyOption);
+
+      m_userDefaults.setBooleanForKey(true, AceExpanderPreferences.OptionDefaultsRemembered);
+
+      m_bMyDefaultsHaveChanged = false;
+   }
+
+   public void forgetMyDefaults(Object sender)
+   {
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.OverwriteFilesOption);
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.ExtractWithFullPathOption);
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.AssumeYesOption);
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.ShowCommentsOption);
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.ListVerboselyOption);
+
+      m_userDefaults.removeObjectForKey(AceExpanderPreferences.OptionDefaultsRemembered);
+
+      m_theModel.updateMyDefaultsFromUserDefaults();
+      setMenuItemState(m_overwriteFilesMenuItem, m_theModel.getOverwriteFiles());
+      setMenuItemState(m_extractFullPathMenuItem, m_theModel.getExtractFullPath());
+      setMenuItemState(m_assumeYesMenuItem, m_theModel.getAssumeYes());
+      setMenuItemState(m_showCommentsMenuItem, m_theModel.getShowComments());
+      setMenuItemState(m_listVerboselyMenuItem, m_theModel.getListVerbosely());
+
+      m_bMyDefaultsHaveChanged = false;
+   }
+
+   // ======================================================================
    // Methods handling NSNotifications
    // ======================================================================
 
@@ -663,10 +730,10 @@ public class AceExpanderController
       {
          // If the user defaults say so, don't terminate the application
          // after expanding items on application launch
-         if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.QuitAfterExpand))
+         if (! m_userDefaults.booleanForKey(AceExpanderPreferences.QuitAfterExpand))
             m_theModel.setInteractive(true);
          // If the user defaults say so, always terminat the application
-         else if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.AlwaysQuitAfterExpand))
+         else if (m_userDefaults.booleanForKey(AceExpanderPreferences.AlwaysQuitAfterExpand))
             NSApplication.sharedApplication().terminate(this);
          // No special user defaults: check if all items expanded
          // successfully. If not, continue to run in interactive mode
@@ -827,6 +894,12 @@ public class AceExpanderController
       center.addObserver(this,
                          new NSSelector("updateContentListDrawer", new Class[] {}),
                          UpdateContentListDrawerNotification,
+                         null);
+      // Register for notification posted by AceExpanderModel when it
+      // has finished awakeFromNib()
+      center.addObserver(this,
+                         new NSSelector("awakeFromNibAfterModel", new Class[] {}),
+                         ModelHasFinishedAwakeFromNibNotification,
                          null);
    }
 }

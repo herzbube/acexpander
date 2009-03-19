@@ -1,7 +1,7 @@
 Table of Contents
 -----------------
 1. Introduction
-2. Changes in this release (0.9.1)
+2. Changes in this release (1.0)
 3. License and source code
 4. unace binary
 5. Limitations of AceExpander
@@ -16,13 +16,14 @@ utility. With AceExpander installed, you can simply double-click on any
 ACE archive(s) in the Finder and the contents of the archive will be
 extracted to a sub-folder of the same folder where the original archive
 is located. To configure AceExpander, or to use additional program features,
-you have to directly launch the application.
+you have to directly launch the application (e.g. by double-clicking on the
+application icon in the Finder or the Dock).
 
 For a detailed description of AceExpander's features, see the MANUAL
 document (available from AceExpander's Help menu).
 
-ACE archives can be created with WinAce. For more information about this
-application, see http://www.winace.com.
+ACE archives can only be created with WinAce. For more information about
+this Windows application, see http://www.winace.com.
 
 You can check for the most recent version of AceExpander on its homepage
 http://aceexpander.herzbube.ch/
@@ -30,16 +31,22 @@ http://aceexpander.herzbube.ch/
 
 Changes in this release
 -----------------------
-- released version 0.9.1
-- added central handling for severe error conditions via the notification
-  sub-system of Cocoa
-- archive content listing is not lost anymore after the archive is expanded
-- the content list drawer now opens automatically if it is closed and
-  the list command is selected
-- added items "MANUAL", "ReleasePlan" and "TODO" to the Help menu
+- released version 1.0
+- added two new menu items to the Options menu: "Remember as my defaults"
+  allows to save the current option settings to the user preferences;
+  "Forget my defaults" will restore the option settings to their
+  factory defaults
+- menu item Help-Homepage now opens http://aceexpander.herzbube.ch/
+  instead of the longer URL located beneath www.herzbube.ch
+- folders can now be dropped on the application icon, or selected through
+  the File-Open command
+- added preference items "LookIntoFolders" and "TreatAllFilesAsArchives"
+- if "LookIntoFolders" is turned on, folders are recursively scanned for
+  archives
+- fixed bug where the preferences for "CreateSurroundingFolder" and
+  "DestinationFolderType" were examined for the List and Test commands
 
 For more details see the ChangeLog document.
-
 
 
 License and source code

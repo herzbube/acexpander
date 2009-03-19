@@ -6,10 +6,12 @@
                 cancelCommand = id; 
                 errorConditionOccurred = id; 
                 expandItems = id; 
+                forgetMyDefaults = id; 
                 gotoHomepage = id; 
                 listItems = id; 
                 queueAllItems = id; 
                 queueItems = id; 
+                rememberMyDefaults = id; 
                 removeAllItems = id; 
                 removeItems = id; 
                 revealInFinder = id; 
@@ -44,11 +46,13 @@
                 "m_debugModeMenuItem" = NSMenuItem; 
                 "m_expandButton" = NSButton; 
                 "m_extractFullPathMenuItem" = NSMenuItem; 
+                "m_forgetMyDefaultsMenuItem" = NSMenuItem; 
                 "m_homepageMenuItem" = NSMenuItem; 
                 "m_listVerboselyMenuItem" = NSMenuItem; 
                 "m_mainWindow" = NSWindow; 
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
                 "m_progressIndicator" = NSProgressIndicator; 
+                "m_rememberMyDefaultsMenuItem" = NSMenuItem; 
                 "m_resultWindow" = NSWindow; 
                 "m_revealInFinderMenuItem" = NSMenuItem; 
                 "m_showCommentsMenuItem" = NSMenuItem; 

@@ -20,6 +20,7 @@ Priority 1 (important)
   will also prevent the unnecessary creation of a folder when the archive
   file does not exist or cannot be read
 
+
 Priority 2 (nice to have)
 -------------------------
 - table should be highlighted in some way while a valid drag hovers over it
@@ -40,6 +41,20 @@ Priority 2 (nice to have)
   *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
 - make dialogs/windows smaller so that the application is less intrusive
   on the user's desktop
+  - only show archive filename, not entire archive path; add path to
+    tooltips
+- if no files are added as a result of opening a folde with AceExpander,
+  the user should be notified of this instead of just silently ignoring
+  the folder
+  - if "LookIntoFolders" is turned off, drag&drop and File-Open should
+    not accept folders
+  - it would be preferrable if this were also possible for drops on the
+    application icon in the Finder/Dock; however, this is probably not
+    possible, as it would involve modifying the document types in
+    Info.plist
+- display spinning cursor while recursively scanning folders
+  - give user ability to interrupt this process
+
 
 Priority 3 (not important)
 --------------------------
@@ -52,9 +67,11 @@ Priority 3 (not important)
   the application domain
 - show main window when it is hidden and the user clicks on the
   application's dock icon
-- delete key should also remove selected items
+- delete key should behave like backspace key (i.e. it should remove
+  selected items)
 - in MainMenu.nib, the menu item "remove selected" should be marked with
-  the "Backspace" key; the invisible button can then be removed
+  the "Backspace" key; if this is implemented, the invisible button that
+  hides behind the table in the main window can be removed
 - when the user chooses the unace executable in the preferences dialog,
   a check should be made if the chosen file really is executable.
   This seems to be not so easy in Java, although in Obj-C the class
