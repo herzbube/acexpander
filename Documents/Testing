@@ -1,0 +1,85 @@
+----------------------------------------------------------------------
+Test ID: 1
+Purpose: Successful automatic expanding, with terminating application
+Precondition:
+- The application is not started
+- User default StartExpandingAfterLaunch is set to true
+- User default QuitAfterExpand is set to true
+Actions:
+- Double-click one valid .ace archive in the Finder
+Postcondition:
+- The archive is expanded successfully
+- The application terminates
+Variations:
+- Select and double-click more than 1 .ace archive in the Finder. All
+  archives are expanded successfully and the application terminates
+- Drag one valid .ace archive from the Finder and drop it on the
+  application's icon in the Dock. The archive is expanded successfully and
+  the application terminates
+
+----------------------------------------------------------------------
+Test ID: 2
+Purpose: Successful automatic expanding, without terminating application
+Precondition:
+- The application is not started
+- User default StartExpandingAfterLaunch is set to true
+- User default QuitAfterExpand is set to false
+Actions:
+- Double-click one valid .ace archive in the Finder
+Postcondition:
+- The archive is expanded successfully
+- The application does not terminate
+Variations:
+
+----------------------------------------------------------------------
+Test ID: 3
+Purpose: Unsuccessful automatic expanding
+Precondition:
+- The application is not started
+- User default StartExpandingAfterLaunch is set to true
+- User default QuitAfterExpand is set to true
+- User default AlwaysQuitAfterExpand is set to false
+Actions:
+- Double-click one corrupt .ace archive in the Finder
+Postcondition:
+- The archive is not expanded
+- The application does not terminate
+Variations:
+- User default AlwaysQuitAfterExpand is set to false. The application
+  terminates after the failed expanding attempt.
+
+----------------------------------------------------------------------
+Test ID: 4
+Purpose: Drag&drop functionality
+Precondition:
+Actions:
+Postcondition:
+Variations:
+
+----------------------------------------------------------------------
+Test ID: 5
+Purpose: Keeping of menu File-OpenRecent
+Precondition:
+- The application is running
+- The menu File-OpenRecent is empty
+Actions:
+- Double-click one .ace archive in the Finder
+Postcondition:
+- The File-OpenRecent menu contains the filename of the archive
+Variations:
+- Drag one .ace archive from the Finder and drop it on the application's
+  icon in the dock. The same postconditions apply
+- Drag one .ace archive from the Finder and drop it on the table inside the
+  application's main window. The same postconditions apply
+- Use the menu command File-Open to open one .ace archive. The same
+  postconditions apply
+
+----------------------------------------------------------------------
+Test ID: 6
+Purpose: Choose different unace binary
+Precondition:
+Actions:
+Postcondition:
+Variations:
+
+
