@@ -38,21 +38,25 @@
                 unqueueAllItems = id; 
                 unqueueItems = id; 
             }; 
-            CLASS = "ch.herzbube.aceexpander.AceExpanderController"; 
+            CLASS = "ch.herzbube.acexpander.AceXpanderController"; 
             LANGUAGE = Java; 
             OUTLETS = {
                 "m_assumeYesMenuItem" = NSMenuItem; 
                 "m_cancelButton" = NSButton; 
                 "m_debugModeMenuItem" = NSMenuItem; 
                 "m_expandButton" = NSButton; 
+                "m_expandMenuItem" = NSMenuItem; 
                 "m_extractFullPathMenuItem" = NSMenuItem; 
                 "m_forgetMyDefaultsMenuItem" = NSMenuItem; 
                 "m_homepageMenuItem" = NSMenuItem; 
+                "m_listContentMenuItem" = NSMenuItem; 
                 "m_listVerboselyMenuItem" = NSMenuItem; 
                 "m_mainWindow" = NSWindow; 
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
                 "m_progressIndicator" = NSProgressIndicator; 
                 "m_rememberMyDefaultsMenuItem" = NSMenuItem; 
+                "m_removeMenuItem" = NSMenuItem; 
+                "m_requeueMenuItem" = NSMenuItem; 
                 "m_resultWindow" = NSWindow; 
                 "m_revealInFinderMenuItem" = NSMenuItem; 
                 "m_showCommentsMenuItem" = NSMenuItem; 
@@ -61,26 +65,28 @@
                 "m_showResultWindowMenuItem" = NSMenuItem; 
                 "m_stderrTextView" = NSTextView; 
                 "m_stdoutTextView" = NSTextView; 
+                "m_testIntegrityMenuItem" = NSMenuItem; 
                 "m_textView" = NSTextView; 
                 "m_textViewWindow" = NSWindow; 
                 "m_theContentListDrawer" = NSDrawer; 
                 "m_theContentListTable" = NSTableView; 
-                "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
-                "m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; 
+                "m_theModel" = "ch.herzbube.acexpander.AceXpanderModel"; 
+                "m_theTable" = "ch.herzbube.acexpander.AceXpanderTableView"; 
+                "m_unqueueMenuItem" = NSMenuItem; 
                 "m_usePasswordMenuItem" = NSMenuItem; 
             }; 
             SUPERCLASS = "java.lang.Object"; 
         }, 
         {
-            CLASS = "ch.herzbube.aceexpander.AceExpanderModel"; 
+            CLASS = "ch.herzbube.acexpander.AceXpanderModel"; 
             LANGUAGE = Java; 
-            OUTLETS = {"m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; }; 
+            OUTLETS = {"m_theTable" = "ch.herzbube.acexpander.AceXpanderTableView"; }; 
             SUPERCLASS = "java.lang.Object"; 
         }, 
         {
-            CLASS = "ch.herzbube.aceexpander.AceExpanderTableView"; 
+            CLASS = "ch.herzbube.acexpander.AceXpanderTableView"; 
             LANGUAGE = Java; 
-            OUTLETS = {"m_theModel" = AceExpanderModel; }; 
+            OUTLETS = {"m_theModel" = "ch.herzbube.acexpander.AceXpanderModel"; }; 
             SUPERCLASS = NSTableView; 
         }
     ); 

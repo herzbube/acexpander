@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,22 +22,22 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderPreferences.java
+// AceXpanderPreferences.java
 //
 // This class is a mini-controller for the Preferences dialog. It is also
 // responsible to set up defaults in the NSRegistration domain.
 //
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
-public class AceExpanderPreferences
+public class AceXpanderPreferences
 {
    // ======================================================================
    // Member variables
@@ -100,14 +100,14 @@ public class AceExpanderPreferences
    // Constructors
    // ======================================================================
 
-   public AceExpanderPreferences()
+   public AceXpanderPreferences()
    {
       // Store instance in a member variable because it is frequently used
       m_userDefaults = NSUserDefaults.standardUserDefaults();
       if (null == m_userDefaults)
       {
          String errorDescription = "Shared user defaults instance is null."; 
-         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+         NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, errorDescription);
       }
       loadDefaultsToRegistrationDomain();
    }
@@ -461,16 +461,16 @@ public class AceExpanderPreferences
          String defaultsPathName = mainBundle.pathForResource(RegistrationDomainDefaultsFileName, null);
          if (null == defaultsPathName)
          {
-            throw new AceExpanderException("The defaults file " + RegistrationDomainDefaultsFileName + " could not be found in the resources of the application bundle.");
+            throw new AceXpanderException("The defaults file " + RegistrationDomainDefaultsFileName + " could not be found in the resources of the application bundle.");
          }
          java.io.File defaultsFile = new java.io.File(defaultsPathName);
          if (! defaultsFile.exists())
          {
-            throw new AceExpanderException("The defaults file " + defaultsPathName + " does not exist.");
+            throw new AceXpanderException("The defaults file " + defaultsPathName + " does not exist.");
          }
          else if (! defaultsFile.canRead())
          {
-            throw new AceExpanderException("No read access to defaults file " + defaultsPathName + ".");
+            throw new AceXpanderException("No read access to defaults file " + defaultsPathName + ".");
          }
          NSData defaultsXMLData = new NSData(defaultsFile);
          Object defaultsObject = NSPropertyListSerialization.
@@ -480,7 +480,7 @@ public class AceExpanderPreferences
          // Did we get a valid property list?
          if (null == defaultsObject)
          {
-            throw new AceExpanderException("A property list could not be generated from defaults file " + defaultsPathName + ".");
+            throw new AceXpanderException("A property list could not be generated from defaults file " + defaultsPathName + ".");
          }
 
          // Make sure that we got an NSMutableDictionary. I have not found
@@ -494,13 +494,13 @@ public class AceExpanderPreferences
          }
          else
          {
-            throw new AceExpanderException("The property list generated from defaults file " + defaultsPathName + " is of unexpected type " + defaultsObjectType + ".");
+            throw new AceXpanderException("The property list generated from defaults file " + defaultsPathName + " is of unexpected type " + defaultsObjectType + ".");
          }
       }
-      catch(AceExpanderException exception)
+      catch(AceXpanderException exception)
       {
          // Notify the error handler that an error has occurred
-         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, exception.getMessage());
+         NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, exception.getMessage());
       }
    }
 

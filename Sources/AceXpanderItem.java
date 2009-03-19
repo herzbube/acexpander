@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderItem.java
+// AceXpanderItem.java
 //
 // This class represents an ACE archive in the file system and, at the same
 // time, a row in the table of archives in the application's GUI. It
@@ -54,13 +54,16 @@
 //    was expanded successfully, the item moves to this state.
 //  - FAILURE: as with SUCCESS, but an error occurred during processing
 //
+// This class implements the following protocols and interfaces:
+// - NSTableView.DataSource interface: to provide data for the content list
+//   drawer
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
-public class AceExpanderItem
+public class AceXpanderItem
 {
    // ======================================================================
    // Member variables
@@ -93,19 +96,19 @@ public class AceExpanderItem
    private NSMutableArray m_contentItemList = new NSMutableArray();
 
    // Other members
-   private AceExpanderModel m_theModel;
+   private AceXpanderModel m_theModel;
 
    // ======================================================================
    // Constructors
    // ======================================================================
 
-   public AceExpanderItem(String fileName, AceExpanderModel theModel)
+   public AceXpanderItem(String fileName, AceXpanderModel theModel)
    {
       m_theModel = theModel;
       if (null == m_theModel)
       {
-         String errorDescription = "The AceExpanderModel instance given in the AceExpanderItem constructor is null.";
-         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+         String errorDescription = "The AceXpanderModel instance given in the AceXpanderItem constructor is null.";
+         NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, errorDescription);
       }
 
       // Do not call setFileName; we don't want that notifications are
@@ -132,8 +135,8 @@ public class AceExpanderItem
 
       // Notify others that state has changed
       m_theModel.itemHasChanged(this);
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateContentListDrawerNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateResultWindowNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateContentListDrawerNotification, null);
    }
 
    public NSImage getIcon()
@@ -172,8 +175,8 @@ public class AceExpanderItem
       if (QUEUED != iState && SKIP != iState && PROCESSING != iState
           && ABORTED != iState && SUCCESS != iState && FAILURE != iState)
       {
-         String errorDescription = "Unexpected state " + iState + " in AceExpanderItem.setState().";
-         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+         String errorDescription = "Unexpected state " + iState + " in AceXpanderItem.setState().";
+         NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, errorDescription);
          return;
       }
       m_iState = iState;
@@ -189,11 +192,11 @@ public class AceExpanderItem
    public void setMessageStdout(String messageStdout, int iCommand)
    {
       m_messageStdout = messageStdout;
-      if (AceExpanderThread.LIST == iCommand)
+      if (AceXpanderThread.LIST == iCommand)
       {
          parseMessageStdout();
       }
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateResultWindowNotification, null);
    }
 
    public String getMessageStderr()
@@ -204,7 +207,7 @@ public class AceExpanderItem
    public void setMessageStderr(String messageStderr)
    {
       m_messageStderr = messageStderr;
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateResultWindowNotification, null);
    }
 
    // Is implemented as a convenience method, and so that only one
@@ -213,12 +216,12 @@ public class AceExpanderItem
    public void setMessages(String messageStdout, String messageStderr, int iCommand)
    {
       m_messageStdout = messageStdout;
-      if (AceExpanderThread.LIST == iCommand)
+      if (AceXpanderThread.LIST == iCommand)
       {
          parseMessageStdout();
       }
       m_messageStderr = messageStderr;
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateResultWindowNotification, null);
    }
 
    // ======================================================================
@@ -278,12 +281,12 @@ public class AceExpanderItem
       }
 
       updateContentItemList(contentLinesArray);
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateContentListDrawerNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.UpdateContentListDrawerNotification, null);
    }
    
    // The given array should contain String objects, each of which
    // represents one content line from the unace list command.
-   // For each line, create a new AceExpanderContentItem object and
+   // For each line, create a new AceXpanderContentItem object and
    // let it parse the content line. Store the object in an internal list
    // (the list is cleared at the beginning)
    private void updateContentItemList(NSArray contentLines)
@@ -295,12 +298,12 @@ public class AceExpanderItem
       {
          String contentLine = (String)enumerator.nextElement();
 
-         AceExpanderContentItem contentItem = new AceExpanderContentItem(contentLine);
+         AceXpanderContentItem contentItem = new AceXpanderContentItem(contentLine);
          m_contentItemList.addObject(contentItem);
       }
    }
 
-      // ======================================================================
+   // ======================================================================
    // NSTableView.DataSource interface methods
    // ======================================================================
 
@@ -311,7 +314,7 @@ public class AceExpanderItem
 
    public Object tableViewObjectValueForLocation(NSTableView theTableView, NSTableColumn aTableColumn, int rowIndex)
    {
-      AceExpanderContentItem contentItem = (AceExpanderContentItem)m_contentItemList.objectAtIndex(rowIndex);
+      AceXpanderContentItem contentItem = (AceXpanderContentItem)m_contentItemList.objectAtIndex(rowIndex);
       Object id = aTableColumn.identifier();
       if (id.equals(ColumnIdentifierDate))
       {

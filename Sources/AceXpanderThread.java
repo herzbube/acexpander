@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,32 +22,41 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderThread.java
+// AceXpanderThread.java
 //
-// This class is responsible for expanding a single archive. The full path
-// of the archive file must be given on construction.
+// This class is responsible for expanding archives. It encapsulates access to
+// the unace binary - either the one that is included with the application as a
+// resource, or the one that the user specifies in the preferences dialog.
 //
-// This class encapsulates access to the unace binary included with the
-// application as a resource.
+// Before this thread can expand anything, at least one archive item must have
+// ben added with addItem(). In addition, setArguments() must be called at
+// least once so that this thread can build a correct command line with
+// arguments.
 //
-// The archive expansion runs in its own thread separated from the main
-// application. The expansion process is started by startExpansion().
-// The method launches unace in a new process. It is synchronous, i.e. it
-// waits for unace to complete.
+// When all pre-conditions have been met, this thread can be started with
+// run(). The thread then iterates all archive items and tries to expand those
+// that have their state set to QUEUED. For each item, a new system process is
+// launched that executes the unace binary. The process is run synchronously,
+// i.e. this thread waits for unace to complete.
 //
-// Once the expansion has finished, accessor methods can be used to query
-// the process' exit value and the messages printed to stdout and stderr.
+// After all items were processed, this thread posts a notification and then
+// exits its run() method. To interrupt this thread, a client may call
+// stopRunning(). This thread then tries to stop its operation as soon as
+// possible.
+//
+// Items are updated with results as soon as their system process exits. Items
+// are responsible for making these results visible to the user.
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
-public class AceExpanderThread extends Thread
+public class AceXpanderThread extends Thread
 {
    // ======================================================================
    // Member variables
@@ -111,7 +120,7 @@ public class AceExpanderThread extends Thread
    // Constructors
    // ======================================================================
 
-   public AceExpanderThread() {}
+   public AceXpanderThread() {}
 
    // ======================================================================
    // Methods for starting/stopping the thread
@@ -134,18 +143,18 @@ public class AceExpanderThread extends Thread
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
-         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         AceXpanderItem item = (AceXpanderItem)enumerator.nextElement();
 
          // We need to check the state because it might be possible that
          // in the meantime the item has become non-QUEUED through the
          // user's actions
-         if (AceExpanderItem.QUEUED != item.getState())
+         if (AceXpanderItem.QUEUED != item.getState())
          {
             continue;
          }
 
          // Now start processing
-         item.setState(AceExpanderItem.PROCESSING);
+         item.setState(AceXpanderItem.PROCESSING);
          expandItem(item);
 
          // The messages can be set in any case
@@ -154,16 +163,16 @@ public class AceExpanderThread extends Thread
          // Check if we need to stop the thread
          if (m_bStopRunning)
          {
-            item.setState(AceExpanderItem.ABORTED);
+            item.setState(AceXpanderItem.ABORTED);
             break;   // terminate the loop
          }
          else if (0 == m_iExitValue)
          {
-            item.setState(AceExpanderItem.SUCCESS);
+            item.setState(AceXpanderItem.SUCCESS);
          }
          else
          {
-            item.setState(AceExpanderItem.FAILURE);
+            item.setState(AceXpanderItem.FAILURE);
          }
       }   // while (enumerator.hasMoreElements())
 
@@ -171,7 +180,7 @@ public class AceExpanderThread extends Thread
       m_bStopRunning = false;
 
       // Notify any observers that this thread has terminated
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ExpandThreadHasFinishedNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ExpandThreadHasFinishedNotification, null);
    }
 
    // Take actions to terminate the thread
@@ -190,7 +199,8 @@ public class AceExpanderThread extends Thread
    }
 
    // ======================================================================
-   // Method for starting the expansion process
+   // Method for starting the expansion process (the method is called for all
+   // command types (i.e. expand, list, integrity test).
    // ======================================================================
 
    // Expand a single item/archive in a separate process. Wait for the
@@ -200,7 +210,7 @@ public class AceExpanderThread extends Thread
    // In addition, as a result of this method, m_messageStdout and
    // m_messageStdErr will be set to the output of the process to
    // stdout and stderr.
-   private void expandItem(AceExpanderItem item)
+   private void expandItem(AceXpanderItem item)
    {
       // Initialize members in case that process terminates abnormally
       m_messageStdout = "";
@@ -269,7 +279,7 @@ public class AceExpanderThread extends Thread
    // Methods
    // ======================================================================
 
-   public void addItem(AceExpanderItem item)
+   public void addItem(AceXpanderItem item)
    {
       m_itemList.addObject(item);
    }
@@ -302,8 +312,8 @@ public class AceExpanderThread extends Thread
             m_unaceCommand = m_unaceCmdTest;
             break;
          default:
-            String errorDescription = "Unexpected command code " + iCommand + " in AceExpanderThread.setArguments().";
-            NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+            String errorDescription = "Unexpected command code " + iCommand + " in AceXpanderThread.setArguments().";
+            NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, errorDescription);
             return;
       }
 
@@ -370,8 +380,8 @@ public class AceExpanderThread extends Thread
    // from our constants
    private void determineUnaceToUse()
    {
-      m_unaceExecutable = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.ExecutablePath);
-      if (m_unaceExecutable.equals(AceExpanderPreferences.BundledExecutablePath))
+      m_unaceExecutable = NSUserDefaults.standardUserDefaults().stringForKey(AceXpanderPreferences.ExecutablePath);
+      if (m_unaceExecutable.equals(AceXpanderPreferences.BundledExecutablePath))
       {
          m_unaceExecutable = m_unaceBundledExecutable;
       }
@@ -435,12 +445,12 @@ public class AceExpanderThread extends Thread
          return destinationFolder;
       }
 
-      String destinationFolderType = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.DestinationFolderType);
-      if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeSameAsArchive))
+      String destinationFolderType = NSUserDefaults.standardUserDefaults().stringForKey(AceXpanderPreferences.DestinationFolderType);
+      if (destinationFolderType.equals(AceXpanderPreferences.DestinationFolderTypeSameAsArchive))
       {
          destinationFolder = NSPathUtilities.stringByDeletingLastPathComponent(archiveFileName);
       }
-      else if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeAskWhenExpanding))
+      else if (destinationFolderType.equals(AceXpanderPreferences.DestinationFolderTypeAskWhenExpanding))
       {
          // Only query the user if she hasn't chosen a folder yet.
          if (m_destinationFolderAskWhenExpanding.equals(""))
@@ -467,14 +477,14 @@ public class AceExpanderThread extends Thread
          // during the first item's expansion
          destinationFolder = m_destinationFolderAskWhenExpanding;
       }
-      else if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeFixedLocation))
+      else if (destinationFolderType.equals(AceXpanderPreferences.DestinationFolderTypeFixedLocation))
       {
-         destinationFolder = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.DestinationFolder);
+         destinationFolder = NSUserDefaults.standardUserDefaults().stringForKey(AceXpanderPreferences.DestinationFolder);
       }
 
       // If user defaults say so, add an additional surrounding folder
       // to the destination folder.
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.CreateSurroundingFolder))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.CreateSurroundingFolder))
       {
          destinationFolder = destinationFolder + "/" + NSPathUtilities.lastPathComponent(archiveFileName) + " Folder";
       }

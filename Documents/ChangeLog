@@ -1,3 +1,28 @@
+?? May ?? 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- added application and document icons
+
+Sat May 13 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- eliminated InfoPlist.strings, which was a localized file in English.lproj;
+  the information in the file does not need to be localized, instead everything
+  can be placed into the target-specific Info.plist
+- only use CFBundleShortVersionString for version information in Info.plist
+- added NSHumanReadableCopyright to Info.plist
+- menu items "requeue", "unqueue", "remove", "expand", "list content" and
+  "test integrity" are now disabled if no archive is selected
+
+Sat April 29 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- renamed project to AceXpander (old name was AceExpander)
+- re-created .nib files from scratch (renaming project broke something)
+
+Sun April 16 2006   "Patrick Näf" <aceexpander@herzbube.ch>
+- converted project from ProjectBuilder to Xcode
+- project has moved from a private CVS to a public subversion repository
+  - Browser access: http://herzbube.ch/websvn/
+  - svn client access: http://herzbube.ch/svn/acexpander/
+- changed all homepage references to point to the new homepage URL
+  http://www.herzbube.ch/drupal/?q=acexpander
+- added README.developer
+
 Mon July 05 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - released version 1.0
 - added two new menu items to the Options menu: "Remember as my defaults"
@@ -41,7 +66,7 @@ Tue June 22 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - replaced unace binary by a binary with version 2.5i, ripped from the
   MacAce application by Gabriel Gritsch (http://gritsch-soft.com/)
 - updated Info.plist and InfoPlist.strings
-- the edit-unqueue commands only set items to state "skipped" that have
+- the edit-unqueue command only set items to state "skipped" that have
   the state "queued"
 - updated README
 

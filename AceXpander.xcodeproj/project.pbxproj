@@ -1,0 +1,556 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXApplicationTarget section */
+		29B97326FDCFA39411CA2CEA /* AceXpander */ = {
+			isa = PBXApplicationTarget;
+			buildConfigurationList = C006216908B266460004B710 /* Build configuration list for PBXApplicationTarget "AceXpander" */;
+			buildPhases = (
+				29B97327FDCFA39411CA2CEA /* Headers */,
+				29B97328FDCFA39411CA2CEA /* Resources */,
+				29B9732BFDCFA39411CA2CEA /* Sources */,
+				043355C9FE30361CC02AAC07 /* JavaArchive */,
+				29B9732DFDCFA39411CA2CEA /* Frameworks */,
+			);
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "$(HOME)/Applications";
+				JAVA_SOURCE_SUBDIR = .;
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = AceXpander_Prefix.h;
+				PRODUCT_NAME = AceXpander;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			name = AceXpander;
+			productInstallPath = "$(HOME)/Applications";
+			productName = AceXpander;
+			productReference = 17587328FF379C6511CA2CBB /* AceXpander.app */;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ace</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Document.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>ACE archive</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>AceXpander</string>
+	<key>CFBundleIconFile</key>
+	<string>Application.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>ch.herzbube.acexpander</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>AceXpander</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.1</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>Java</key>
+	<dict>
+		<key>JVMVersion</key>
+		<string>1.3+</string>
+	</dict>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2003-2006 Patrick Näf</string>
+	<key>NSJavaNeeded</key>
+	<string>YES</string>
+	<key>NSJavaPath</key>
+	<array>
+		<string>AceXpander.jar</string>
+	</array>
+	<key>NSJavaRoot</key>
+	<string>Contents/Resources/Java</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>
+";
+		};
+/* End PBXApplicationTarget section */
+
+/* Begin PBXBuildFile section */
+		080E96DCFE201CFB7F000001 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		1058C7A3FEA54F0111CA2CBB /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		CD93FE3B0A0547C600F98FEB /* AceXpanderContentItem.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE330A0547C600F98FEB /* AceXpanderContentItem.java */; };
+		CD93FE3C0A0547C600F98FEB /* AceXpanderController.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE340A0547C600F98FEB /* AceXpanderController.java */; };
+		CD93FE3D0A0547C600F98FEB /* AceXpanderException.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE350A0547C600F98FEB /* AceXpanderException.java */; };
+		CD93FE3E0A0547C600F98FEB /* AceXpanderItem.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE360A0547C600F98FEB /* AceXpanderItem.java */; };
+		CD93FE3F0A0547C600F98FEB /* AceXpanderModel.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE370A0547C600F98FEB /* AceXpanderModel.java */; };
+		CD93FE400A0547C600F98FEB /* AceXpanderPreferences.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE380A0547C600F98FEB /* AceXpanderPreferences.java */; };
+		CD93FE410A0547C600F98FEB /* AceXpanderTableView.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */; };
+		CD93FE420A0547C600F98FEB /* AceXpanderThread.java in Sources */ = {isa = PBXBuildFile; fileRef = CD93FE3A0A0547C600F98FEB /* AceXpanderThread.java */; };
+		CD93FE7C0A05498700F98FEB /* ChangeLog in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE710A05498700F98FEB /* ChangeLog */; };
+		CD93FE7D0A05498700F98FEB /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE720A05498700F98FEB /* COPYING */; };
+		CD93FE7E0A05498700F98FEB /* INSTALL in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE730A05498700F98FEB /* INSTALL */; };
+		CD93FE7F0A05498700F98FEB /* MANUAL in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE740A05498700F98FEB /* MANUAL */; };
+		CD93FE800A05498700F98FEB /* README in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE750A05498700F98FEB /* README */; };
+		CD93FE810A05498700F98FEB /* README.developer in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE760A05498700F98FEB /* README.developer */; };
+		CD93FE820A05498700F98FEB /* ReleasePlan in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE770A05498700F98FEB /* ReleasePlan */; };
+		CD93FE830A05498700F98FEB /* ReleaseSteps in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE780A05498700F98FEB /* ReleaseSteps */; };
+		CD93FE840A05498700F98FEB /* SourceForge in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE790A05498700F98FEB /* SourceForge */; };
+		CD93FE850A05498700F98FEB /* Testing in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE7A0A05498700F98FEB /* Testing */; };
+		CD93FE860A05498700F98FEB /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE7B0A05498700F98FEB /* TODO */; };
+		CD93FE890A05499800F98FEB /* unace in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE870A05499800F98FEB /* unace */; };
+		CD93FE8A0A05499800F98FEB /* unace.sh in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE880A05499800F98FEB /* unace.sh */; };
+		CD93FE8D0A0549A400F98FEB /* Application.icns in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8B0A0549A400F98FEB /* Application.icns */; };
+		CD93FE8E0A0549A400F98FEB /* Document.icns in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8C0A0549A400F98FEB /* Document.icns */; };
+		CD93FE910A0549E800F98FEB /* distribute.sh in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8F0A0549E800F98FEB /* distribute.sh */; };
+		CD93FE920A0549E800F98FEB /* RegistrationDomainDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */; };
+		CDB32CA20A163170000A07EC /* PasswordDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDB32C9E0A163170000A07EC /* PasswordDialog.nib */; };
+		CDB32CA30A163170000A07EC /* PreferencesDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDB32CA00A163170000A07EC /* PreferencesDialog.nib */; };
+		CDB32DAE0A1648F9000A07EC /* AceXpander_Prefix.h in Headers */ = {isa = PBXBuildFile; fileRef = CDB32DAC0A1648F9000A07EC /* AceXpander_Prefix.h */; };
+		CDB32DAF0A1648F9000A07EC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB32DAD0A1648F9000A07EC /* main.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4A9504D3FFE6A4CB11CA0CBA /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OPTIMIZATION_CFLAGS = "-O0";
+				PREBINDING = NO;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		4A9504D4FFE6A4CB11CA0CBA /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FCC07B3F16300E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		17587328FF379C6511CA2CBB /* AceXpander.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = AceXpander.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		CD93FE330A0547C600F98FEB /* AceXpanderContentItem.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderContentItem.java; path = Sources/AceXpanderContentItem.java; sourceTree = "<group>"; };
+		CD93FE340A0547C600F98FEB /* AceXpanderController.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderController.java; path = Sources/AceXpanderController.java; sourceTree = "<group>"; };
+		CD93FE350A0547C600F98FEB /* AceXpanderException.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderException.java; path = Sources/AceXpanderException.java; sourceTree = "<group>"; };
+		CD93FE360A0547C600F98FEB /* AceXpanderItem.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderItem.java; path = Sources/AceXpanderItem.java; sourceTree = "<group>"; };
+		CD93FE370A0547C600F98FEB /* AceXpanderModel.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderModel.java; path = Sources/AceXpanderModel.java; sourceTree = "<group>"; };
+		CD93FE380A0547C600F98FEB /* AceXpanderPreferences.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderPreferences.java; path = Sources/AceXpanderPreferences.java; sourceTree = "<group>"; };
+		CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderTableView.java; path = Sources/AceXpanderTableView.java; sourceTree = "<group>"; };
+		CD93FE3A0A0547C600F98FEB /* AceXpanderThread.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = AceXpanderThread.java; path = Sources/AceXpanderThread.java; sourceTree = "<group>"; };
+		CD93FE710A05498700F98FEB /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ChangeLog; path = Documents/ChangeLog; sourceTree = "<group>"; };
+		CD93FE720A05498700F98FEB /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = COPYING; path = Documents/COPYING; sourceTree = "<group>"; };
+		CD93FE730A05498700F98FEB /* INSTALL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = INSTALL; path = Documents/INSTALL; sourceTree = "<group>"; };
+		CD93FE740A05498700F98FEB /* MANUAL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = MANUAL; path = Documents/MANUAL; sourceTree = "<group>"; };
+		CD93FE750A05498700F98FEB /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = Documents/README; sourceTree = "<group>"; };
+		CD93FE760A05498700F98FEB /* README.developer */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README.developer; path = Documents/README.developer; sourceTree = "<group>"; };
+		CD93FE770A05498700F98FEB /* ReleasePlan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReleasePlan; path = Documents/ReleasePlan; sourceTree = "<group>"; };
+		CD93FE780A05498700F98FEB /* ReleaseSteps */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ReleaseSteps; path = Documents/ReleaseSteps; sourceTree = "<group>"; };
+		CD93FE790A05498700F98FEB /* SourceForge */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SourceForge; path = Documents/SourceForge; sourceTree = "<group>"; };
+		CD93FE7A0A05498700F98FEB /* Testing */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Testing; path = Documents/Testing; sourceTree = "<group>"; };
+		CD93FE7B0A05498700F98FEB /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = Documents/TODO; sourceTree = "<group>"; };
+		CD93FE870A05499800F98FEB /* unace */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = unace; path = unace/unace; sourceTree = "<group>"; };
+		CD93FE880A05499800F98FEB /* unace.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = unace.sh; path = unace/unace.sh; sourceTree = "<group>"; };
+		CD93FE8B0A0549A400F98FEB /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Application.icns; path = Icons/Application.icns; sourceTree = "<group>"; };
+		CD93FE8C0A0549A400F98FEB /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Document.icns; path = Icons/Document.icns; sourceTree = "<group>"; };
+		CD93FE8F0A0549E800F98FEB /* distribute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = distribute.sh; sourceTree = "<group>"; };
+		CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RegistrationDomainDefaults.plist; sourceTree = "<group>"; };
+		CDB32C9F0A163170000A07EC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PasswordDialog.nib; sourceTree = "<group>"; };
+		CDB32CA10A163170000A07EC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencesDialog.nib; sourceTree = "<group>"; };
+		CDB32DAC0A1648F9000A07EC /* AceXpander_Prefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpander_Prefix.h; path = Sources/AceXpander_Prefix.h; sourceTree = "<group>"; };
+		CDB32DAD0A1648F9000A07EC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sources/main.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		29B9732DFDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1058C7A3FEA54F0111CA2CBB /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Java Sources */ = {
+			isa = PBXGroup;
+			children = (
+				CD93FE330A0547C600F98FEB /* AceXpanderContentItem.java */,
+				CD93FE340A0547C600F98FEB /* AceXpanderController.java */,
+				CD93FE350A0547C600F98FEB /* AceXpanderException.java */,
+				CD93FE360A0547C600F98FEB /* AceXpanderItem.java */,
+				CD93FE370A0547C600F98FEB /* AceXpanderModel.java */,
+				CD93FE380A0547C600F98FEB /* AceXpanderPreferences.java */,
+				CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */,
+				CD93FE3A0A0547C600F98FEB /* AceXpanderThread.java */,
+			);
+			name = "Java Sources";
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FCC07B3F16300E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				17587328FF379C6511CA2CBB /* AceXpander.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* AceXpander */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Java Sources */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				CD93FE530A05487500F98FEB /* Documents */,
+				CD93FE6F0A0548F200F98FEB /* unace */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				CD93FE6A0A0548D200F98FEB /* Icons */,
+				CD93FE8F0A0549E800F98FEB /* distribute.sh */,
+				CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = AceXpander;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				CDB32DAC0A1648F9000A07EC /* AceXpander_Prefix.h */,
+				CDB32DAD0A1648F9000A07EC /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				CDB32C9E0A163170000A07EC /* PasswordDialog.nib */,
+				CDB32CA00A163170000A07EC /* PreferencesDialog.nib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CD93FE530A05487500F98FEB /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				CD93FE710A05498700F98FEB /* ChangeLog */,
+				CD93FE720A05498700F98FEB /* COPYING */,
+				CD93FE730A05498700F98FEB /* INSTALL */,
+				CD93FE740A05498700F98FEB /* MANUAL */,
+				CD93FE750A05498700F98FEB /* README */,
+				CD93FE760A05498700F98FEB /* README.developer */,
+				CD93FE770A05498700F98FEB /* ReleasePlan */,
+				CD93FE780A05498700F98FEB /* ReleaseSteps */,
+				CD93FE790A05498700F98FEB /* SourceForge */,
+				CD93FE7A0A05498700F98FEB /* Testing */,
+				CD93FE7B0A05498700F98FEB /* TODO */,
+			);
+			name = Documents;
+			sourceTree = "<group>";
+		};
+		CD93FE6A0A0548D200F98FEB /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				CD93FE8B0A0549A400F98FEB /* Application.icns */,
+				CD93FE8C0A0549A400F98FEB /* Document.icns */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		CD93FE6F0A0548F200F98FEB /* unace */ = {
+			isa = PBXGroup;
+			children = (
+				CD93FE870A05499800F98FEB /* unace */,
+				CD93FE880A05499800F98FEB /* unace.sh */,
+			);
+			name = unace;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		29B97327FDCFA39411CA2CEA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CDB32DAE0A1648F9000A07EC /* AceXpander_Prefix.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXJavaArchiveBuildPhase section */
+		043355C9FE30361CC02AAC07 /* JavaArchive */ = {
+			isa = PBXJavaArchiveBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXJavaArchiveBuildPhase section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C006216D08B266460004B710 /* Build configuration list for PBXProject "AceXpander" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504D3FFE6A4CB11CA0CBA /* Debug */,
+				4A9504D4FFE6A4CB11CA0CBA /* Release */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* AceXpander */;
+			projectDirPath = "";
+			targets = (
+				29B97326FDCFA39411CA2CEA /* AceXpander */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		29B97328FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				080E96DCFE201CFB7F000001 /* MainMenu.nib in Resources */,
+				CD93FE7C0A05498700F98FEB /* ChangeLog in Resources */,
+				CD93FE7D0A05498700F98FEB /* COPYING in Resources */,
+				CD93FE7E0A05498700F98FEB /* INSTALL in Resources */,
+				CD93FE7F0A05498700F98FEB /* MANUAL in Resources */,
+				CD93FE800A05498700F98FEB /* README in Resources */,
+				CD93FE810A05498700F98FEB /* README.developer in Resources */,
+				CD93FE820A05498700F98FEB /* ReleasePlan in Resources */,
+				CD93FE830A05498700F98FEB /* ReleaseSteps in Resources */,
+				CD93FE840A05498700F98FEB /* SourceForge in Resources */,
+				CD93FE850A05498700F98FEB /* Testing in Resources */,
+				CD93FE860A05498700F98FEB /* TODO in Resources */,
+				CD93FE890A05499800F98FEB /* unace in Resources */,
+				CD93FE8A0A05499800F98FEB /* unace.sh in Resources */,
+				CD93FE8D0A0549A400F98FEB /* Application.icns in Resources */,
+				CD93FE8E0A0549A400F98FEB /* Document.icns in Resources */,
+				CD93FE910A0549E800F98FEB /* distribute.sh in Resources */,
+				CD93FE920A0549E800F98FEB /* RegistrationDomainDefaults.plist in Resources */,
+				CDB32CA20A163170000A07EC /* PasswordDialog.nib in Resources */,
+				CDB32CA30A163170000A07EC /* PreferencesDialog.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		29B9732BFDCFA39411CA2CEA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CD93FE3B0A0547C600F98FEB /* AceXpanderContentItem.java in Sources */,
+				CD93FE3C0A0547C600F98FEB /* AceXpanderController.java in Sources */,
+				CD93FE3D0A0547C600F98FEB /* AceXpanderException.java in Sources */,
+				CD93FE3E0A0547C600F98FEB /* AceXpanderItem.java in Sources */,
+				CD93FE3F0A0547C600F98FEB /* AceXpanderModel.java in Sources */,
+				CD93FE400A0547C600F98FEB /* AceXpanderPreferences.java in Sources */,
+				CD93FE410A0547C600F98FEB /* AceXpanderTableView.java in Sources */,
+				CD93FE420A0547C600F98FEB /* AceXpanderThread.java in Sources */,
+				CDB32DAF0A1648F9000A07EC /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		CDB32C9E0A163170000A07EC /* PasswordDialog.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDB32C9F0A163170000A07EC /* English */,
+			);
+			name = PasswordDialog.nib;
+			sourceTree = "<group>";
+		};
+		CDB32CA00A163170000A07EC /* PreferencesDialog.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDB32CA10A163170000A07EC /* English */,
+			);
+			name = PreferencesDialog.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		C006216A08B266460004B710 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/Applications";
+				JAVAC_SOURCE_FILE_ENCODING = "UTF-8";
+				JAVA_SOURCE_SUBDIR = .;
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = Sources/AceXpander_Prefix.h;
+				PRODUCT_NAME = AceXpander;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		C006216B08B266460004B710 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLES = YES;
+				INSTALL_PATH = "$(HOME)/Applications";
+				JAVAC_SOURCE_FILE_ENCODING = "UTF-8";
+				JAVA_SOURCE_SUBDIR = .;
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = Sources/AceXpander_Prefix.h;
+				PRODUCT_NAME = AceXpander;
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		C006216E08B266460004B710 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		C006216F08B266460004B710 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C006216908B266460004B710 /* Build configuration list for PBXApplicationTarget "AceXpander" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C006216A08B266460004B710 /* Debug */,
+				C006216B08B266460004B710 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C006216D08B266460004B710 /* Build configuration list for PBXProject "AceXpander" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C006216E08B266460004B710 /* Debug */,
+				C006216F08B266460004B710 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

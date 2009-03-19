@@ -4,7 +4,7 @@ happens when it happens :-)
 
 In addition to this regular plan, there is a TODO list that contains
 minor features and technical stuff, ideas for which come up on-the-fly.
-It something on the TODO list becomes important, it is possible to move it
+If something on the TODO list becomes important, it is possible to move it
 from there to this release plan.
 
 If bugs are found, they will be fixed and the application will be released
@@ -38,7 +38,7 @@ Version 0.7
 Version 0.8
 - new user default for "open recent"
 - display text files (e.g. GPL) in the help menu
-- add help menu item "AceExpander Homepage"
+- add help menu item "AceXpander Homepage"
 
 Version 0.9
 - list contents in drawer

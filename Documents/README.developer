@@ -1,0 +1,196 @@
+Purpose of this document
+------------------------
+This document is the starting point for developers that want to familiarize
+themselves with the AceXpander project, i.e. developers that are new to the
+project, and also me, after I come back to the project after several months
+or years :-)
+
+
+Folder structure
+----------------
+<root>
+ +-- Archive           this folder contains archived versions of the unace
+ |                     binary
+ +-- Documents         this folder contains documents not relevant for building
+ |                     the AceXpander binary; some of these files (such as
+ |                     README and MANUAL) should be included in the disk image
+ |                     that is distributed
+ +-- English.lproj     this folder contains the project's English .nib files
+ +-- Sources           this folder contains the project's source code
+ +-- Testfiles         this folder contains .ace files that can be used to run
+ |                     test with AceXpander
+ +-- unace             this folder contains the unace binary run by AceXpander
+
+
+Document reference
+------------------
+Documents described here are located in the Documents folder.
+
+README
+   This document is the starting point for end users. It provides a quick
+   overview of what AceXpander is about, points to other interesting documents
+   of the project, and also contains other important information that should be
+   immediately accessible to new or recurring users.
+
+MANUAL
+   This document describes the features of AceXpander. This file may seem
+   pretty useless, after all AceXpander is not exactly a complex
+   application :-) Seen from a developer point of view, however, AceXpander
+   still has quite a few things that are not terribly obvious, and therefore I
+   find the MANUAL file a useful reference that I can use to check if the
+   application still works as intended after I have made any changes. You may
+   also view the file as the natural language source for use cases.
+
+Testing
+   This document lists formal test cases to be executed manually. The test
+   cases are derived from the features description in the MANUAL document.
+
+INSTALL
+   This document has instructions on how to obtain and install a copy of
+   AceXpander. The instructions are given both for the binary and for the
+   source distribution form of AceXpander. In the case of the source
+   distribution, this includes instruction on how to build the project with
+   Xcode.
+
+ReleasePlan
+   This document contains a list with important features and the order in
+   which they should be implemented. The purpose of this list is to avoid
+   distraction by the "good ideas" listed in TODO, which may sometimes be more
+   attractive to implemented but are not this important.
+
+TODO
+   This document contains a list with not-so-important features (aka
+   "good ideas" :-); the list is sorted by priority, which provides a rough
+   indicator in what order the features should be implemented. Things listed
+   in the ReleasePlan are much more important and should be implemented before
+   things in TODO.
+
+ChangeLog
+   This document should be continually updated, even as you code. It should
+   mention even minor changes. A compilation of the most important changes
+   (whether they are minor or major) can then be made and placed into the
+   README document, just before a release occurs.
+
+ReleaseSteps
+   This document serves as a reminder of the steps to be performed for a new
+   release.
+
+
+
+Other files
+-----------
+AceXpander.xcodeproj
+   The Xcode project file.
+
+RegistrationDomainDefaults.plist
+   Contains default preferences that should be used if the user has never
+   opened the "Preferences" dialog
+
+distribute.sh
+   Helper script for creating the source distribution. Used when a release is
+   made
+
+Archive/unace.tgz.pgp
+   PGP encrypted tgz archive of the unace source tree. I have been given these
+   sources by Marcel Lemke at some point in the past, after I had asked him if
+   I could help porting the unace command line utility to the Mac. When I found
+   that this task was beyond my abilities, I instead decided to create
+   AceXpander. Never having signed an NDA or any other formal contract, I
+   decided to keep the unace sources for my personal interest, but since I am
+   also not sure whether the WinAce people would like to see the sources
+   publicly available, I keep it around in my subversion repository as an
+   encrypted file and never distribute it. If the WinAce people ever request
+   it, I will remove this file from the repository.
+
+
+Platform notes
+--------------
+- the .nib files use the format for Mac OS X 10.2 and later. Therefore
+  but also because various Cocoa classes available only on 10.2 or later
+  are used) the application will not run on pre-10.2 systems
+
+.nib notes
+----------
+- in MainMenu.nib, a transparent button is hidden behind the main table.
+  This button is activated when the user presses the "Backspace" key
+- the MainWindow instance icon in MainMenu.nib indicates that a child
+  has a bad/missing connection. This is normal: there is no connection
+  for the target of the NSTextField instance that acts as a label for the
+  table
+
+GUI design notes
+----------------
+- it is by design that the table cannot be sorted, otherwise the
+  row index could not be guaranteed to match the correct item in the
+  model's item list
+
+Implementation notes
+--------------------
+- error handling concept: whenever a severe unexpected error situation
+  appears, an NSNotification is sent to the controller with a description
+  about the error condition. The controller shows a dialog to the user,
+  telling her that something bad (tm) happened and including the error
+  condition description. The dialog offers the user to continue running
+  the application, or to shut down the application.
+- it is important that in the constructor of AceXpanderController the
+  following order of things is retained:
+  1) Register for applications specific notifications, especially the
+     ErrorOccurredNotification. All other classes require that a central
+     error handling instance is present already at a very early stage.
+  2) Create AceXpanderPreferences right afterwards; the existence of
+     sensible user defaults in the NSRegistration domain is also a central
+     requirement for a lot of other classes
+- AceXpanderModel.setInteractive(true) should be called only during the
+  application's launch sequence, or immediately after an initial expand
+  thread has finished.
+
+Info for later implementation
+-----------------------------
+- the maximum number of entries in the OpenRecent menu is determined by the
+  value of the user default NSRecentDocumentsLimit. The value is of type
+  Integer.
+- NSPerformService is available only in ObjC as an ApplicationKit global
+  function
+- tooltips for specific table rows: seems to be possible only in Obj-C with
+  NSView::addToolTipRect:owner:userData and NSTableView::rectOfRow()
+
+Notes on icons
+--------------
+As compared to the "Apple Human Interface Guidelines", the icon for AceXpander
+provokes the following comments:
+- the icon certainly does ***NOT*** make it obvious what AceXpander does;
+  instead it is a graphical "pun" on the application name
+- the icon is quite colorful and therefore belongs to the "user application"
+  genre; if you see AceXpander more as a utility than a user application, the
+  icon therefore announces AceXpander as the wrong type of application
+  
+Version information vs. property list keys
+------------------------------------------
+When the target-specific Info.plist is edited using the "Simple view" panel
+in Xcode 2.2, three version information fields are available. Each has a
+corresponding property list key entry in the "Expert view" panel:
+
+Simple view                             Expert view
+------------------------------------------------------------------
+"Version"                               CFBundleVersion
+"Version displayed in Finder Info"      CFBundleGetInfoString
+"Short version"                         CFBundleShortVersionString
+
+The reference for all available property list keys can be found here:
+http://developer.apple.com/documentation/MacOSX/Conceptual/BPRuntimeConfig/index.html
+
+Based on experiments on my Mac OS X 10.4.6 box I have chosen to use only
+CFBundleShortVersionString for the AceXpander project, as this property list
+key is the only one that is used consistently by the Finder as well as the
+application's "About" panel. The following table details the findings of my
+experiments:
+
+CFBundleVersion   CFBundleGetInfoString   CFBundleShortVersionString   Finder      Finder Info   About Panel
+------------------------------------------------------------------------------------------------------------
+x                 y                       z                            z           y             z (x)
+x                 (not specified)         (not specified)              (nothing)   (nothing)     x
+(not specified)   y                       (not specified)              (nothing)   y             (nothing)
+(not specified)   (not specified)         z                            z           z             z
+x                 y                       (not specified)              (nothing)   y             x
+x                 (not specified)         z                            z           z             z (x)
+(not specified)   y                       z                            z           y             z

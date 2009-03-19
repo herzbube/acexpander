@@ -1,6 +1,6 @@
 //
 //  main.m
-//  AceExpander
+//  AceXpander
 //
 //  Created by Patrick NŠf on Thu Jun 10 2004.
 //  Copyright (c) 2004 Patrick NŠf. All rights reserved.

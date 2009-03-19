@@ -4,29 +4,32 @@ Table of Contents
 2. Changes in this release (1.0)
 3. License and source code
 4. unace binary
-5. Limitations of AceExpander
+5. Limitations of AceXpander
 6. Limitations of unace
 7. Personal note
 
 
 Introduction
 ------------
-AceExpander is a Mac OS X graphical user interface to the unace command line
-utility. With AceExpander installed, you can simply double-click on any
+AceXpander is a Mac OS X graphical user interface to the unace command line
+utility. With AceXpander installed, you can simply double-click on any
 ACE archive(s) in the Finder and the contents of the archive will be
 extracted to a sub-folder of the same folder where the original archive
-is located. To configure AceExpander, or to use additional program features,
+is located. To configure AceXpander, or to use additional program features,
 you have to directly launch the application (e.g. by double-clicking on the
 application icon in the Finder or the Dock).
 
-For a detailed description of AceExpander's features, see the MANUAL
-document (available from AceExpander's Help menu).
+For a detailed description of AceXpander's features, see the MANUAL
+document (available from AceXpander's Help menu).
 
 ACE archives can only be created with WinAce. For more information about
 this Windows application, see http://www.winace.com.
 
-You can check for the most recent version of AceExpander on its homepage
-http://aceexpander.herzbube.ch/
+You can check for the most recent version of AceXpander on its homepage
+http://www.herzbube.ch/drupal/?q=acexpander
+
+If you are interested in AceXpander as a developer, you should have a look
+at the README.developer document.
 
 
 Changes in this release
@@ -36,7 +39,7 @@ Changes in this release
   allows to save the current option settings to the user preferences;
   "Forget my defaults" will restore the option settings to their
   factory defaults
-- menu item Help-Homepage now opens http://aceexpander.herzbube.ch/
+- menu item Help-Homepage now opens http://acexpander.herzbube.ch/
   instead of the longer URL located beneath www.herzbube.ch
 - folders can now be dropped on the application icon, or selected through
   the File-Open command
@@ -51,23 +54,33 @@ For more details see the ChangeLog document.
 
 License and source code
 -----------------------
-AceExpander is licensed under the GNU General Public License (GPL). See
+AceXpander is licensed under the GNU General Public License (GPL). See
 the file COPYING inside the application bundle, or start the application
 and choose the appropriate item in the Help menu to view the detailed
 license.
 
-The source code for AceExpander can be downloaded from its homepage
-http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml
-You will get the source files ready for building with ProjectBuilder.
+The source code for AceXpander can be downloaded from its homepage
+http://www.herzbube.ch/drupal/?q=acexpander. You will get the source files
+ready for building with Xcode. Alternatively you may also get the source
+code from this subversion respository: http://herzbube.ch/svn/acexpander/
+
+
+Universal binary (MacIntel) support
+-----------------------------------
+Xcode currently does not support creating universal binaries for projects
+that use Java (I am using Xcode 2.2, which is the most recent Xcode version
+available from Apple). Since AceXpander is written in Cocoa/Java, it is
+therefore not possible to distribute it as a universal binary, hence it will
+not run on MacIntel.
 
 
 unace binary
 ------------
-AceExpander packages its own version of the unace binary so that it can
+AceXpander packages its own version of the unace binary so that it can
 be distributed and run as a stand-alone application. If you wish you
 may set your own version of unace in the Preferences dialog, however you
-should be aware that AceExpander may stop working properly after you make
-this change, because AceExpander makes a number of assumptions about how
+should be aware that AceXpander may stop working properly after you make
+this change, because AceXpander makes a number of assumptions about how
 unace is working, which command line switches and options it uses, and
 how its output on stdout is formatted.
 
@@ -75,9 +88,9 @@ Of course you can always change your preferences back to use the unace
 that was packaged with this application.
 
 
-Limitations of AceExpander
+Limitations of AceXpander
 --------------------------
-- I developed and tested AceExpander on Mac OS X 10.2.8, so I can only
+- I developed and tested AceXpander on Mac OS X 10.2.8, so I can only
   hope that it also works on later OS versions. It definitely does
   not run on pre-10.2 systems, because the .nib file format is >= 10.2
   and because a number of classes and methods are used that are not
@@ -90,7 +103,7 @@ Limitations of AceExpander
   on the option "Debug mode") that the password might appear in clear text
   in one of the text boxes in the result window.
 
-- AceExpander has too many features. I tried to keep them down to a
+- AceXpander has too many features. I tried to keep them down to a
   reasonable number, but as this is a learning project for me, I often
   couldn't resist...
 
@@ -117,21 +130,21 @@ Limitations of unace
 
 - If you try to extract a file without the overwrite option turned on, and
   a file with the same name already exists, you must also have the
-  "assume yes" option turned on in AceExpander, otherwise unace dies with a
-  segmentation fault. AceExpander takes care of this problem for you by
+  "assume yes" option turned on in AceXpander, otherwise unace dies with a
+  segmentation fault. AceXpander takes care of this problem for you by
   always turning on the "assume yes" option when the overwrite option is
   turned on.
 
-  Technical note: the problem actually exists because of how AceExpander
-  interacts with unace: when invoking unace, AceExpander explicitly sets all
+  Technical note: the problem actually exists because of how AceXpander
+  interacts with unace: when invoking unace, AceXpander explicitly sets all
   possible switches on the unace command line, even if the specified setting
   is the default for unace and therefore could be omitted (the reason why
-  I coded it like this is that I did not want AceExpander to have specific
-  knowledge about unace defaults; the less AceExpander knows about unace,
+  I coded it like this is that I did not want AceXpander to have specific
+  knowledge about unace defaults; the less AceXpander knows about unace,
   the better).
   Now for the "assume yes" option: as explained, even though the option is
   turned off in the GUI, and "off" is unace's default for the switch,
-  AceExpander still explicitly sets the switch on the command line to "-y-".
+  AceXpander still explicitly sets the switch on the command line to "-y-".
   Now the bug in unace is that the overwrite switch stops working as soon as
   "-y-" is set explicitly; if "-y-" is not set explicitly, the overwrite
   switch works fine.
@@ -139,7 +152,7 @@ Limitations of unace
 - Most of the time when unace encounters an error, it dies with a
   segmentation fault. This is not a big problem, the error handling just
   becomes somewhat un-differentiated. If you're only using the GUI and are
-  not interested in what happens under the hood of AceExpander, you can
+  not interested in what happens under the hood of AceXpander, you can
   forget about this issue.
 
 
@@ -148,7 +161,7 @@ Personal note
 I would like to thank Marcel Lemke for providing us with unace, and Kolja
 Koischwitz for porting unace to the Mac. I would also like to mention
 another GUI frontend to unace, MacUnace by Gabriel Gritsch, which has
-influenced some of AceExpander's features (http://www.gritsch-soft.com/).
+influenced some of AceXpander's features (http://www.gritsch-soft.com/).
 
 And, of course, a big Thanks to you for trying out this little program. It
 is my first Cocoa application, and in fact, it is also the first Open
@@ -156,4 +169,4 @@ Source software that I release. As such it is probably full of shortcomings,
 if not bugs. If you see something that needs improvement, please don't
 hesitate to let me know.
 
-Patrick Näf <aceexpander@herzbube.ch>
+Patrick Näf <acexpander@herzbube.ch>

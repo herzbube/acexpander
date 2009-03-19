@@ -3,7 +3,7 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {passwordDialogCancelClicked = id; passwordDialogOKClicked = id; }; 
-            CLASS = "ch.herzbube.aceexpander.AceExpanderController"; 
+            CLASS = "ch.herzbube.acexpander.AceXpanderController"; 
             LANGUAGE = Java; 
             OUTLETS = {"m_passwordDialog" = NSPanel; "m_passwordTextField" = NSSecureTextField; }; 
             SUPERCLASS = "java.lang.Object"; 

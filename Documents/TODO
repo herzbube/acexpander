@@ -1,3 +1,5 @@
+Purpose of this document
+------------------------
 This document contains a list of minor features and technical stuff that
 should be implemented when time permits it. The TODO list is updated
 frequently as new ideas crop up during programming.
@@ -9,13 +11,32 @@ should see the ReleasePlan document.
 Priority 1 (important)
 ----------------------
 - add application icon
+- better "list archive" concept:
+  - when the user selects a single item for the first time, spawn a
+    background thread and process in the background
+  - if the drawer is open, indicate the scan-in-progress by a spinner
+  - if the scan fails, indicate this
+  - when the scan finishes, notify the controller so that it can
+    give the table a hint to update itself
+  - when a single item is selected, show the cached content list
+  - provide an update button, so that the user can update the list
+  - still an option "verbose?" -> probably yes
+- build AceXpander as a UniversalBinary
+  - in Xcode select the menu item item
+    "Project" -> "Upgrade all targets in project to native"
+  - IMPORTANT: Xcode 2.2 (which I currently use) does not support this upgrade
+    if the project contains Java code. It warns about this limitation in the
+    dialog that pops up after you select the menu item. Make sure when the
+    upgrade is attempted again that Xcode supports Java files
+  - for the rest, follow the step-by-step instruction given by Xcode's help
+    in the UniversalBinary document 
 - after selecting File-Open (and possibly other menu commands), the table
   should get the focus automatically so that Cmd-A can immediately select
   all items, without having to use the mouse to give the focus to the
   table
 - password should not appear in clear text in result window. update
   README if you implement this
-- add basic file checks (exists, readable) to AceExpanderThread; this
+- add basic file checks (exists, readable) to AceXpanderThread; this
   will provide better error handling than what unace can provide; it
   will also prevent the unnecessary creation of a folder when the archive
   file does not exist or cannot be read
@@ -32,6 +53,7 @@ Priority 2 (nice to have)
 - entire path should be shown in tooltip for items in preferences dialog
 - cancel button should become default button ("Enter" button) while
   expansion is in progress
+- expand button should be disabled if no item is selected
 - get more information about this:
   when the application is run from ProjectBuilder, Cocoa prints out the
   following warning to the application's output window when the
@@ -43,7 +65,7 @@ Priority 2 (nice to have)
   on the user's desktop
   - only show archive filename, not entire archive path; add path to
     tooltips
-- if no files are added as a result of opening a folde with AceExpander,
+- if no files are added as a result of opening a folder with AceXpander,
   the user should be notified of this instead of just silently ignoring
   the folder
   - if "LookIntoFolders" is turned off, drag&drop and File-Open should
@@ -54,7 +76,6 @@ Priority 2 (nice to have)
     Info.plist
 - display spinning cursor while recursively scanning folders
   - give user ability to interrupt this process
-
 
 Priority 3 (not important)
 --------------------------
@@ -80,12 +101,14 @@ Priority 3 (not important)
   unace executable and the destination folder
 - find out what the following message in the ProjectBuilder output window
   means:
-  2004-06-18 03:10:48.430 AceExpander[1018] *** _NSAutoreleaseNoPool(): Object 0x15dd310 of class NSCFArray autoreleased with no pool in place - just leaking
+  2004-06-18 03:10:48.430 AceXpander[1018] *** _NSAutoreleaseNoPool(): Object 0x15dd310 of class NSCFArray autoreleased with no pool in place - just leaking
 - if a filename in the content list drawer starts with "*" it's password
   protected -> mark the file as such
 - if the content list drawer or the result window don't show anything
   because the user selected more than one item -> indicate this somehow
 - write drawer state (hidden/shown) to user defaults
+- f/x switches: select items in the drawer with the content list
+  expands only these items
 
 Mac OS X 10.3
 -------------

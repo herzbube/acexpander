@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderTableView.java
+// AceXpanderTableView.java
 //
 // This class is instantiated when the application's .nib is loaded.
 //
@@ -35,19 +35,19 @@
 // can drag&drop files into the area of the table.
 //
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
-public class AceExpanderTableView extends NSTableView
+public class AceXpanderTableView extends NSTableView
 {
    // ======================================================================
    // Member variables
    // ======================================================================
 
    // These variables are outlets and therefore initialized in the .nib
-   AceExpanderModel m_theModel;
+   AceXpanderModel m_theModel;
 
    // Determines whether the table view should be displayed highlighted
    // when the table view is drawn next (in order to indicate that the
@@ -58,11 +58,14 @@ public class AceExpanderTableView extends NSTableView
    // Constructors
    // ======================================================================
 
-   // Because this class is a sub-class of an NSView sub-class, this
-   // constructor is needed, otherwise the java bridge complains with an
-   // obscure error and the application won't start.
-   // Got the solution from http://developer.apple.com/documentation/DeveloperTools/Conceptual/IBTips/Articles/FreqAskedQuests.html
-   protected AceExpanderTableView(NSCoder decoder, long token)
+   // Because this class is a sub-class of an NSView sub-class, the following
+   // constructor, which takes an NSCoder and a long parameter, is needed,
+   // otherwise the java bridge complains with an obscure error (something
+   // along the lines of:
+   // "AppKitJava: uncaught exception OBJCJava_RUNTIME_EXCEPTION")
+   // and the application won't start. Got the solution from here:
+   // http://developer.apple.com/documentation/DeveloperTools/Conceptual/IBTips/Articles/FreqAskedQuests.html
+   protected AceXpanderTableView(NSCoder decoder, long token)
    {
       super(decoder, token);
       m_bHighlight = false;
@@ -192,9 +195,9 @@ public class AceExpanderTableView extends NSTableView
               sendType.equals(NSPasteboard.StringPboardType))
           && numberOfSelectedRows() > 0)
       {
-         // Confirm that this object can provide data
+        // Confirm that this object can provide data
          return this;
-      }
+       }
 
       // Let the next responder handle the request
       return super.validRequestorForTypes(sendType, returnType);
@@ -241,7 +244,7 @@ public class AceExpanderTableView extends NSTableView
          pboard.declareTypes(typesDeclared, null);
          // Not sure if this is the right way to do it: the "Data Types"
          // article in the "Copying and Pasting" topic on ADC says:
-         // "NSFilenamesPboardTypeÕs form is an array of NSStrings"
+         // "NSFilenamesPboardTypeâ€™s form is an array of NSStrings"
          // -> it could be the right way, because performDragOperation()
          //    demonstrates how it works backwards
          return pboard.setPropertyListForType(fileNames, NSPasteboard.StringPboardType);

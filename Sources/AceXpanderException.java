@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,31 +22,31 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderException.java
+// AceXpanderException.java
 //
-// This class represents an exception type specific to the AceExpander
+// This class represents an exception type specific to the AceXpander
 // package. Since it is a sub-class of RuntimeException, methods can use
 // it without having to declare a throws clause.
 //
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
-public class AceExpanderException extends java.lang.RuntimeException
+public class AceXpanderException extends java.lang.RuntimeException
 {
    // ======================================================================
    // Constructors
    // ======================================================================
 
-   public AceExpanderException()
+   public AceXpanderException()
    {
       super();
    }
 
-   public AceExpanderException(String message)
+   public AceXpanderException(String message)
    {
       super(message);
    }

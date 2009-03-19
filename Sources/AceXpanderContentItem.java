@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,26 +22,26 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderContentItem.java
+// AceXpanderContentItem.java
 //
 // Every object of this class represents one item inside an ACE archive.
 // Objects of this class are created when the output of the list command
 // of unace is parsed. Objects exist as long as the associated
-// AceExpanderItem object exists, or until another list command is
-// executed with the associated AceExpanderItem.
+// AceXpanderItem object exists, or until another list command is
+// executed with the associated AceXpanderItem.
 //
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
 
-public class AceExpanderContentItem
+public class AceXpanderContentItem
 {
    // ======================================================================
    // Member variables
@@ -70,14 +70,14 @@ public class AceExpanderContentItem
    // Constructors
    // ======================================================================
 
-   public AceExpanderContentItem() {}
+   public AceXpanderContentItem() {}
 
-   public AceExpanderContentItem(String contentLine)
+   public AceXpanderContentItem(String contentLine)
    {
       if (! setAndParseContentLine(contentLine))
       {
-         String errorDescription = "AceExpanderContentItem.setAndParseContentLine() returned an error.";
-         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+         String errorDescription = "AceXpanderContentItem.setAndParseContentLine() returned an error.";
+         NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ErrorConditionOccurredNotification, errorDescription);
       }
    }
 

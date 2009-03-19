@@ -1,7 +1,7 @@
 //
-// AceExpander - a Mac OS X graphical user interface to the unace command line utility
+// AceXpander - a Mac OS X graphical user interface to the unace command line utility
 //
-// Copyright (C) 2004 Patrick NŠf
+// Copyright (C) 2004 Patrick NÃ¤f
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// aceexpander@herzbube.ch
+// acexpander@herzbube.ch
 //
 // --------------------------------------------------------------------------------
 //
-// AceExpanderModel.java
+// AceXpanderModel.java
 //
 // This class is instantiated when the application's .nib is loaded.
 //
@@ -43,12 +43,12 @@
 //   in the GUI to display
 //
 
-package ch.herzbube.aceexpander;
+package ch.herzbube.acexpander;
 
 import com.apple.cocoa.foundation.*;
 import com.apple.cocoa.application.*;
 
-public class AceExpanderModel
+public class AceXpanderModel
 {
    // ======================================================================
    // Member variables
@@ -66,7 +66,7 @@ public class AceExpanderModel
    private NSMutableArray m_itemList = new NSMutableArray();
 
    // The thread that manages the expansion
-   private AceExpanderThread m_expandThread = null;
+   private AceXpanderThread m_expandThread = null;
 
    // Options that need to be applied to the expansion process
    private boolean m_bOverwriteFiles = false;
@@ -86,7 +86,7 @@ public class AceExpanderModel
    // Constructors
    // ======================================================================
 
-   public AceExpanderModel()
+   public AceXpanderModel()
    {
       m_theDocumentController = NSDocumentController.sharedDocumentController();
    }
@@ -112,7 +112,7 @@ public class AceExpanderModel
 
       // Notify observers that the model has finished processing the
       // awakeFromNib() method
-      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ModelHasFinishedAwakeFromNibNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceXpanderController.ModelHasFinishedAwakeFromNibNotification, null);
    }
 
    // ======================================================================
@@ -133,11 +133,11 @@ public class AceExpanderModel
       // the folder
       if (itemFile.isDirectory())
       {
-         if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.LookIntoFolders))
+         if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.LookIntoFolders))
             return;   // throw away a folder if we should not look into it
 
          java.io.File[] directoryContents;
-         if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.TreatAllFilesAsArchives))
+         if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.TreatAllFilesAsArchives))
          {
             directoryContents = itemFile.listFiles();
          }
@@ -161,7 +161,7 @@ public class AceExpanderModel
       }
       else
       {
-         AceExpanderItem item = new AceExpanderItem(itemFileName, this);
+         AceXpanderItem item = new AceXpanderItem(itemFileName, this);
          m_itemList.addObject(item);
 
          // Update the table
@@ -214,12 +214,12 @@ public class AceExpanderModel
    }
 
    // Return the item that matches the given filename
-   public AceExpanderItem getItem(String fileName)
+   public AceXpanderItem getItem(String fileName)
    {
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
-         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         AceXpanderItem item = (AceXpanderItem)enumerator.nextElement();
          if (item.getFileName() == fileName)
          {
             return item;
@@ -229,9 +229,9 @@ public class AceExpanderModel
    }
 
    // Return the item at the given index position
-   public AceExpanderItem getItem(int iIndexPosition)
+   public AceXpanderItem getItem(int iIndexPosition)
    {
-      return (AceExpanderItem)m_itemList.objectAtIndex(iIndexPosition);
+      return (AceXpanderItem)m_itemList.objectAtIndex(iIndexPosition);
    }
 
    // Set the state of all items, regardless of whether they are selected
@@ -243,7 +243,7 @@ public class AceExpanderModel
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
-         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         AceXpanderItem item = (AceXpanderItem)enumerator.nextElement();
          if (-1 == iFromState || item.getState() == iFromState)
          {
             item.setState(iState);
@@ -275,7 +275,7 @@ public class AceExpanderModel
       while (enumerator.hasMoreElements())
       {
          Integer iSelectedRow = (Integer)enumerator.nextElement();
-         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
+         AceXpanderItem item = (AceXpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
          if (-1 == iFromState || item.getState() == iFromState)
          {
             item.setState(iState);
@@ -300,7 +300,7 @@ public class AceExpanderModel
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
-         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         AceXpanderItem item = (AceXpanderItem)enumerator.nextElement();
          // Abort as soon as one item has a different state
          if (iState != item.getState())
          {
@@ -316,7 +316,7 @@ public class AceExpanderModel
    {
       for (int iIndex = 0; iIndex < m_itemList.count(); iIndex++)
       {
-         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iIndex);
+         AceXpanderItem item = (AceXpanderItem)m_itemList.objectAtIndex(iIndex);
          if (iState == item.getState())
          {
             m_theTable.selectRow(iIndex, true);
@@ -424,17 +424,17 @@ public class AceExpanderModel
 
    public boolean startExpandItems()
    {
-      return startThread(AceExpanderThread.EXPAND);
+      return startThread(AceXpanderThread.EXPAND);
    }
 
    public boolean startListItems()
    {
-      return startThread(AceExpanderThread.LIST);
+      return startThread(AceXpanderThread.LIST);
    }
 
    public boolean startTestItems()
    {
-      return startThread(AceExpanderThread.TEST);
+      return startThread(AceXpanderThread.TEST);
    }
 
    // If a thread is running, tell it to stop as soon as possible
@@ -472,14 +472,14 @@ public class AceExpanderModel
       }
 
       // Create the thread
-      m_expandThread = new AceExpanderThread();
+      m_expandThread = new AceXpanderThread();
 
       // Collect the selected items and feed them into the thread
       NSEnumerator enumerator = m_theTable.selectedRowEnumerator();
       while (enumerator.hasMoreElements())
       {
          Integer iSelectedRow = (Integer)enumerator.nextElement();
-         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
+         AceXpanderItem item = (AceXpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
          m_expandThread.addItem(item);
       }
 
@@ -506,7 +506,7 @@ public class AceExpanderModel
 
    public Object tableViewObjectValueForLocation(NSTableView theTableView, NSTableColumn aTableColumn, int rowIndex)
    {
-      AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(rowIndex);
+      AceXpanderItem item = (AceXpanderItem)m_itemList.objectAtIndex(rowIndex);
       Object id = aTableColumn.identifier();
       if (id.equals(ColumnIdentifierIcon))
       {
@@ -531,7 +531,7 @@ public class AceExpanderModel
    // ======================================================================
 
    // An item calls this method if it is changed in any way
-   public void itemHasChanged(AceExpanderItem item)
+   public void itemHasChanged(AceXpanderItem item)
    {
       // Update the table
       m_theTable.reloadData();
@@ -540,27 +540,27 @@ public class AceExpanderModel
    public void updateMyDefaultsFromUserDefaults()
    {
       // Get option settings from user defaults
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.OverwriteFilesOption))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.OverwriteFilesOption))
          m_bOverwriteFiles = true;
       else
          m_bOverwriteFiles = false;
 
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ExtractWithFullPathOption))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.ExtractWithFullPathOption))
          m_bExtractFullPath = true;
       else
          m_bExtractFullPath = false;
 
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.AssumeYesOption))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.AssumeYesOption))
          m_bAssumeYes = true;
       else
          m_bAssumeYes = false;
 
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ShowCommentsOption))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.ShowCommentsOption))
          m_bShowComments = true;
       else
          m_bShowComments = false;
 
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ListVerboselyOption))
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceXpanderPreferences.ListVerboselyOption))
          m_bListVerbosely = true;
       else
          m_bListVerbosely = false;

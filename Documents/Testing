@@ -1,3 +1,23 @@
+Purpose of this document
+------------------------
+This document lists formal test cases that need to be executed manually.
+If in the future the project is fitted with unit tests, this document should
+be extended to include information about them.
+
+
+Formal test cases
+-----------------
+A formal test case can be referenced by its unique ID. It states the test's
+purpose, which should be taken in consideration when formulating variations.
+Before execution of a test case starts, its precondition(s) must be met. The
+test case is executed by performing all its actions in the listed order. After
+execution stops, the test case post condition(s) must be met. To reduce the
+number of test cases, a test case may be formulated with variations that share
+the same general test purpose. For each variation, the test case is executed
+one additional time. The variation exactly states the modifications that the
+tester must make to precondition(s), actions and postcondition(s).
+
+
 ----------------------------------------------------------------------
 Test ID: 1
 Purpose: Successful automatic expanding, with terminating application

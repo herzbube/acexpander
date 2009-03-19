@@ -14,7 +14,7 @@
                 setExecutableToBundled = id; 
                 startExpandingAfterLaunchButtonClicked = id; 
             }; 
-            CLASS = "ch.herzbube.aceexpander.AceExpanderPreferences"; 
+            CLASS = "ch.herzbube.acexpander.AceXpanderPreferences"; 
             LANGUAGE = Java; 
             OUTLETS = {
                 "m_alwaysQuitAfterExpandButton" = NSButton; 
