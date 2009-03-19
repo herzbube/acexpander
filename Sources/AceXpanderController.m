@@ -248,6 +248,16 @@
     if (m_mainWindow)
       [m_mainWindow makeKeyAndOrderFront:self];
   }
+
+  // Configure table with context menu
+  if (m_theTable)
+  {
+    /// Re-use the entire "edit" menu from the application menubar. This has
+    // also the advantage that the context menu does not need to be constructed
+    // with strings that need to be translated.
+    if (m_editMenu)
+      [m_theTable setContextMenu:m_editMenu];
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -442,6 +452,14 @@
            menuItem == m_listContentMenuItem || menuItem == m_testIntegrityMenuItem)
   {
     if (m_theTable && 1 <= [m_theTable numberOfSelectedRows])
+      return true;
+    else
+      return false;
+  }
+  else if (menuItem == m_requeueAllMenuItem || menuItem == m_unqueueAllMenuItem
+           || menuItem == m_removeAllMenuItem)
+  {
+    if (m_theTable && 1 <= [m_theTable numberOfRows])
       return true;
     else
       return false;

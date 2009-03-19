@@ -48,10 +48,7 @@ Version 1.0 (complete)
 - process entire folders
 
 Version 1.1
-- implement a better scheme for listing archive contents
-  -> at the time of implementing things for 1.1, I cannot remember the
-     meaning of this feature
-  -> skip this feature
+- implement a better scheme for listing archive contents (see TODO for details)
 - archive items' state are displayed color-coded
 - archive items' state can be changed by directly clicking on the state
   displayed in the main table

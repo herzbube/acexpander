@@ -65,7 +65,7 @@ Postcondition:
 - The archive is not expanded
 - The application does not terminate
 Variations:
-- User default AlwaysQuitAfterExpand is set to false. The application
+- User default AlwaysQuitAfterExpand is set to true. The application
   terminates after the failed expanding attempt.
 
 ----------------------------------------------------------------------

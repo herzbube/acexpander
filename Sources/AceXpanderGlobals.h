@@ -154,3 +154,24 @@ static NSString* releasePlanFileName = @"ReleasePlan";
 static NSString* toDoFileName = @"TODO";
 static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 //@}
+
+// -----------------------------------------------------------------------------
+/// @name Constants related to main table
+// -----------------------------------------------------------------------------
+//@{
+static NSString* mainColumnIdentifierIcon = @"icon";
+static NSString* mainColumnIdentifierFileName = @"fileName";
+static NSString* mainColumnIdentifierState = @"state";
+//@}
+
+// -----------------------------------------------------------------------------
+/// @name Constants related to content table
+// -----------------------------------------------------------------------------
+//@{
+static const NSString* contentColumnIdentifierDate = @"date";
+static const NSString* contentColumnIdentifierTime = @"time";
+static const NSString* contentColumnIdentifierPacked = @"packed";
+static const NSString* contentColumnIdentifierSize = @"size";
+static const NSString* contentColumnIdentifierRatio = @"ratio";
+static const NSString* contentColumnIdentifierFileName = @"fileName";
+//@}

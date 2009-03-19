@@ -1,3 +1,16 @@
+Thu Nov 23 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- added context menu to main table
+- menu items "requeue all", "unqueue all" and "remove all" are now disabled
+  if table does not contain any items at all
+- removed invisible button from the .nib that allowed the user to remove items
+  from the table with the backspace key; this hack is no longer necessary since
+  Interface Builder now allows to assign a keyboard shortcut to a menu item
+  that has no command key modifier
+- added new "Doxygen" target to Xcode project (Menu "Project", item
+  "New target", Type "Shell script target"), then moved the "run doxygen" build
+  phase from the "AceXpander" to the new "Doxygen" target
+- released version 1.1
+
 Tue Nov 21 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - added state diagrams for AceXpanderItem states
 - if destination folder does not exist it is now created including all its

@@ -29,6 +29,7 @@
 // Project includes
 #import "AceXpanderTableView.h"
 #import "AceXpanderModel.h"
+#import "AceXpanderGlobals.h"
 
 /// @brief This category declares private methods for the AceXpanderTableView
 /// class. 
@@ -62,6 +63,7 @@
 //@{
 - (BOOL) validateDragOperation:(id <NSDraggingInfo>)sender;
 - (void) drawRect:(NSRect)rect;
+- (NSMenu*) menuForEvent:(NSEvent*)theEvent;
 //@}
 @end
 
@@ -87,6 +89,9 @@
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
+  if (m_contextMenu)
+    [m_contextMenu autorelease];
+
   [super dealloc];
 }
 
@@ -409,6 +414,50 @@
   }
   // Let the superclass draw the rest for us
   [super drawRect:rect];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns a context menu that contains the same entries as the "edit"
+/// menu in the application menubar. These entries can be used to manipulate
+/// the states of either the selected table items, or of all table items.
+///
+/// This method is overwritten from NSView.
+// -----------------------------------------------------------------------------
+- (NSMenu*) menuForEvent:(NSEvent*)theEvent
+{
+  return m_contextMenu;
+
+  // The following code is left for illustration purposes: how the location
+  // where the click occurred can be used to determine a concrete table item.
+//  if (! theEvent)
+//    return nil;
+//
+//  // Convert the click location into the view coordinates
+//  NSPoint clickLocation = [self convertPoint:[theEvent locationInWindow]
+//                            fromView:nil];  
+//  // Get the row index at the coordinate
+//  int rowIndex = [self rowAtPoint:clickLocation];
+//  if (-1 == rowIndex)
+//    return nil;
+//  id item = [m_theModel itemForIndex:rowIndex];
+//  if (! item)
+//    return nil;
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Configure this view so that it now uses @a contextMenu as its
+/// context menu.
+// -----------------------------------------------------------------------------
+- (void) setContextMenu:(NSMenu*)contextMenu
+{
+  if (m_contextMenu == contextMenu)
+    return;
+  if (m_contextMenu)
+    [m_contextMenu autorelease];
+  if (contextMenu)
+    m_contextMenu = [contextMenu retain];
+  else
+    m_contextMenu = nil;
 }
 
 @end

@@ -1,16 +1,19 @@
 Perform the following steps to make a release
+- update the ChangeLog (should have been done continuously, anyway)
+- replace the "Changes in this release" section of the README with a collection
+  of the most important entries from the ChangeLog
+- update the table "Acexpander releases vs. Mac OS X versions" in the README
+- bump the version number and the copyright year
+  - in the README file
+  - in the Info.plist file change the property list keys
+    "CFBundleShortVersionString" and (if necessary) "NSHumanReadableCopyright"
+- set active build configuration in Xcode to "Release" and build target
 - perform tests suitable to make sure that everything still works as intended
   -> DO THIS OUTSIDE OF THE DEVELOPMENT ENVIRONMENT (= Xcode), i.e. launch the
      application from the Finder (yes, this can have an impact - for instance
      NSTask objects do not get automatic connections to stdin when the
      application is launched from the Finder)
-- update the ChangeLog (should have been done continuously, anyway)
-- replace the "Changes in this release" section of the README with a collection
-  of the most important entries from the ChangeLog
-- bump the version number and the copyright year
-  - in the README file
-  - in the Info.plist file change the property list keys
-    "CFBundleShortVersionString" and (if necessary) "NSHumanReadableCopyright"
+  -> see the Testing document for possible tests
 - source control
   - commit all changes
     cd <projectdir>
@@ -19,12 +22,6 @@ Perform the following steps to make a release
     cd <projectdir>
     svn copy http://herzbube.ch/svn/acexpander/trunk http://herzbube.ch/svn/acexpander/tags/release-1.0.2
 - to make the binary distribution
-  - set active build configuration in Xcode to "Release" and build target
-  - if build is successful, the binary is now in the "build" folder
-    which is a sub-folder of the project folder
-  - !!!!!!!!!!!!!!! make a basic sanity test !!!!!!!!!!!!!!!
-    you want to be sure that the release version works as well as the
-    debug version
   - launch disk copy
   - create a new empty disk image with the following properties:
     - Mac OS Extended
@@ -44,3 +41,9 @@ Perform the following steps to make a release
     is temporarily renamed by the script while it is running!)
   - a tarball is created which can now be distributed; it is placed in the
     same folder that contains the project folder
+- to make the distributions available on the Web
+  - create a new directory in the public web space
+  - copy ChangeLog, README, disk image file (.dmg) and tar ball (.tar.gz)
+    into the new directory
+  - update disk image and tar ball symlinks in the "current" directory
+  - update web content

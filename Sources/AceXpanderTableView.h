@@ -34,11 +34,12 @@
 
 
 // -----------------------------------------------------------------------------
-/// @brief The AceXpanderTableView class is subclassed from NSTableView only
-/// for the sake of implementing the NSDraggingDestination protocol.
+/// @brief The AceXpanderTableView class implements the NSDraggingDestination
+/// protocol and provides a context-sensitive menu that lets the user change
+/// the table items' state.
 ///
-/// This protocol makes it possible for the user to drag&drop files into the
-/// area of the table in the GUI.
+/// The NSDraggingDestination protocol makes it possible for the user to
+/// drag&drop files into the area of the table in the GUI.
 ///
 /// An AceXpanderTableView is instantiated when the application's .nib file is
 /// loaded. AceXpanderTableView implements the NSNibAwaking protocol so that
@@ -64,11 +65,20 @@
   /// when the table view is drawn next (in order to indicate that the
   /// drag is accepted).
   BOOL m_highlight;
+  
+  /// @brief The context menu to display when the user right-clicks or
+  /// control-clicks in the table.
+  NSMenu* m_contextMenu;
 }
 
 /// @name Initializers
 //@{
 - (id) initWithCoder:(NSCoder*)decoder;
+//@}
+
+/// @name Accessors
+//@{
+- (void) setContextMenu:(NSMenu*)contextMenu;
 //@}
 
 @end

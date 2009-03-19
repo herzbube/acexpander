@@ -32,14 +32,6 @@
 #import "AceXpanderModel.h"
 #import "AceXpanderGlobals.h"
 
-// Private constants
-static const NSString* columnIdentifierDate = @"date";
-static const NSString* columnIdentifierTime = @"time";
-static const NSString* columnIdentifierPacked = @"packed";
-static const NSString* columnIdentifierSize = @"size";
-static const NSString* columnIdentifierRatio = @"ratio";
-static const NSString* columnIdentifierFileName = @"fileName";
-
 
 /// @brief This category declares private methods for the AceXpanderItem class. 
 @interface AceXpanderItem(Private)
@@ -205,7 +197,16 @@ static const NSString* columnIdentifierFileName = @"fileName";
 // -----------------------------------------------------------------------------
 - (NSString*) stateAsString
 {
-  switch (m_state)
+  return [AceXpanderItem stringForState:m_state];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns the string representation of @a state. It is expected that
+/// @a state is an element from the enumeration AceXpanderItemState.
+// -----------------------------------------------------------------------------
++ (NSString*) stringForState:(int)state
+{
+  switch (state)
   {
     case QueuedState:
       return @"Queued";
@@ -447,17 +448,17 @@ static const NSString* columnIdentifierFileName = @"fileName";
     return nil;
   id columnIdentifier = [aTableColumn identifier];
 
-  if ([columnIdentifier isEqual:columnIdentifierDate])
+  if ([columnIdentifier isEqual:contentColumnIdentifierDate])
     return [contentItem date];
-  else if ([columnIdentifier isEqual:columnIdentifierTime])
+  else if ([columnIdentifier isEqual:contentColumnIdentifierTime])
     return [contentItem time];
-  else if ([columnIdentifier isEqual:columnIdentifierPacked])
+  else if ([columnIdentifier isEqual:contentColumnIdentifierPacked])
     return [contentItem packed];
-  else if ([columnIdentifier isEqual:columnIdentifierSize])
+  else if ([columnIdentifier isEqual:contentColumnIdentifierSize])
     return [contentItem size];
-  else if ([columnIdentifier isEqual:columnIdentifierRatio])
+  else if ([columnIdentifier isEqual:contentColumnIdentifierRatio])
     return [contentItem ratio];
-  else if ([columnIdentifier isEqual:columnIdentifierFileName])
+  else if ([columnIdentifier isEqual:contentColumnIdentifierFileName])
     return [contentItem fileName];
   else
     return nil;

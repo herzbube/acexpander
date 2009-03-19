@@ -26,10 +26,9 @@ are located in the Sources sub-directory (duh!).
 
 To build AceXpander, first launch Xcode by double-clicking on the .xcodeproj
 file in the Finder. The project contains only one target, but you may choose
-between one of the build-styles "Development" and "Deployment". Unless you want
-to do some programming and test your changes, you should choose "Deployment"
-build style. Now you can choose "Build", or "Build and Run" from the Build
-menu.
+between one of the build-styles "Debug" and "Release". Unless you want to do
+some programming and test your changes, you should choose "Release" build style.
+Now you can choose "Build", or "Build and Run" from the Build menu.
 
 AceXpander should build without errors. If it doesn't, please let me know
 so that I may correct the error in the project settings for future releases.

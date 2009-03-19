@@ -41,6 +41,7 @@
             OUTLETS = {
                 "m_assumeYesMenuItem" = NSMenuItem; 
                 "m_cancelButton" = NSButton; 
+                "m_editMenu" = NSMenu; 
                 "m_expandButton" = NSButton; 
                 "m_expandMenuItem" = NSMenuItem; 
                 "m_extractFullPathMenuItem" = NSMenuItem; 
@@ -52,7 +53,9 @@
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
                 "m_progressIndicator" = NSProgressIndicator; 
                 "m_rememberMyDefaultsMenuItem" = NSMenuItem; 
+                "m_removeAllMenuItem" = NSMenuItem; 
                 "m_removeMenuItem" = NSMenuItem; 
+                "m_requeueAllMenuItem" = NSMenuItem; 
                 "m_requeueMenuItem" = NSMenuItem; 
                 "m_resultWindow" = NSWindow; 
                 "m_revealInFinderMenuItem" = NSMenuItem; 
@@ -69,6 +72,7 @@
                 "m_theContentListTable" = NSTableView; 
                 "m_theModel" = AceXpanderModel; 
                 "m_theTable" = AceXpanderTableView; 
+                "m_unqueueAllMenuItem" = NSMenuItem; 
                 "m_unqueueMenuItem" = NSMenuItem; 
                 "m_usePasswordMenuItem" = NSMenuItem; 
             }; 

@@ -32,11 +32,6 @@
 #import "AceXpanderThread.h"
 #import "AceXpanderGlobals.h"
 
-// Private constants
-static NSString* columnIdentifierIcon = @"icon";
-static NSString* columnIdentifierFileName = @"fileName";
-static NSString* columnIdentifierState = @"state";
-
 
 /// @brief This category declares private methods for the AceXpanderModel
 /// class. 
@@ -107,7 +102,7 @@ static NSString* columnIdentifierState = @"state";
   {
     // Replace the icon column cell with a cell that can display
     // images. I didn't find any way to set this in InterfaceBuilder
-    NSTableColumn* iconColumn = [m_theTable tableColumnWithIdentifier:columnIdentifierIcon];
+    NSTableColumn* iconColumn = [m_theTable tableColumnWithIdentifier:mainColumnIdentifierIcon];
     if (iconColumn)
     {
       NSCell* iconCell = [[NSCell alloc] initImageCell:nil];
@@ -709,11 +704,11 @@ static NSString* columnIdentifierState = @"state";
     return nil;
 
   id identifier = [aTableColumn identifier];
-  if ([identifier isEqual:columnIdentifierIcon])
+  if ([identifier isEqual:mainColumnIdentifierIcon])
     return [item icon];
-  else if ([identifier isEqual:columnIdentifierFileName])
+  else if ([identifier isEqual:mainColumnIdentifierFileName])
     return [item fileName];
-  else if ([identifier isEqual:columnIdentifierState])
+  else if ([identifier isEqual:mainColumnIdentifierState])
   {
     NSCell* cell = [aTableColumn dataCell];
     if (cell)

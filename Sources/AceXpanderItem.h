@@ -115,4 +115,9 @@
 - (NSColor*) textColor;
 //@}
 
+/// @name Other methods
+//@{
++ (NSString*) stringForState:(int)state;
+//@}
+
 @end

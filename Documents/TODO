@@ -20,6 +20,10 @@ Priority 1 (important)
   - when a single item is selected, show the cached content list
   - provide an update button, so that the user can update the list
   - still an option "verbose?" -> probably yes
+- fix the icon column in the main table
+- when the user is asked to select a destination folder and she clicks "cancel",
+  the entire expand batch should be cancelled (currently the user is prompted
+  again and again for the destination folder)
 - after selecting File-Open (and possibly other menu commands), the table
   should get the focus automatically so that Cmd-A can immediately select
   all items, without having to use the mouse to give the focus to the
@@ -32,6 +36,8 @@ Priority 1 (important)
 
 Priority 2 (nice to have)
 -------------------------
+- when user is asked to select a destination folder, the file panel should
+  display a button that lets the user create a new folder
 - table should be highlighted in some way while a valid drag hovers over it
 - better file handling when a new item is created or its filename is
   set: e.g. what happens when it's a symlink? when it's an alias?
@@ -41,14 +47,6 @@ Priority 2 (nice to have)
 - entire path should be shown in tooltip for items in preferences dialog
 - cancel button should become default button ("Enter" button) while
   expansion is in progress
-- expand button should be disabled if no item is selected
-- get more information about this:
-  when the application is run from ProjectBuilder, Cocoa prints out the
-  following warning to the application's output window when the
-  variant of NSOpenPanel.runModalInDirectory() is invoked where the parent
-  window can be specified and the open panel is opened as a sheet:
-
-  *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
 - make dialogs/windows smaller so that the application is less intrusive
   on the user's desktop
   - only show archive filename, not entire archive path; add path to
@@ -56,19 +54,18 @@ Priority 2 (nice to have)
 - if no files are added as a result of opening a folder with AceXpander,
   the user should be notified of this instead of just silently ignoring
   the folder
-  - if "LookIntoFolders" is turned off, drag&drop and File-Open should
-    not accept folders
-  - it would be preferrable if this were also possible for drops on the
-    application icon in the Finder/Dock; however, this is probably not
-    possible, as it would involve modifying the document types in
-    Info.plist
+- if "LookIntoFolders" is turned off, drag&drop and File-Open should
+  not accept folders
+- it should be possible to drag folders onto the application icon in the
+  Finder/Dock
 - display spinning cursor while recursively scanning folders
   - give user ability to interrupt this process
+- user default: "ignore dot files" (becomes available and immediately selected
+  when "treat all files as archives" is enabled)
 
 Priority 3 (not important)
 --------------------------
 - user default: set the number of documents in the File-OpenRecent menu
-- user default: choose destination folder only once per expand batch
 - create test files that produce comments, that can be listed verbosely,
   and that require the "assume yes" option.
 - user default: stop processing when a failure occurs
@@ -78,18 +75,12 @@ Priority 3 (not important)
   application's dock icon
 - delete key should behave like backspace key (i.e. it should remove
   selected items)
-- in MainMenu.nib, the menu item "remove selected" should be marked with
-  the "Backspace" key; if this is implemented, the invisible button that
-  hides behind the table in the main window can be removed
 - when the user chooses the unace executable in the preferences dialog,
   a check should be made if the chosen file really is executable.
   This seems to be not so easy in Java, although in Obj-C the class
   NSFileManager can be used (isExecutableFileAtPath)
 - show an icon in the preferences in the popup button for selecting the
   unace executable and the destination folder
-- find out what the following message in the ProjectBuilder output window
-  means:
-  2004-06-18 03:10:48.430 AceXpander[1018] *** _NSAutoreleaseNoPool(): Object 0x15dd310 of class NSCFArray autoreleased with no pool in place - just leaking
 - if a filename in the content list drawer starts with "*" it's password
   protected -> mark the file as such
 - if the content list drawer or the result window don't show anything
@@ -100,12 +91,5 @@ Priority 3 (not important)
 
 Mac OS X 10.3
 -------------
-- when changing to Mac OS X 10.3, the following deprecated things
-  should be corrected (maybe use pre-processor #ifdefs to keep old code
-  so that it can still be run on Mac OS X 10.2):
-  - in the model: NSTableView.selectedRowEnumerator() should be replaced by
-    NSTableView.selectedRowIndexes()
-  - in the model: NSTableView.selectRow() should be replaced by
-    NSTableView.selectRowIndexes()
 - in Mac OS X 10.3, use Cocoa bindings to manage preferences. See
   http://developer.apple.com/cocoa/cocoabindings.html

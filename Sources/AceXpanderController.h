@@ -88,9 +88,13 @@
   NSTextView* m_stderrTextView;
   NSWindow* m_textViewWindow;
   NSTextView* m_textView;
+  NSMenu* m_editMenu;
   NSMenuItem* m_requeueMenuItem;
+  NSMenuItem* m_requeueAllMenuItem;
   NSMenuItem* m_unqueueMenuItem;
+  NSMenuItem* m_unqueueAllMenuItem;
   NSMenuItem* m_removeMenuItem;
+  NSMenuItem* m_removeAllMenuItem;
   NSMenuItem* m_expandMenuItem;
   NSMenuItem* m_listContentMenuItem;
   NSMenuItem* m_testIntegrityMenuItem;

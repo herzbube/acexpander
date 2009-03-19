@@ -1,9 +1,10 @@
 Table of Contents
 -----------------
 1. Introduction
-2. Changes in this release (1.0.1)
+2. Changes in this release (1.1)
 3. License and source code
 4. unace binary
+5. Platforms
 5. Limitations of AceXpander
 6. Limitations of unace
 7. Personal note
@@ -32,10 +33,22 @@ If you are interested in AceXpander as a developer, you should have a look
 at the README.developer document.
 
 
-Changes in this release (1.0.2)
+Changes in this release (1.1)
 -------------------------------
-- re-implementation of the entire project with Objective-C
-- added universal binary support
+- fixed a nasty bug where unace would hang when AceXpander was launched
+  from the Finder; this bug is present in 1.0.2, which makes the release all
+  but useless :-(
+- added context menu to main table
+- removed "Debug mode" item from the Options menu; this mode is no longer
+  available because the unace binary is now executed without an in-between
+  helper shell script
+- bug fixed where command thread seemed to run forever when no item was
+  selected and the "expand" button was clicked
+- expand button is now disabled if no archive is selected
+- any command that is still running is now cancelled when the application
+  terminates (this fixes a bug where AceXpander would leave a still running
+  command hanging around as an orphaned process)
+- improved the "About" panel
 
 For more details see the ChangeLog document.
 
@@ -67,25 +80,48 @@ Of course you can always change your preferences back to use the unace
 that was packaged with this application.
 
 
-Limitations of AceXpander
---------------------------
-- I develop and test AceXpander with whatever version of Mac OS X is installed
-  on my system at home, so every release of AceXpander potentially runs only
-  on exactly one version of Mac OS X: the one that was installed at my home at
-  the time of release. Since minor versions of the OS are often not that
-  different from each other, it is reasonable to expect that AceXpander runs on
-  earlier minor versions of the OS than the one that it was released for (e.g.
-  a release for Mac OS X 10.4.6 may also run on 10.4.3). In effect, you will
-  just have to try out whether it works or not.
+Platforms
+---------
+I develop and test AceXpander with whatever version of Mac OS X is installed
+on my system at home, so every release of AceXpander potentially runs only
+on exactly one version of Mac OS X: the one that was installed at my home at
+the time of release. Since minor versions of the OS are often not that
+different from each other, it is reasonable to expect that AceXpander runs on
+earlier minor versions of the OS than the one that it was released for (e.g.
+a release for Mac OS X 10.4.6 may also run on 10.4.3). In effect, you will
+just have to try out whether it works or not.
 
+The following table lists what versions of Mac OS X I had installed at the
+time when I made a release of AceXpander. It also has a very rough guess on
+what the minimum requirements are to run the release. If you find the guess to
+be incorrect, please let me know and I will update the table.
+
+--------------------------------------------------
+AceXpander   Mac OS X installed   Mac OS X minimum
+--------------------------------------------------
+0.9          10.2.8 (?)           10.2
+0.9.1        n/a                  10.2
+1.0          n/a                  10.2
+1.0.1        10.4.6 (?)           10.2
+1.0.2        10.4.8               10.3
+1.1          10.4.8               10.3
+--------------------------------------------------
+
+Starting with release 1.0.2, AceXpander is available as a universal binary.
+Although the same is not true for the unace utility bundled with AceXpander
+(it's still a PowerPC binary), you should nevertheless be able to run unace on
+MacIntel machines thanks to Apple's Rosetta technology.
+
+
+Limitations of AceXpander
+-------------------------
 - If you turn on the "Use password" option, the password you enter will
   be passed to unace in clear text. If someone watches your system's
   process list that person might be able to catch the password as it is part
   of the unace command line.
 
-- AceXpander has too many features. I tried to keep them down to a
-  reasonable number, but as this is a learning project for me, I often
-  couldn't resist...
+- AceXpander has too many features. I try to keep them down to a reasonable
+  number, but as this is a learning project for me, I often just can't resist...
 
 
 Limitations of unace

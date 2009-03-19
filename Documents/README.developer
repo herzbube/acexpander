@@ -132,8 +132,6 @@ Platform notes
 
 .nib notes
 ----------
-- in MainMenu.nib, a transparent button is hidden behind the main table.
-  This button is activated when the user presses the "Backspace" key
 - the MainWindow instance icon in MainMenu.nib indicates that a child
   has a bad/missing connection. This is normal: there is no connection
   for the target of the NSTextField instance that acts as a label for the

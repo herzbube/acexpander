@@ -63,6 +63,8 @@
 @interface AceXpanderContentItem : NSObject
 {
 @private
+  /// @name Attributes
+  //@{
   NSString* m_date;
   NSString* m_time;
   NSString* m_packed;
@@ -70,6 +72,7 @@
   NSString* m_ratio;
   NSString* m_fileName;
   BOOL m_passwordProtected;
+  //@}
 }
 
 /// @name Initializers
