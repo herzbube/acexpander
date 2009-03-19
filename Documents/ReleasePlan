@@ -23,13 +23,13 @@ Version 0.7
 - by default, the application terminates itself after a successful
   expansion if it was started by double-clicking on an archive file in the
   Finder
-- new preferences to control this behaviour
-- new preference "create surrounding folder"
-- new user defaults for "open recent" and "remember last open folder"
+- new user default to control this behaviour
+- new user default "create surrounding folder"
+- new user default to set a destination folder where expanded items
+  should be placed
 
 Version 0.8
-- new preference to set a destination folder where expanded items
-  should be placed
+- new user default for "open recent"
 - implement menu items "show info in finder" and "reveal in finder"
 
 Version 0.9

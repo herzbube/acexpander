@@ -15,3 +15,10 @@
   
   *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
 
+- AceExpanderModel.setInteractive(true) should be called only during the
+  application's launch sequence, or right after an initial expand thread
+  has finished.
+- it is important that AceExpanderPreferences is created at the earliest
+  possible time so that it can set up the user defaults database for the
+  other classes to use
+  

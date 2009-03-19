@@ -78,9 +78,6 @@ public class AceExpanderThread extends Thread
    private static final String m_unaceSwitchUsePassword = "-p";
    private static final String m_unaceSwitchAssumeYes = "-y";
 
-   // The model
-   private AceExpanderModel m_theModel = null;
-
    // The items to expand
    private NSMutableArray m_itemList = new NSMutableArray();
 
@@ -106,18 +103,15 @@ public class AceExpanderThread extends Thread
    // This flag indicates whether or not the thread should stop running
    private boolean m_bStopRunning = false;
 
+   // This folder is used to store the destination folder for which the
+   // user has been queried when the first item was expanded.
+   String m_destinationFolderAskWhenExpanding;
+   
    // ======================================================================
    // Constructors
    // ======================================================================
 
-   // Use this constructor if you just want to get unace's version
    public AceExpanderThread() {}
-
-   // Use this constructor if you want to expand items
-   public AceExpanderThread(AceExpanderModel theModel)
-   {
-      m_theModel = theModel;
-   }
 
    // ======================================================================
    // Methods for starting/stopping the thread
@@ -135,6 +129,7 @@ public class AceExpanderThread extends Thread
       m_bStopRunning = false;
 
       determineUnaceToUse();
+      m_destinationFolderAskWhenExpanding = "";
       
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
@@ -189,7 +184,7 @@ public class AceExpanderThread extends Thread
       // The thread waits for the process, so we need to kill the process
       // in order for the thread to be able to check on the m_bStopRunning
       // flag
-      if (m_unaceProcess != null)
+      if (null != m_unaceProcess)
       {
          m_unaceProcess.destroy();
       }
@@ -214,7 +209,13 @@ public class AceExpanderThread extends Thread
       m_iExitValue = -1;   // Assume that process will fail
 
       String fileName = item.getFileName();
-      String archiveDir = NSPathUtilities.stringByDeletingLastPathComponent(fileName);
+      String destinationFolder = determineDestinationFolder(fileName);
+      if (destinationFolder.equals(""))
+      {
+         m_bStopRunning = true;
+         return;
+      }
+      
       // It is important that the command is built in a way that retains
       // any spaces in path names! Also, special care must be taken that
       // no empty strings are passed as arguments to unace because it is
@@ -223,7 +224,7 @@ public class AceExpanderThread extends Thread
       String[] command = new String[6 + m_unaceSwitchList.count()];
       command[0] = m_unaceFrontEnd;
       command[1] = m_unaceExecutable;
-      command[2] = archiveDir;
+      command[2] = destinationFolder;
       command[3] = m_unaceFrontendDebugParameter;
       command[4] = m_unaceCommand;
       java.util.Enumeration enumerator = m_unaceSwitchList.objectEnumerator();
@@ -422,5 +423,62 @@ public class AceExpanderThread extends Thread
 
       m_unaceProcess = null;
       return m_messageStdout;
+   }
+
+   // From the various user default settings, determine the destination
+   // folder where the archive contents should be expanded. Returns ""
+   // if the folder could not be determined (e.g. because the user
+   // was queried for a folder, but she clicked cancel).
+   // Note: the folder is created by the unace front-end shell script
+   // if it doesn't exist yet
+   private String determineDestinationFolder(String archiveFileName)
+   {
+      String destinationFolder = "";
+
+      String destinationFolderType = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.DestinationFolderType);
+      if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeSameAsArchive))
+      {
+         destinationFolder = NSPathUtilities.stringByDeletingLastPathComponent(archiveFileName);
+      }
+      else if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeAskWhenExpanding))
+      {
+         // Only query the user if she hasn't chosen a folder yet.
+         if (m_destinationFolderAskWhenExpanding.equals(""))
+         {
+            NSOpenPanel openPanel = NSOpenPanel.openPanel();
+            openPanel.setAllowsMultipleSelection(false);
+            openPanel.setCanChooseFiles(false);
+            openPanel.setCanChooseDirectories(true);
+            String directory = null;
+            String selectedFile = null;
+            NSArray fileTypes = null;
+            int iResult = openPanel.runModalInDirectory(directory, selectedFile, fileTypes, null);
+            if (NSPanel.OKButton == iResult)
+               // Remember the user's answer to prevent querying in
+               // subsequent calls to this method
+               m_destinationFolderAskWhenExpanding = (String)openPanel.filenames().objectAtIndex(0);
+            else
+               // The user cancelled the query -> the process should be
+               // aborted
+               return destinationFolder;
+         }
+
+         // Use the folder that the user chose when she was queried
+         // during the first item's expansion
+         destinationFolder = m_destinationFolderAskWhenExpanding;
+      }
+      else if (destinationFolderType.equals(AceExpanderPreferences.DestinationFolderTypeFixedLocation))
+      {
+         destinationFolder = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.DestinationFolder);
+      }
+
+      // If user defaults say so, add an additional surrounding folder
+      // to the destination folder.
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.CreateSurroundingFolder))
+      {
+         destinationFolder = destinationFolder + "/" + NSPathUtilities.lastPathComponent(archiveFileName) + " Folder";
+      }
+
+      return destinationFolder;
    }
 }

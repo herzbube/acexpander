@@ -65,14 +65,17 @@ public class AceExpanderModel
 
    // Options that need to be applied to the expansion process
    private boolean m_bOverwriteFiles = false;
-   private boolean m_bExtractFullPath = false;
+   private boolean m_bExtractFullPath = true;
    private boolean m_bAssumeYes = false;
    private boolean m_bShowComments = true;
    private boolean m_bListVerbosely = true;
    private boolean m_bUsePassword = false;
    private String m_password;
    private boolean m_bDebugMode = false;
-   
+
+   // Other variables
+   private boolean m_bInteractive = false;
+
    // ======================================================================
    // Constructors
    // ======================================================================
@@ -98,7 +101,7 @@ public class AceExpanderModel
          iconColumn.setDataCell(iconCell);
       }
    }
-   
+
    // ======================================================================
    // Accessor methods for manipulating the internal list of items
    // ======================================================================
@@ -120,11 +123,25 @@ public class AceExpanderModel
          return;
       }
 
-      NSEnumerator enumerator = m_theTable.selectedRowEnumerator();
-      while (enumerator.hasMoreElements())
+      // First determine which items to delete and store them in a
+      // temporary array.
+      // Note: we cannot delete the objects directly via the index that the
+      // table's selectedRowEnumerator returns, because deleting an object
+      // from an array also changes the index positions of the items located
+      // behind the deleted object.
+      NSMutableArray m_tempItemList = new NSMutableArray();
+      NSEnumerator tableEnumerator = m_theTable.selectedRowEnumerator();
+      while (tableEnumerator.hasMoreElements())
       {
-         Integer iSelectedRow = (Integer)enumerator.nextElement();
-         m_itemList.removeObjectAtIndex(iSelectedRow.intValue());
+         Integer iSelectedRow = (Integer)tableEnumerator.nextElement();
+         m_tempItemList.addObject(m_itemList.objectAtIndex(iSelectedRow.intValue()));
+      }
+
+      // Second, delete the items
+      java.util.Enumeration tempEnumerator = m_tempItemList.objectEnumerator();
+      while (tempEnumerator.hasMoreElements())
+      {
+         m_itemList.removeObject(tempEnumerator.nextElement());
       }
       
       // Update the table
@@ -153,13 +170,79 @@ public class AceExpanderModel
       }
       return null;
    }
-   
+
    // Return the item at the given index position
    public AceExpanderItem getItem(int iIndexPosition)
    {
       return (AceExpanderItem)m_itemList.objectAtIndex(iIndexPosition);
    }
 
+   // Set the state of all items, regardless of whether they are selected
+   // or not
+   public void setAllItemsToState(int iState)
+   {
+      java.util.Enumeration enumerator = m_itemList.objectEnumerator();
+      while (enumerator.hasMoreElements())
+      {
+         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         item.setState(iState);
+      }
+
+      // No need to tell the table to reload data -> the items that have
+      // changed have already done this for us
+   }
+
+   // Set the state only of the selected items
+   public void setItemsToState(int iState)
+   {
+      if (0 == m_theTable.numberOfSelectedRows())
+      {
+         return;
+      }
+
+      NSEnumerator enumerator = m_theTable.selectedRowEnumerator();
+      while (enumerator.hasMoreElements())
+      {
+         Integer iSelectedRow = (Integer)enumerator.nextElement();
+         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
+         item.setState(iState);
+      }
+
+      // No need to tell the table to reload data -> the items that have
+      // changed have already done this for us
+   }
+
+   // Returns true if all items have the given state. Returns false
+   // if at least one item has a different state.
+   public boolean haveAllItemsState(int iState)
+   {
+      java.util.Enumeration enumerator = m_itemList.objectEnumerator();
+      while (enumerator.hasMoreElements())
+      {
+         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
+         // Abort as soon as one item has a different state
+         if (iState != item.getState())
+         {
+            return false;
+         }
+      }
+      
+      return true;
+   }
+
+   // Select all items in the table that have the given state
+   public void selectItemsWithState(int iState)
+   {
+      for (int iIndex = 0; iIndex < m_itemList.count(); iIndex++)
+      {
+         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iIndex);
+         if (iState == item.getState())
+         {
+            m_theTable.selectRow(iIndex, true);
+         }
+      }
+   }
+   
    // ======================================================================
    // Accessor methods for options
    // ======================================================================
@@ -241,6 +324,20 @@ public class AceExpanderModel
    }
 
    // ======================================================================
+   // Other accessor methods
+   // ======================================================================
+
+   public void setInteractive(boolean bInteractive)
+   {
+      m_bInteractive = bInteractive;
+   }
+
+   public boolean getInteractive()
+   {
+      return m_bInteractive;
+   }
+
+   // ======================================================================
    // Methods for expanding items
    // ======================================================================
 
@@ -287,15 +384,14 @@ public class AceExpanderModel
    // otherwise returns false.
    public boolean startThread(int iCommand)
    {
-      // We don't know what to operate on if no table item is selected
-      // -> abort
+      // Abort if no items are selected
       if (0 == m_theTable.numberOfSelectedRows())
       {
          return false;
       }
 
       // Create the thread
-      m_expandThread = new AceExpanderThread(this);
+      m_expandThread = new AceExpanderThread();
 
       // Collect the selected items and feed them into the thread
       NSEnumerator enumerator = m_theTable.selectedRowEnumerator();
@@ -353,39 +449,6 @@ public class AceExpanderModel
    // ======================================================================
    // Methods
    // ======================================================================
-
-   public void setAllItemsToState(int iState)
-   {
-      java.util.Enumeration enumerator = m_itemList.objectEnumerator();
-      while (enumerator.hasMoreElements())
-      {
-         AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
-         item.setState(iState);
-      }
-
-      // No need to tell the table to reload data -> the items that have
-      // changed have already done this for us
-   }
-
-   // Set the state of only the selected items
-   public void setItemsToState(int iState)
-   {
-      if (0 == m_theTable.numberOfSelectedRows())
-      {
-         return;
-      }
-
-      NSEnumerator enumerator = m_theTable.selectedRowEnumerator();
-      while (enumerator.hasMoreElements())
-      {
-         Integer iSelectedRow = (Integer)enumerator.nextElement();
-         AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
-         item.setState(iState);
-      }
-
-      // No need to tell the table to reload data -> the items that have
-      // changed have already done this for us
-   }
 
    // An item calls this method if it is changed in any way
    public void itemHasChanged(AceExpanderItem item)

@@ -1,12 +1,20 @@
 Priority 1 (important)
 ----------------------
-- display stdout/stderr messages
-- if no items are selected and new items are added to the table,
-  these new items should become selected
 - table should color-code states
 - should be possible to change state by clicking on the table cell
-- file-open: remember the last directory in the user preferences
-- email to kolja/marcel lemke about unace bugs
+- email to kolja/marcel lemke about following issues:
+  - unace bugs
+  - ask them about why MacAce packages unace version 2.5i (I have a MacAce
+    version sent to me by Gabriel for testing, even though MacAce nowadays
+    seems to be off-line), but the unace version that can be downloaded from
+    the official winace.com site is only 2.5
+- find out where the null pointer exception hides. must have something
+  to do with expanding/cancelling expansion; maybe also when items were
+  deleted and expansion follows afterwards with new items; or simply when
+  there are two items, and one or both are already processed
+- replaced unace binary by a binary with version 2.5i, ripped from the
+  MacAce application by Gabriel Gritsch (http://gritsch-soft.com/)
+
 
 Priority 2 (nice to have)
 -------------------------
@@ -23,10 +31,10 @@ Priority 2 (nice to have)
 - better file handling when a new item is created or its filename is
   set: e.g. what happens when it's a symlink? when it's an alias?
   when we don't have read permissions?  
-- AceExpanderThread should not know the model -> should get the
-  information about options etc. differently
 - Double click on table item expands it
 - write the "what is it all about" paragraph in README
+- show spinning cursor while application launches
+- entire path should be shown in tooltip for items in preferences dialog
 
 Priority 3 (not important)
 --------------------------
@@ -46,6 +54,10 @@ Priority 3 (not important)
   NSFileManager can be used (isExecutableFileAtPath)
 - show an icon in the preferences in the popup button for selecting the
   unace executable
+- find out what the following message in the ProjectBuilder output window
+  means:
+  2004-06-18 03:10:48.430 AceExpander[1018] *** _NSAutoreleaseNoPool(): Object 0x15dd310 of class NSCFArray autoreleased with no pool in place - just leaking
+  
 
 Mac OS X 10.3
 -------------
@@ -53,6 +65,7 @@ Mac OS X 10.3
   should be corrected:
   - in the model: NSTableView.selectedRowEnumerator() should be replaced by
     NSTableView.selectedRowIndexes()
+  - in the model: NSTableView.selectRow() should be replaced by
+    NSTableView.selectRowIndexes()
 - in Mac OS X 10.3, use Cocoa bindings to manage preferences. See
   http://developer.apple.com/cocoa/cocoabindings.html
-

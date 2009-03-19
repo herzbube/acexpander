@@ -46,7 +46,13 @@
 //   class set as their target, the method validateMenuItem() is queried to
 //   automatically enable or disable those menu items
 // - is the delegate of the main table view
-// 
+// - instantiates AceExpanderPreferences in the constructor, in order for
+//   AceExpanderPreferences to correctly set up the user defaults database
+//   NOTE: make sure that this class does not query the user defaults
+//   database until after AceExpanderPreferences is instantiated (e.g. do
+//   not initialize member variables with values from the user defaults
+//   database).
+//
 
 package ch.herzbube.aceexpander;
 
@@ -161,6 +167,30 @@ public class AceExpanderController
       return true;
    }
 
+   public void applicationDidFinishLaunching(NSNotification aNotification)
+   {
+      // If the user defaults say so, don't start automatically expanding
+      // items on application launch
+      if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.StartExpandingAfterLaunch))
+      {
+         m_theModel.setInteractive(true);
+         return;
+      }
+      
+      // If there are no items in the table the user must have launched the
+      // application without double-clicking an archive (or a similar
+      // action). In this case we switch to interactive mode (but do
+      // nothing else)
+      if (0 == m_theModel.numberOfRowsInTableView(null))
+      {
+         m_theModel.setInteractive(true);
+         return;
+      }
+
+      m_theModel.selectItemsWithState(AceExpanderItem.QUEUED);
+      expandItems(this);
+   }
+   
    // ======================================================================
    // NSWindow delegate methods
    // ======================================================================
@@ -369,12 +399,12 @@ public class AceExpanderController
 
    public void showFinderInfo(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
    }
 
    public void revealInFinder(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
    }
 
    // ======================================================================
@@ -383,17 +413,17 @@ public class AceExpanderController
 
    public void showGPL(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
    }
 
    public void showReadme(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
    }
 
    public void showChangeLog(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
    }
 
    // ======================================================================
@@ -553,10 +583,38 @@ public class AceExpanderController
 
    // Is called by the NSNotificationCenter when the expansion thread
    // has finished. The thread posts the notification.
+   // This method updates various GUI elements.
+   // In addition, if it is called after the initial launch sequence's
+   // expand thread has finished, this method will determine whether
+   // the application should be terminated, or continue to run in
+   // interactive mode.
    public void expandThreadHasFinished()
    {
       updateGUI(false);
       updateResultsWindow();
+
+      // Terminate application if all items expanded successfully and
+      // the application mode is non-interactive. If this method is called
+      // after the initial launch sequence's expand thread has finished,
+      // the application mode should still be non-interactive. 
+      if (! m_theModel.getInteractive())
+      {
+         // If the user defaults say so, don't terminate the application
+         // after expanding items on application launch
+         if (! NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.QuitAfterExpand))
+            m_theModel.setInteractive(true);
+         // If the user defaults say so, always terminat the application
+         else if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.AlwaysQuitAfterExpand))
+            NSApplication.sharedApplication().terminate(this);
+         // No special user defaults: check if all items expanded
+         // successfully. If not, continue to run in interactive mode
+         else if (! m_theModel.haveAllItemsState(AceExpanderItem.SUCCESS))
+            m_theModel.setInteractive(true);
+         // All items expanded successfully, therefore terminate the
+         // application
+         else
+            NSApplication.sharedApplication().terminate(this);
+      }
    }
 
    // Sets the state of the given menu item to the new state

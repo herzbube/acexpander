@@ -1,5 +1,26 @@
+Thu June 17 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- version 0.7
+- implemented handling of preferences "CreateSurroundingFolder" and
+  "DestinationFolderType"
+
+Wed June 16 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- added preference items "QuitAfterExpanding", "AlwaysQuitAfterExpanding"
+  and "CreateSurroundingFolder"
+- implemented handling of preferences "StartExpandingAfterLaunch",
+  "QuitAfterExpanding" and "AlwaysQuitAfterExpanding"
+
+Tue June 15 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- application now has two modes: interactive and non-interactive (default)
+- application terminates automatically if all items that were specified
+  on launch time (e.g. by double-clicking archives in the Finder) have
+  expanded successfully
+- added preference items "StartExpandingAfterLaunch",
+  "DestinationFolderType" and "DestinationFolder" to the preferences
+  dialog. The implementation that knows how the handle these preferences is
+  still missing, though.
+
 Mon June 14 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- bumped up version to 0.6
+- version 0.6
 - added result window to show stdout and stderr
 - the result window's frame is saved to user defaults
 - save to user defaults whether or not the result window is visible
@@ -9,7 +30,7 @@ Mon June 14 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - added menu item to show version information about the unace executable
 
 Thu June 10 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- bumped up version to 0.5
+- version 0.5
 - added preference item "QuitAppWhenMainWindowIsClosed"
 - implemented saving of preferences to user defaults system
 - implemented loading of application defaults from plist file (instead
@@ -27,7 +48,7 @@ Wed June 09 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - added menu item "main window"
 
 Tue June 08 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- Version 0.4 (without localization)
+- version 0.4 (without localization)
 - placed all classes in package ch.herzbube.aceexpander
 - replaced queue-all, unqueue-all and remove-selected buttons by menu items
 - added menu items remove-all, (re)queue-selected, unqueue-selected
@@ -57,20 +78,21 @@ Tue June 01 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - values in the GUI table are displayed correctly (including icon images)
  
 Mon May 31 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- Version 0.2
-- Trashed the original project and started over with a new project
-- Replaced the original GUI, which was pretty much a failure, with
+- version 0.2
+- trashed the original project and started over with a new project
+- replaced the original GUI, which was pretty much a failure, with
   a new idea that uses NSTableView as the key element
-- Trashed the UseCases document (too much overhead to maintain for
+- trashed the UseCases document (too much overhead to maintain for
   this small project)
-- Replaced unace binary with the *really* final version sent to me
+- replaced unace binary with the *really* final version sent to me
   by Kolja on Nov 28 2003
 
 Tue Sept 02 2003   "Patrick Näf" <aceexpander@herzbube.ch>
-- Replaced unace binary with the final version ported by Kolja and sent to me
+- replaced unace binary with the final version ported by Kolja and sent to me
   on Sept 01 2003
 
 Fri Aug 29 2003   "Patrick Näf" <aceexpander@herzbube.ch>
-- Version 0.1
-- First version of a working program
-- Contains a preliminary version of unace mailed to me by Kolja on Aug 26 2003
+- version 0.1
+- first version of a working program
+- contains a preliminary version of unace mailed to me by Kolja on
+  Aug 26 2003

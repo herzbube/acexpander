@@ -2,11 +2,23 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AlwaysQuitAfterExpand</key>
+	<false/>
+	<key>CreateSurroundingFolder</key>
+	<true/>
+	<key>DestinationFolderType</key>
+	<string>SameAsArchive</string>
+	<key>DestinationFolder</key>
+	<string></string>
 	<key>ExecutablePath</key>
 	<string>&lt;bundled&gt;</string>
-	<key>QuitAppWhenMainWindowIsClosed</key>
+	<key>QuitAfterExpand</key>
 	<true/>
+	<key>QuitAppWhenMainWindowIsClosed</key>
+	<false/>
 	<key>ShowResultWindow</key>
 	<false/>
+	<key>StartExpandingAfterLaunch</key>
+	<true/>
 </dict>
 </plist>

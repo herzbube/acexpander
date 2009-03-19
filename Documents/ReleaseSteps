@@ -1,4 +1,4 @@
-Perform the following steps to make a release
+﻿Perform the following steps to make a release
 - update the ChangeLog (should have been done continuously, anyway)
 - update the README, if necessary
 - update the TODO, if necessary
@@ -6,5 +6,8 @@ Perform the following steps to make a release
   - in InfoPlist.strings in the Resources section
   - in ProjectBuilder on the "Targets" pane under "InfoPlist Entries"
 - CVS: check in all changes
+  cd <basedir>
+  cvs commit
 - CVS: set a tag, e.g.
+  cd <basedir>
   cvs tag v0-5 .

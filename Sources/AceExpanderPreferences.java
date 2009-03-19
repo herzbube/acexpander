@@ -46,13 +46,23 @@ public class AceExpanderPreferences
    // Constants
    private final static String RegistrationDomainDefaultsFileName = "RegistrationDomainDefaults.plist";
    private final static String PreferencesDialogNibName = "PreferencesDialog";
+   // Constant values for the defaults
    public final static String BundledExecutablePath = "<bundled>";
+   public final static String DestinationFolderTypeSameAsArchive = "SameAsArchive";
+   public final static String DestinationFolderTypeAskWhenExpanding = "AskWhenExpanding";
+   public final static String DestinationFolderTypeFixedLocation = "FixedLocation";
    // Keys for the defaults
    public final static String MainWindowFrameName = "MainWindow";
    public final static String ResultWindowFrameName = "ResultWindow";
    public final static String QuitAppWhenMainWindowIsClosed = "QuitAppWhenMainWindowIsClosed";
    public final static String ShowResultWindow = "ShowResultWindow";
    public final static String ExecutablePath = "ExecutablePath";
+   public final static String StartExpandingAfterLaunch = "StartExpandingAfterLaunch";
+   public final static String QuitAfterExpand = "QuitAfterExpand";
+   public final static String AlwaysQuitAfterExpand = "AlwaysQuitAfterExpand";
+   public final static String DestinationFolderType = "DestinationFolderType";
+   public final static String DestinationFolder = "DestinationFolder";
+   public final static String CreateSurroundingFolder = "CreateSurroundingFolder";
 
    // The shared defaults object
    private NSUserDefaults m_userDefaults = null;
@@ -63,10 +73,18 @@ public class AceExpanderPreferences
    // These variables are outlets and therefore initialized in the .nib
    private NSButton m_quitAppWhenMainWindowIsClosedButton;
    private NSPopUpButton m_setExecutablePathButton;
-
+   private NSButton m_startExpandingAfterLaunchButton;
+   private NSButton m_quitAfterExpandButton;
+   private NSButton m_alwaysQuitAfterExpandButton;
+   private NSPopUpButton m_destinationFolderButton;
+   private NSButton m_createSurroundingFolderButton;
+   
    // Other variables
    private boolean m_bPreferencesDialogCancelClicked = false;
    private String m_executablePath;   // Stores the entire path
+   private String m_previousDestinationFolderType;
+   private String m_destinationFolderType;
+   private String m_destinationFolder;   // Stores the entire path
 
    // ======================================================================
    // Constructors
@@ -140,6 +158,40 @@ public class AceExpanderPreferences
       // ExecutablePath
       m_executablePath = m_userDefaults.stringForKey(ExecutablePath);
       updateExecutablePathButton();
+
+      // ------------------------------------------------------------
+      // DestinationFolderType + DestinationFolder
+      m_previousDestinationFolderType = DestinationFolderTypeSameAsArchive;
+      m_destinationFolderType = m_userDefaults.stringForKey(DestinationFolderType);
+      m_destinationFolder = m_userDefaults.stringForKey(DestinationFolder);
+      updateDestinationFolderButton();
+
+      // ------------------------------------------------------------
+      // StartExpandingAfterLaunch + QuitAfterExpand + AlwaysQuitAfterExpand
+      if (m_userDefaults.booleanForKey(StartExpandingAfterLaunch))
+         m_startExpandingAfterLaunchButton.setState(NSCell.OnState);
+      else
+         m_startExpandingAfterLaunchButton.setState(NSCell.OffState);
+
+      if (m_userDefaults.booleanForKey(QuitAfterExpand))
+         m_quitAfterExpandButton.setState(NSCell.OnState);
+      else
+         m_quitAfterExpandButton.setState(NSCell.OffState);
+
+      if (m_userDefaults.booleanForKey(AlwaysQuitAfterExpand))
+         m_alwaysQuitAfterExpandButton.setState(NSCell.OnState);
+      else
+         m_alwaysQuitAfterExpandButton.setState(NSCell.OffState);
+
+      NSButton[] buttons = {m_startExpandingAfterLaunchButton, m_quitAfterExpandButton, m_alwaysQuitAfterExpandButton};
+      enableButtonHierarchy(buttons);
+      
+      // ------------------------------------------------------------
+      // CreateSurroundingFolder
+      if (m_userDefaults.booleanForKey(CreateSurroundingFolder))
+         m_createSurroundingFolderButton.setState(NSCell.OnState);
+      else
+         m_createSurroundingFolderButton.setState(NSCell.OffState);
    }
 
    // Analyzes the state of the various GUI elements and sets the
@@ -156,21 +208,48 @@ public class AceExpanderPreferences
    {
       // ------------------------------------------------------------
       // QuitAppWhenMainWindowIsClosed
-      boolean bChecked;
-      int iState = m_quitAppWhenMainWindowIsClosedButton.state();
-      if (NSCell.OnState == iState)
-         bChecked = true;
-      else
-         bChecked = false;
-      if (bChecked != m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed))
-      {
-         m_userDefaults.setBooleanForKey(bChecked, QuitAppWhenMainWindowIsClosed);
-      }
+      readDefaultsFromCheckbox(m_quitAppWhenMainWindowIsClosedButton, QuitAppWhenMainWindowIsClosed);
 
       // ------------------------------------------------------------
       // ExecutablePath
       // The full path is stored in m_executablePath, not the GUI)
       m_userDefaults.setObjectForKey(m_executablePath, ExecutablePath);
+
+      // ------------------------------------------------------------
+      // StartExpandingAfterLaunch
+      readDefaultsFromCheckbox(m_startExpandingAfterLaunchButton, StartExpandingAfterLaunch);
+         
+      // ------------------------------------------------------------
+      // DestinationFolderType + DestinationFolder
+      // The full path is stored in m_destinationFolder, not the GUI)
+      m_userDefaults.setObjectForKey(m_destinationFolderType, DestinationFolderType);
+      m_userDefaults.setObjectForKey(m_destinationFolder, DestinationFolder);
+      
+      // ------------------------------------------------------------
+      // QuitAfterExpand + AlwaysQuitAfterExpand
+      readDefaultsFromCheckbox(m_quitAfterExpandButton, QuitAfterExpand);
+      readDefaultsFromCheckbox(m_alwaysQuitAfterExpandButton, AlwaysQuitAfterExpand);
+
+      // ------------------------------------------------------------
+      // CreateSurroundingFolder
+      readDefaultsFromCheckbox(m_createSurroundingFolderButton, CreateSurroundingFolder);
+   }
+
+   // Read the state of a single checkbox and write it back to the
+   // user defaults
+   private void readDefaultsFromCheckbox(NSButton checkbox, String key)
+   {
+      boolean bChecked;
+      int iState = checkbox.state();
+      if (NSCell.OnState == iState)
+         bChecked = true;
+      else
+         bChecked = false;
+      
+      if (bChecked != m_userDefaults.booleanForKey(key))
+      {
+         m_userDefaults.setBooleanForKey(bChecked, key);
+      }
    }
 
    // ======================================================================
@@ -221,6 +300,106 @@ public class AceExpanderPreferences
    }
 
    // ======================================================================
+   // Methods that are actions, related to setting the destination folder
+   // ======================================================================
+
+   // Sets the destination folder to SameAsArchive
+   public void setDestinationSameAsArchive(Object sender)
+   {
+      m_previousDestinationFolderType = m_destinationFolderType;
+      m_destinationFolderType = DestinationFolderTypeSameAsArchive;
+      m_destinationFolder = "";
+      updateDestinationFolderButton();
+   }
+
+   // Sets the destination folder to AskWhenExpanding
+   public void setDestinationAskWhenExpanding(Object sender)
+   {
+      m_previousDestinationFolderType = m_destinationFolderType;
+      m_destinationFolderType = DestinationFolderTypeAskWhenExpanding;
+      m_destinationFolder = "";
+      updateDestinationFolderButton();
+   }
+
+   // Lets the user choose the destination folder from an open panel
+   public void setDestinationChooseFolder(Object sender)
+   {
+      NSOpenPanel openPanel = NSOpenPanel.openPanel();
+      openPanel.setAllowsMultipleSelection(false);
+      openPanel.setCanChooseFiles(false);
+      openPanel.setCanChooseDirectories(true);
+      String directory = null;
+      String selectedFile = null;
+      NSArray fileTypes = null;
+      int iResult = openPanel.runModalInDirectory(directory, selectedFile, fileTypes, m_preferencesDialog);
+      if (NSPanel.OKButton == iResult)
+      {
+         m_previousDestinationFolderType = m_destinationFolderType;
+         m_destinationFolderType = DestinationFolderTypeFixedLocation;
+         m_destinationFolder = (String)openPanel.filenames().objectAtIndex(0);
+      }
+
+      // Update the button: the user's action selected a menu item -> this
+      // must be undone even if the user clicked "cancel" on the open panel
+      updateDestinationFolderButton();
+   }
+
+   // No action, just a helper.
+   // Makes sure that the correct menu item is visible in the button's
+   // popup menu. If necessary, additional items are created to display
+   // the folder name & icon
+   private void updateDestinationFolderButton()
+   {
+      // If the previous type was "fixed location" we need to remove
+      // the two menu items that were created to display that location
+      if (m_previousDestinationFolderType.equals(DestinationFolderTypeFixedLocation))
+      {
+         m_destinationFolderButton.removeItemAtIndex(0);
+         m_destinationFolderButton.removeItemAtIndex(0);
+      }
+      
+      if (m_destinationFolderType.equals(DestinationFolderTypeSameAsArchive))
+      {
+         m_destinationFolderButton.selectItemAtIndex(0);
+      }
+      else if (m_destinationFolderType.equals(DestinationFolderTypeAskWhenExpanding))
+      {
+         m_destinationFolderButton.selectItemAtIndex(1);
+      }
+      else if (m_destinationFolderType.equals(DestinationFolderTypeFixedLocation))
+      {
+         m_destinationFolderButton.insertItemAtIndex("", 0);
+         m_destinationFolderButton.insertItemAtIndex(NSPathUtilities.lastPathComponent(m_destinationFolder), 0);
+         m_destinationFolderButton.selectItemAtIndex(0);
+         // TODO: make it work! With this code, the image displayed when the
+         // popup menu is closed is far too big!
+         // NSMenuItem menuItem = m_destinationFolderButton.itemAtIndex(0);
+         // menuItem.setImage(new NSFileWrapper(m_destinationFolder, false).icon());
+      }
+   }
+
+   // ======================================================================
+   // Methods that are actions, related to QuitAfterExpand
+   // ======================================================================
+
+   // Enable/disable the m_quitAfterExpandButton and
+   // m_alwaysQuitAfterExpandButton, depending on whether
+   // the m_startExpandingAfterLaunchButton is checked or not.
+   public void startExpandingAfterLaunchButtonClicked(Object sender)
+   {
+      NSButton[] buttons = {m_startExpandingAfterLaunchButton, m_quitAfterExpandButton, m_alwaysQuitAfterExpandButton};
+      enableButtonHierarchy(buttons);
+   }
+   
+   // Enable/disable the m_alwaysQuitAfterExpandButton, depending on whether
+   // the m_quitAfterExpandButton is checked or not.
+   public void quitAfterExpandButtonClicked(Object sender)
+   {
+      NSButton[] buttons = {m_startExpandingAfterLaunchButton, m_quitAfterExpandButton, m_alwaysQuitAfterExpandButton};
+      enableButtonHierarchy(buttons);
+   }
+
+   // ======================================================================
    // Methods
    // ======================================================================
 
@@ -254,6 +433,49 @@ public class AceExpanderPreferences
       else
       {
          // TODO: throw an exception or do something...
+      }
+   }
+
+   // Helper method.
+   // Enables the first button if the second button is checked.
+   // Disables the first button if the second button is not checked.
+   private void enableButtonDependingOnOtherButton(NSButton enableButton, NSButton dependButton)
+   {
+      boolean bChecked;
+      int iState = dependButton.state();
+      if (NSCell.OnState == iState)
+         bChecked = true;
+      else
+         bChecked = false;
+
+      enableButton.setEnabled(bChecked);
+   }
+
+   // Helper method
+   // Beginning with the first button in the array, the "checked" state of
+   // the buttons in the array is tested. If the state is "on", the next
+   // button in the array is enabled and tested. If the state is "off", all
+   // subsequent buttons in the array are disabled.
+   // Note: the first button in the array is always enabled
+   private void enableButtonHierarchy(NSButton[] buttons)
+   {
+      // The first button is always enabled
+      boolean bEnable = true;
+
+      int iNumElements = java.lang.reflect.Array.getLength(buttons);
+      for (int iIndex = 0; iIndex < iNumElements; iIndex++)
+      {
+         NSButton button = (NSButton)java.lang.reflect.Array.get(buttons, iIndex);
+         button.setEnabled(bEnable);
+         // As soon as the first button is disabled, we don't check the
+         // button state anymore
+         if (! bEnable)
+            continue;
+
+         // The first unchecked button will disable all subsequent buttons
+         int iState = button.state();
+         if (NSCell.OffState == iState)
+            bEnable = false;
       }
    }
 }

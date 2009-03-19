@@ -5,15 +5,25 @@
             ACTIONS = {
                 preferencesDialogCancelClicked = id; 
                 preferencesDialogOKClicked = id; 
+                quitAfterExpandButtonClicked = id; 
+                setDestinationAskWhenExpanding = id; 
+                setDestinationChooseFolder = id; 
+                setDestinationSameAsArchive = id; 
                 setExecutableChooseLocation = id; 
                 setExecutableToBundled = id; 
+                startExpandingAfterLaunchButtonClicked = id; 
             }; 
             CLASS = "ch.herzbube.aceexpander.AceExpanderPreferences"; 
             LANGUAGE = Java; 
             OUTLETS = {
+                "m_alwaysQuitAfterExpandButton" = NSButton; 
+                "m_createSurroundingFolderButton" = NSButton; 
+                "m_destinationFolderButton" = NSPopUpButton; 
                 "m_preferencesDialog" = NSPanel; 
+                "m_quitAfterExpandButton" = NSButton; 
                 "m_quitAppWhenMainWindowIsClosedButton" = NSButton; 
                 "m_setExecutablePathButton" = NSPopUpButton; 
+                "m_startExpandingAfterLaunchButton" = NSButton; 
             }; 
             SUPERCLASS = "java.lang.Object"; 
         }, 
