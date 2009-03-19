@@ -147,7 +147,9 @@ stored in the user preferences file
 - whether or not the result window is visible when the application is
   terminated
 - if you select "Remember as my defaults" from the Options menu, the
-  current option settings are stored in the user preferences file
+  current option settings are stored in the user preferences file (with the
+  exception of the password, which is too sensitive to be kept in a clear text
+  preferences file, and the "Debug mode" option, which is not an unace option)
 - the last directory you selected in the File-Open dialog
 - the last items you opened in AceXpander (see the "Open Recent" sub-menu
   in the File menu)
@@ -164,10 +166,13 @@ of AceXpander.
   "Overwrite files" option, however, the expansion process will succeed,
   because any existing files will be overwritten. This is a somewhat
   dangerous option and therefore turned off by default.
-  Note: due to a bug in unace the "Assume yes" option is always turned
+  Note 1: due to a bug in unace the "Assume yes" option is always turned
   on automatically by AceXpander when you turn on "Overwrite files".
   When you turn off "Overwrite files" you must turn off "Assume yes"
-  manually
+  manually.
+  Note 2: due to a bug in unace, the "Overwrite files" option has no effect
+  on directories, i.e. if a directory exists both in an archive and in the
+  file system, the expansion process always fails.
 - Extract with full path
   Use this option if the archive was created using a directory structure
   and you want to restore this directory structure. The option is turned

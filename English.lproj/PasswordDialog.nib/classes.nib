@@ -1,13 +1,13 @@
 {
     IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {passwordDialogCancelClicked = id; passwordDialogOKClicked = id; }; 
-            CLASS = "ch.herzbube.acexpander.AceXpanderController"; 
-            LANGUAGE = Java; 
+            CLASS = AceXpanderController; 
+            LANGUAGE = ObjC; 
             OUTLETS = {"m_passwordDialog" = NSPanel; "m_passwordTextField" = NSSecureTextField; }; 
-            SUPERCLASS = "java.lang.Object"; 
+            SUPERCLASS = NSObject; 
         }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = "java.lang.Object"; LANGUAGE = Java; }
     ); 
     IBVersion = 1; 

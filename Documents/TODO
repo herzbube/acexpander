@@ -10,7 +10,6 @@ should see the ReleasePlan document.
 
 Priority 1 (important)
 ----------------------
-- add application icon
 - better "list archive" concept:
   - when the user selects a single item for the first time, spawn a
     background thread and process in the background
@@ -21,15 +20,6 @@ Priority 1 (important)
   - when a single item is selected, show the cached content list
   - provide an update button, so that the user can update the list
   - still an option "verbose?" -> probably yes
-- build AceXpander as a UniversalBinary
-  - in Xcode select the menu item item
-    "Project" -> "Upgrade all targets in project to native"
-  - IMPORTANT: Xcode 2.2 (which I currently use) does not support this upgrade
-    if the project contains Java code. It warns about this limitation in the
-    dialog that pops up after you select the menu item. Make sure when the
-    upgrade is attempted again that Xcode supports Java files
-  - for the rest, follow the step-by-step instruction given by Xcode's help
-    in the UniversalBinary document 
 - after selecting File-Open (and possibly other menu commands), the table
   should get the focus automatically so that Cmd-A can immediately select
   all items, without having to use the mouse to give the focus to the

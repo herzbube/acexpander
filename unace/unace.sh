@@ -9,25 +9,32 @@
 # b) change the application's working directory to this destination folder
 
 # Query first 2 positional parameters
-unaceBin=$1
-destinationFolder=$2
-shift 2
-
-# Get the version information
-if test "--version" = "$destinationFolder"; then
-   "$unaceBin" --version | grep -v "^$" | head -2
-   exit 0
+unaceBin="$1"
+if test ! -x "$unaceBin"; then
+  echo "Unace binary not found, or is not an executable: $unaceBin" >&2
+  exit 1
 fi
+shift 1
 
-# Create the destination folder if doesn't exist yet
-if test ! -d "$destinationFolder"; then
-   mkdir -p "$destinationFolder"
-   if test $? -ne 0; then exit 1; fi
-fi
-
-# Change working directory to the destination folder
-cd "$destinationFolder"
-if test $? -ne 0; then exit 1; fi
+case "$1" in
+  --version)
+    # Get the version information
+    "$unaceBin" --version | grep -v "^$" | head -2
+    exit 0
+    ;;
+  --folder)
+    destinationFolder="$2"
+    shift 2
+    # Create the destination folder if doesn't exist yet
+    if test ! -d "$destinationFolder"; then
+      mkdir -p "$destinationFolder"
+      if test $? -ne 0; then exit 1; fi
+    fi
+    # Change working directory to the destination folder
+    cd "$destinationFolder"
+    if test $? -ne 0; then exit 1; fi
+    ;;
+esac
 
 debugMode=$1
 shift 1

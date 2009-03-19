@@ -1,3 +1,22 @@
+Wed Oct 25 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- completed re-implementation of project with Objective-C
+- added "run doxygen" build phase to Xcode project
+- added universal binary support to Xcode project
+- released version 1.0.2
+- AceXpander releases   Mac OS X versions
+  0.9                   10.2.8 (?)
+  0.9.1                 n/a
+  1.0                   n/a
+  1.0.1                 10.4.6 (?)
+  1.0.2                 10.4.8
+
+Sun July 09 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- source code documentation is now possible using the doxygen tool
+
+Tue July 04 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- created new Xcode project for Objective-C sources
+- started re-implementation of project with Objective-C
+
 Sun July 02 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - released version 1.0.1
 - added application and document icons

@@ -1,6 +1,5 @@
 {
     IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
                 lookIntoFoldersButtonClicked = id; 
@@ -14,22 +13,23 @@
                 setExecutableToBundled = id; 
                 startExpandingAfterLaunchButtonClicked = id; 
             }; 
-            CLASS = "ch.herzbube.acexpander.AceXpanderPreferences"; 
-            LANGUAGE = Java; 
+            CLASS = AceXpanderPreferences; 
+            LANGUAGE = ObjC; 
             OUTLETS = {
                 "m_alwaysQuitAfterExpandButton" = NSButton; 
                 "m_createSurroundingFolderButton" = NSButton; 
                 "m_destinationFolderButton" = NSPopUpButton; 
+                "m_executablePathButton" = NSPopUpButton; 
                 "m_lookIntoFoldersButton" = NSButton; 
                 "m_preferencesDialog" = NSPanel; 
                 "m_quitAfterExpandButton" = NSButton; 
                 "m_quitAppWhenMainWindowIsClosedButton" = NSButton; 
-                "m_setExecutablePathButton" = NSPopUpButton; 
                 "m_startExpandingAfterLaunchButton" = NSButton; 
                 "m_treatAllFilesAsArchivesButton" = NSButton; 
             }; 
-            SUPERCLASS = "java.lang.Object"; 
+            SUPERCLASS = NSObject; 
         }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = "java.lang.Object"; LANGUAGE = Java; }
     ); 
     IBVersion = 1; 

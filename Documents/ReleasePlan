@@ -53,6 +53,8 @@ Version 1.1
 - archive items' state can be changed by directly clicking on the state
   displayed in the main table
 - add a couple of UML diagrams to complete documentation
+- improve "about" dialog so that it acknowledges various contributions to the
+  project
 
 Version 1.2
 - rewrite application in Objective-C

@@ -1,28 +1,19 @@
 Perform the following steps to make a release
-- perform tests suitable to make sure that everything still works as
-  intended
+- perform tests suitable to make sure that everything still works as intended
 - update the ChangeLog (should have been done continuously, anyway)
 - replace the "Changes in this release" section of the README with a collection
   of the most important entries from the ChangeLog
 - bump the version number and the copyright year
   - in the README file
-  - in Xcode choose the menu item "Project" -> "Edit active target", then
-    select the "InfoPlist Entries", then change the property list keys
-    "CFBundleShortVersionString" and "NSHumanReadableCopyright"
+  - in the Info.plist file change the property list keys
+    "CFBundleShortVersionString" and (if necessary) "NSHumanReadableCopyright"
 - source control
   - commit all changes
-    - CVS
-      cd <projectdir>
-      cvs commit
-    - Subversion
-      cd <projectdir>
-      svn commit
+    cd <projectdir>
+    svn commit
   - tag the release
-    - CVS
-      cd <basedir>
-      cvs tag v0-5 .
-    - Subversion
-      ???
+    cd <projectdir>
+    svn copy http://herzbube.ch/svn/acexpander/trunk http://herzbube.ch/svn/acexpander/tags/release-1.0.2
 - to make the binary distribution
   - set active build configuration in Xcode to "Release" and build target
   - if build is successful, the binary is now in the "build" folder

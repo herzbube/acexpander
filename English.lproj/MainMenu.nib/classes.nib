@@ -1,6 +1,5 @@
 {
     IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
                 cancelCommand = id; 
@@ -38,8 +37,8 @@
                 unqueueAllItems = id; 
                 unqueueItems = id; 
             }; 
-            CLASS = "ch.herzbube.acexpander.AceXpanderController"; 
-            LANGUAGE = Java; 
+            CLASS = AceXpanderController; 
+            LANGUAGE = ObjC; 
             OUTLETS = {
                 "m_assumeYesMenuItem" = NSMenuItem; 
                 "m_cancelButton" = NSButton; 
@@ -70,25 +69,26 @@
                 "m_textViewWindow" = NSWindow; 
                 "m_theContentListDrawer" = NSDrawer; 
                 "m_theContentListTable" = NSTableView; 
-                "m_theModel" = "ch.herzbube.acexpander.AceXpanderModel"; 
-                "m_theTable" = "ch.herzbube.acexpander.AceXpanderTableView"; 
+                "m_theModel" = AceXpanderModel; 
+                "m_theTable" = AceXpanderTableView; 
                 "m_unqueueMenuItem" = NSMenuItem; 
                 "m_usePasswordMenuItem" = NSMenuItem; 
             }; 
-            SUPERCLASS = "java.lang.Object"; 
+            SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = "ch.herzbube.acexpander.AceXpanderModel"; 
-            LANGUAGE = Java; 
-            OUTLETS = {"m_theTable" = "ch.herzbube.acexpander.AceXpanderTableView"; }; 
-            SUPERCLASS = "java.lang.Object"; 
+            CLASS = AceXpanderModel; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"m_theTable" = AceXpanderTableView; }; 
+            SUPERCLASS = NSObject; 
         }, 
         {
-            CLASS = "ch.herzbube.acexpander.AceXpanderTableView"; 
-            LANGUAGE = Java; 
-            OUTLETS = {"m_theModel" = "ch.herzbube.acexpander.AceXpanderModel"; }; 
+            CLASS = AceXpanderTableView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"m_theModel" = AceXpanderModel; }; 
             SUPERCLASS = NSTableView; 
-        }
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
     IBVersion = 1; 
 }

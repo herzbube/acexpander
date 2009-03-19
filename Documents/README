@@ -16,8 +16,8 @@ utility. With AceXpander installed, you can simply double-click on any
 ACE archive(s) in the Finder and the contents of the archive will be
 extracted to a sub-folder of the same folder where the original archive
 is located. To configure AceXpander, or to use additional program features,
-you have to directly launch the application (e.g. by double-clicking on the
-application icon in the Finder or the Dock).
+you have to launch the application, e.g. by double-clicking on the application
+icon in the Finder or in the Dock.
 
 For a detailed description of AceXpander's features, see the MANUAL
 document (available from AceXpander's Help menu).
@@ -32,15 +32,10 @@ If you are interested in AceXpander as a developer, you should have a look
 at the README.developer document.
 
 
-Changes in this release (1.0.1)
+Changes in this release (1.0.2)
 -------------------------------
-- added application and document icons
-- menu items "requeue", "unqueue", "remove", "expand", "list content" and
-  "test integrity" are now disabled if no archive is selected
-- changed all homepage references to point to the new homepage URL
-  http://www.herzbube.ch/drupal/?q=acexpander
-- renamed project to AceXpander (old name was AceExpander)
-
+- re-implementation of the entire project with Objective-C
+- added universal binary support
 
 For more details see the ChangeLog document.
 
@@ -56,18 +51,6 @@ The source code for AceXpander can be downloaded from its homepage
 http://www.herzbube.ch/drupal/?q=acexpander. You will get the source files
 ready for building with Xcode. Alternatively you may also get the source
 code from this subversion respository: http://herzbube.ch/svn/acexpander/
-
-
-Universal binary (MacIntel) support
------------------------------------
-Xcode currently does not support creating universal binaries for projects
-that use Java (I am using Xcode 2.2, which is the most recent Xcode version
-available from Apple). Since AceXpander is currently written in Cocoa/Java, it
-is therefore not possible to distribute it as a universal binary on short
-notice.
-
-In the next release, though, I plan to rewrite AceXpander to Objective-C. The
-next release will therefore be distributed as a universal binary.
 
 
 unace binary
@@ -86,11 +69,14 @@ that was packaged with this application.
 
 Limitations of AceXpander
 --------------------------
-- I developed and tested AceXpander on Mac OS X 10.2.8, so I can only
-  hope that it also works on later OS versions. It definitely does
-  not run on pre-10.2 systems, because the .nib file format is >= 10.2
-  and because a number of classes and methods are used that are not
-  available on pre-10.2 systems.
+- I develop and test AceXpander with whatever version of Mac OS X is installed
+  on my system at home, so every release of AceXpander potentially runs only
+  on exactly one version of Mac OS X: the one that was installed at my home at
+  the time of release. Since minor versions of the OS are often not that
+  different from each other, it is reasonable to expect that AceXpander runs on
+  earlier minor versions of the OS than the one that it was released for (e.g.
+  a release for Mac OS X 10.4.6 may also run on 10.4.3). In effect, you will
+  just have to try out whether it works or not.
 
 - If you turn on the "Use password" option, the password you enter will
   be passed to unace in clear text. If someone watches your system's
@@ -124,7 +110,7 @@ Limitations of unace
      password, but in effect you just have to delete a file, or turn on
      overwrite.
 
-- If you try to extract a file without the overwrite option turned on, and
+- If you try to extract a file with the overwrite option turned on, and
   a file with the same name already exists, you must also have the
   "assume yes" option turned on in AceXpander, otherwise unace dies with a
   segmentation fault. AceXpander takes care of this problem for you by
@@ -145,11 +131,15 @@ Limitations of unace
   "-y-" is set explicitly; if "-y-" is not set explicitly, the overwrite
   switch works fine.
 
-- Most of the time when unace encounters an error, it dies with a
-  segmentation fault. This is not a big problem, the error handling just
-  becomes somewhat un-differentiated. If you're only using the GUI and are
-  not interested in what happens under the hood of AceXpander, you can
-  forget about this issue.
+- If the archive contains a directory, and a directory with the same name
+  already exists in the file system, unace is not able to extract the
+  directory and its content - even if the overwrite option is turned on.
+
+- Often when unace encounters an error, it dies with a segmentation fault. This
+  is not a big problem, the error handling on the part of AceXpander just
+  becomes somewhat un-differentiated. If you're only using the GUI and are not
+  interested in what happens under the hood of AceXpander, you can forget
+  about this issue.
 
 
 Personal note
@@ -158,6 +148,9 @@ I would like to thank Marcel Lemke for providing us with unace, and Kolja
 Koischwitz for porting unace to the Mac. I would also like to mention
 another GUI frontend to unace, MacUnace by Gabriel Gritsch, which has
 influenced some of AceXpander's features (http://www.gritsch-soft.com/).
+Martin Moser has contributed the project logo and the important parts of the
+application and document icons; for this I am very grateful since I am a most
+un-artistic person.
 
 And, of course, a big Thanks to you for trying out this little program. It
 is my first Cocoa application, and in fact, it is also the first Open
