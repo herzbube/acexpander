@@ -1,0 +1,52 @@
+Priority 1 (important)
+----------------------
+- display stdout/stderr messages
+- if no items are selected and new items are added to the table,
+  these new items should become selected
+- table should color-code states
+- should be possible to change state by clicking on the table cell
+- file-open: remember the last directory in the user preferences
+- email to kolja/marcel lemke about unace bugs
+
+Priority 2 (nice to have)
+-------------------------
+- folders should be ignored with drag&drop
+- throw an exception when anything goes wrong with loading the
+  NSRegistration domain defaults
+- throw exception when shared NSUserDefaults object is null in
+  AceExpanderPreferences()
+- throw exception when error occurs during AceExpanderThread.setArguments()
+- throw exception when state of AceExpanderItem is set to something
+  invalid
+- throw exception when AceExpanderItem is created with theModel == null
+- throw exception when AceExpanderThread is created with theModel == null
+- better file handling when a new item is created or its filename is
+  set: e.g. what happens when it's a symlink? when it's an alias?
+  when we don't have read permissions?  
+- AceExpanderThread should not know the model -> should get the
+  information about options etc. differently
+- Double click on table item expands it
+- write the "what is it all about" paragraph in README
+
+Priority 3 (not important)
+--------------------------
+- main window resize
+- preferences: reset to factory settings -> removes all defaults in the
+  application domain
+- show main window when it is hidden and the user clicks on the
+  application's dock icon
+- delete key should also remove selected items
+- process file URLs, file contents (what's that?), file promises
+  (what's that?)
+- check the dragging source's operation mask
+- read Human Interface Guidelines
+
+Mac OS X 10.3
+-------------
+- when changing to Mac OS X 10.3, the following deprecated things
+  should be corrected:
+  - in the model: NSTableView.selectedRowEnumerator() should be replaced by
+    NSTableView.selectedRowIndexes()
+- in Mac OS X 10.3, use Cocoa bindings to manage preferences. See
+  http://developer.apple.com/cocoa/cocoabindings.html
+

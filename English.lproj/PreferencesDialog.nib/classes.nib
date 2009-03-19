@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {preferencesDialogCancelClicked = id; preferencesDialogOKClicked = id; }; 
+            CLASS = "ch.herzbube.aceexpander.AceExpanderPreferences"; 
+            LANGUAGE = Java; 
+            OUTLETS = {
+                "m_preferencesDialog" = NSPanel; 
+                "m_quitAppWhenMainWindowIsClosedButton" = NSButton; 
+            }; 
+            SUPERCLASS = "java.lang.Object"; 
+        }, 
+        {CLASS = "java.lang.Object"; LANGUAGE = Java; }
+    ); 
+    IBVersion = 1; 
+}

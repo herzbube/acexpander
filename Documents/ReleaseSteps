@@ -1,0 +1,7 @@
+Perform the following steps to make a release
+- update the ChangeLog (should have been done continuously, anyway)
+- update the README, if necessary
+- update the TODO, if necessary
+- bump the version number
+  - in InfoPlist.strings in the Resources section
+  - in ProjectBuilder on the "Targets" pane under "InfoPlist Entries"

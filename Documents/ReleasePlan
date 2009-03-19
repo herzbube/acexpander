@@ -1,0 +1,98 @@
+Release plan
+------------
+The following release plan gives a broad view of the order how possible features
+will be implemented. There is no time schedule associated with releases. It
+happens when it happens :-)
+
+If bugs are found, they will be fixed and the application will be released again
+with a revision number appended to the current version (e.g. 0.4.1).
+
+Version 0.5
+- add preference panel
+- preferences are loaded and saved
+- add a .plist file with default preferences to the project
+- save window positions in preferences
+- add preference "close application when main window is closed"
+- implement menu item to show the main window after it has been closed
+
+Version 0.6
+- stdout and stderr output of the unace process can be viewed
+  separately for each item
+- new preference to change the path to the unace binary
+- show unace version information
+
+Version 0.7
+- by default, the application terminates itself after a successful
+  expansion if it was started by double-clicking on an archive file in the
+  Finder
+- new preferences to control this behaviour
+- new preference "create surrounding folder"
+
+Version 0.8
+- new preference to set a destination folder where expanded items
+  should be placed
+- implement menu items "show info in finder" and "reveal in finder"
+
+Version 0.9
+- display text files (e.g. GPL) in the help menu
+- process entire folders
+
+Version 1.0
+- add application icon
+- add help menu item "AceExpander Homepage"
+- add a couple of UML diagrams to complete documentation
+
+Version 1.1
+- German localization
+- rewrite application in Objective-C
+- add unit tests (possibly use OCUnit from Sen:te)
+
+Version 1.3
+- Implement the f switch (full path matching)
+- Implement the x switch (exclude files from process)
+
+----------------------------------------
+Old release plan
+----------------------------------------
+
+Version 0.1
+- Implement the first draft of a working application
+- The application contains the preliminary version of unace
+
+Version 0.2
+- Add the final version of unace
+- Complete documentation files
+
+Version 0.3
+- Change the processing window so that it can display several files
+
+Version 0.4
+- Add support for password protected files
+- Add German localization
+
+Version 0.5
+- Add a preference panel
+- Preferences are loaded and saved
+- Window positions are loaded and saved
+- There is a preference to set a given directory where expanded
+  files should go to
+- There is a preference to disable saving/loading window positions
+
+Version 0.6
+- Implement the x command (extract files with full path)
+- Implement the f switch (full path matching)
+
+Version 0.7
+- Implement the y switch (assume yes on all questions)
+- Implement the o switch (overwrite files)
+
+Version 0.8
+- Implement the l and v commands (list archive, list archive verbose)
+- Implement the t command (test archive integrity)
+- Implement the c switch (show comments)
+
+Version 0.9
+- Implement the x switch (exclude files from process)
+
+Version 1.0
+- Add more useless preferences :-)

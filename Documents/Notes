@@ -1,0 +1,10 @@
+- the .nib uses the format for Mac OS X 10.2 and later. Therefore (but
+  also because various Cocoa classes available only on 10.2 or later are
+  used) the application will not run on pre-10.2 systems
+- it is by design that the table cannot be sorted, otherwise the
+  row index could not be guaranteed to match the correct item in the
+  model's item list
+- the MainWindow instance icon in MainMenu.nib indicates that a child
+  has a bad/missing connection. This is normal: there is no connection
+  for the target of the NSTextField instance that acts as a label for the
+  table

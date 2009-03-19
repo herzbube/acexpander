@@ -1,0 +1,66 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                cancelCommand = id; 
+                expandItems = id; 
+                listItems = id; 
+                queueAllItems = id; 
+                queueItems = id; 
+                removeAllItems = id; 
+                removeItems = id; 
+                revealInFinder = id; 
+                showChangeLog = id; 
+                showFinderInfo = id; 
+                showGPL = id; 
+                showMainWindow = id; 
+                showOpenDialog = id; 
+                showPreferencesDialog = id; 
+                showReadme = id; 
+                showUnaceVersion = id; 
+                testItems = id; 
+                toggleAssumeYes = id; 
+                toggleDebugMode = id; 
+                toggleExtractFullPath = id; 
+                toggleListVerbosely = id; 
+                toggleOverwriteFiles = id; 
+                toggleShowComments = id; 
+                toggleUsePassword = id; 
+                unqueueAllItems = id; 
+                unqueueItems = id; 
+            }; 
+            CLASS = "ch.herzbube.aceexpander.AceExpanderController"; 
+            LANGUAGE = Java; 
+            OUTLETS = {
+                "m_assumeYesMenuItem" = NSMenuItem; 
+                "m_cancelButton" = NSButton; 
+                "m_debugModeMenuItem" = NSMenuItem; 
+                "m_expandButton" = NSButton; 
+                "m_extractFullPathMenuItem" = NSMenuItem; 
+                "m_listVerboselyMenuItem" = NSMenuItem; 
+                "m_mainWindow" = NSWindow; 
+                "m_overwriteFilesMenuItem" = NSMenuItem; 
+                "m_progressIndicator" = NSProgressIndicator; 
+                "m_showCommentsMenuItem" = NSMenuItem; 
+                "m_showMainWindowMenuItem" = NSMenuItem; 
+                "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
+                "m_usePasswordMenuItem" = NSMenuItem; 
+            }; 
+            SUPERCLASS = "java.lang.Object"; 
+        }, 
+        {
+            CLASS = "ch.herzbube.aceexpander.AceExpanderModel"; 
+            LANGUAGE = Java; 
+            OUTLETS = {"m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; }; 
+            SUPERCLASS = "java.lang.Object"; 
+        }, 
+        {
+            CLASS = "ch.herzbube.aceexpander.AceExpanderTableView"; 
+            LANGUAGE = Java; 
+            OUTLETS = {"m_theModel" = AceExpanderModel; }; 
+            SUPERCLASS = NSTableView; 
+        }
+    ); 
+    IBVersion = 1; 
+}

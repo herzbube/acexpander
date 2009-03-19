@@ -1,0 +1,104 @@
+What is it all about
+--------------------
+
+http://www.winace.com
+
+
+unace binary
+------------
+AceExpander packages its own version of the unace binary so that it can
+be distributed and run as a stand-alone application. If you wish you
+may set your own version of unace in the preferences, however you should
+be aware that AceExpander may stop working properly after you make this
+change, because AceExpander makes a number of assumptions about how
+unace is working, which command line switches and options it uses, and
+how its output on stdout is formatted.
+
+Of course you can always change your preferences back to use the packaged
+unace.
+
+
+Limitations of AceExpander
+--------------------------
+- I developed and tested AceExpander on Mac OS X 10.2.8, so I can only
+  hope that it also works on later OS versions. It definitely does
+  not run on pre 10.2 systems, because the .nib file format is >= 10.2.
+
+
+Limitations of unace
+--------------------
+- If you try to extract a password-protected file but specify an incorrect
+  password, unace first extracts the encrypted file from the archive, but
+  is then unable to decrypt the file, and dies. Unfortunately, the
+  encrypted file is left lying around for you to clean up :-(
+
+- If you try to extract a file without the overwrite option turned on, and
+  a file with the same name already exists, unace dies with a segmentation
+  fault. In combination with the above problem with password-protected
+  files, this may prove to be quite nasty. Imagine this situation:
+  1) In your first try to extract a password-protected file, you mistype
+     the password and get an error message.
+  2) In your second try, you type the correct password, but you still get
+     an error message. Reason: you didn't turn on the overwrite option,
+     but there is still the encrypted file from 1) lying around. After
+     a couple of tries you might start to think that you have the wrong
+     password, but in effect you just have to delete a file, or turn on
+     overwrite.
+
+- If you try to extract a file without the overwrite option turned on, and
+  a file with the same name already exists, you must also have the
+  "assume yes" option turned on, otherwise unace dies with a segmentation
+  fault. AceExpander takes care of this problem for you by always turning
+  on the "assume yes" option when the overwrite option is turned on.
+
+  Technical note: the problem actually exists because of how AceExpander
+  interacts with unace: when invoking unace, AceExpander explicitly sets all
+  possible switches on the unace command line, even if the specified setting
+  is the default for unace and therefore could be omitted (the reason why
+  I coded it like this is that I did not want AceExpander to have specific
+  knowledge about unace defaults; the less AceExpander knows about unace,
+  the better).
+  Now for the "assume yes" option: as explained, even though the option is
+  turned off in the GUI, and "off" is unace's default for the switch,
+  AceExpander still explicitly sets the switch on the command line to "-y-".
+  Now the bug in unace is that the overwrite switch stops working as soon as
+  "-y-" is set explicitly; if "-y-" is not set explicitly, the overwrite
+  switch works fine.
+
+- Most of the time when unace encounters an error, it dies with a
+  segmentation fault. This is not a real problem, the error handling just
+  becomes somewhat un-differentiated. If you're only using the GUI and are
+  not interested in what happens under the hood of AceExpander, you can
+  probably forget about this issue.
+
+
+Keyboard shortcuts
+------------------
+- Standard Cocoa shortcuts
+  Cmd-,           Open preferences
+  Cmd-H           Hide application
+  Cmd-Shift-H     Hide others
+  Cmd-Q           Quit application
+  Cmd-O           Open file
+  Cmd-W           Close window
+  Cmd-A           Select all items
+  Cmd-M           Minimize
+- AceExpander shortcuts
+  Cmd-V           Show unace version
+  Cmd-Shift-I     Show info in Finder for selected items
+  Cmd-Shift-R     Reveal in Finder for selected items
+  Cmd-E           Expand selected items
+  Cmd-L           List content for selected items
+  Cmd-T           Test selected items
+  Cmd-R           (Re)Queue selected items
+  Cmd-U           Unqueue selected items
+  Backspace       Remove selected items
+  Cmd-Backspace   Remove all items
+
+Personal note
+-------------
+This is my first Cocoa Application. As such it is probably full of
+shortcomings, if not bugs. If you see something that needs improvement,
+please don't hesitate to let me know.
+
+Patrick Näf <aceexpander@herzbube.ch>

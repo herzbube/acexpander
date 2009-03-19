@@ -1,0 +1,32 @@
+This is the text submitted to SourceForge for the registration of the AceExpander project.
+This happened around October 4th 2003. The application never got processed, or at least I
+never got an answer from them :-(
+
+
+Project's name: AceExpander
+
+Rationale
+----------
+The program is a Mac OS X graphical user interface for the command line utility unace. The utility unace is used to decompress .ace archive files. unace is currently being ported to Mac OS X and I was asked to develop a graphical front-end so that the traditionally GUI oriented Mac user would be able to use the utility.
+
+Technical
+----------
+AceExpander uses Apple's Cocoa framework. The application is currently being developed in Java, however, in time I intend to switch to Objective-C a) to make it faster and b) to learn that programming language. Development takes place with Apple's IDE "Project Builder."
+
+Licensing
+----------
+The author tells me that unace will be released in its binary form only; the source code will not be freely available. However, this is no problem for AceExpander because the front-end executes the utility as a separate process only. The binary form of unace will be freely distributable, therefore AceExpander will be packaged with its own copy of unace, to make it easier for the end user.
+
+Development
+--------------
+Being a front-end to a quite simple cmdline utility, the program has only a finite set of development possibilities. These, I have outlined for myself, the end goal being version 1.0 which will support the entire cmdline interface of the utility. Once this goal has been achieved, AceExpander can only grow when new features are added to unace. Although I have thought about the line of development, I have attached no time frame to it.
+
+Developers
+------------
+I am the sole developer and, given the size of the project, will probably remain so.
+
+References
+------------
+http://winace.de/
+The site of the original Windows application.
+
