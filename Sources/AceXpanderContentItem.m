@@ -28,7 +28,7 @@
 
 // Project includes
 #import "AceXpanderContentItem.h"
-#import "AceXpanderController.h"
+#import "AceXpanderGlobals.h"
 
 
 /// @brief This category declares private methods for the AceXpanderContentItem
@@ -236,7 +236,7 @@
 /// @brief Returns whether this AceXpanderContentItem represents a password
 /// protected archive item.
 // -----------------------------------------------------------------------------
-- (BOOL*) passwordProtected
+- (BOOL) passwordProtected
 {
   return m_passwordProtected;
 }

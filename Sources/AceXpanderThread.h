@@ -30,24 +30,7 @@
 #import <Cocoa/Cocoa.h>
 
 // Forward declarations
-@class AceXpanderItem;
-
-// -----------------------------------------------------------------------------
-// The following line is required so that doxygen documents the global items
-// below.
-/// @file
-// -----------------------------------------------------------------------------
-
-// -----------------------------------------------------------------------------
-/// @brief States that an AceXpanderItem can have. See class documentation
-/// for more information.
-// -----------------------------------------------------------------------------
-enum AceXpanderCommand
-{
-   ExpandCommand   = 0,
-   ListCommand     = 1,
-   TestCommand     = 2
-};
+@class AceXpanderTask;
 
 
 // -----------------------------------------------------------------------------
@@ -98,14 +81,8 @@ enum AceXpanderCommand
   NSMutableArray* m_unaceSwitchList;
   //@}
 
-  // The process
-  NSTask* m_unaceTask;
-
-  /// @brief Flag that indicates whether or not the thread is running
-  BOOL m_isRunning;
-
-  // This flag indicates whether or not the thread should stop running
-  BOOL m_stopRunning;
+  /// @brief The task
+  AceXpanderTask* m_task;
 
   /// @brief Stores the destination folder for which the user has been queried
   /// when the first item was expanded.
@@ -113,17 +90,21 @@ enum AceXpanderCommand
 
   /// @brief The command currently running, or last run, in its numerical form
   int m_command;
-  
-  /// @brief This lock protects access to the runWithObject:() method, i.e.
-  /// only one thread may be active at a time using this AceXpanderThread
-  /// object's recources.
-  NSLock* m_runLock;
-  /// @brief This lock protects access to the m_stopRunning flag
-  NSLock* m_stopRunningLock;
-  /// @brief This lock protects access to the m_isRunning flag
-  NSLock* m_isRunningLock;
-  /// @brief This lock protects access to the m_unaceTask member
+
+  /// @brief This conditional lock is used by the main method of the command
+  /// thread to wake up when items are ready for processing.
+  NSConditionLock* m_mainLock;
+  /// @brief This lock protects access to the m_stopProcessing flag
+  NSLock* m_stopProcessingLock;
+  /// @brief This lock protects access to the member m_task
   NSLock* m_taskLock;
+
+  // This flag indicates whether or not the command thread should stop
+  // processing items
+  BOOL m_stopProcessing;
+
+  // This flag indicates whether or not the thread should terminate itself
+  BOOL m_terminate;
 }
 
 /// @name Initializers
@@ -131,17 +112,11 @@ enum AceXpanderCommand
 - (id) init;
 //@}
 
-/// @name Start/stop thread
+/// @name Start/stop processing
 //@{
-- (void) run;
-- (void) stop;
-- (BOOL) isRunning;
-//@}
-
-/// @name Adding/removing items
-//@{
-- (void) addItem:(AceXpanderItem*)item;
-- (void) removeItem:(AceXpanderItem*)item;
+- (void) processItems:(NSArray*)itemList;
+- (void) stopProcessing;
+- (BOOL) isProcessing;
 //@}
 
 /// @name Other methods

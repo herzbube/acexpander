@@ -27,18 +27,19 @@
 
 
 // Project includes
-#import "AceXpanderContentItem.h"
 #import "AceXpanderItem.h"
-#import "AceXpanderController.h"
+#import "AceXpanderContentItem.h"
 #import "AceXpanderModel.h"
+#import "AceXpanderGlobals.h"
 
-// Constants
+// Private constants
 static const NSString* columnIdentifierDate = @"date";
 static const NSString* columnIdentifierTime = @"time";
 static const NSString* columnIdentifierPacked = @"packed";
 static const NSString* columnIdentifierSize = @"size";
 static const NSString* columnIdentifierRatio = @"ratio";
 static const NSString* columnIdentifierFileName = @"fileName";
+
 
 /// @brief This category declares private methods for the AceXpanderItem class. 
 @interface AceXpanderItem(Private)
@@ -487,6 +488,56 @@ static const NSString* columnIdentifierFileName = @"fileName";
       // we are its owner according to Cocoa object ownership policy
       [wrapper release];
     }
+  }
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns the background color that should be used to display this
+/// item in its current state.
+// -----------------------------------------------------------------------------
+- (NSColor*) backgroundColor
+{
+  switch (m_state)
+  {
+    case QueuedState:
+      return [NSColor blueColor];
+    case SkipState:
+      return [NSColor lightGrayColor];
+    case ProcessingState:
+      return [NSColor blueColor];
+    case AbortedState:
+      return [NSColor yellowColor];
+    case SuccessState:
+      return [NSColor greenColor];
+    case FailureState:
+      return [NSColor redColor];
+    default:
+      return [NSColor redColor];
+  }
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns the text (foreground) color that should be used to display this
+/// item in its current state.
+// -----------------------------------------------------------------------------
+- (NSColor*) textColor
+{
+  switch (m_state)
+  {
+    case QueuedState:
+      return [NSColor whiteColor];
+    case SkipState:
+      return [NSColor blackColor];
+    case ProcessingState:
+      return [NSColor whiteColor];
+    case AbortedState:
+      return [NSColor blackColor];
+    case SuccessState:
+      return [NSColor blackColor];
+    case FailureState:
+      return [NSColor whiteColor];
+    default:
+      return [NSColor redColor];
   }
 }
 

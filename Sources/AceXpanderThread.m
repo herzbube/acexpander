@@ -29,46 +29,32 @@
 // Project includes
 #import "AceXpanderThread.h"
 #import "AceXpanderItem.h"
-#import "AceXpanderController.h"
-#import "AceXpanderPreferences.h"
+#import "AceXpanderTask.h"
+#import "AceXpanderGlobals.h"
 
-// Constants
-// Resource file names
-static NSString* unaceFrontEndResourceName = @"unace.sh";
-static NSString* unaceBundledResourceName = @"unace";
-// Parameters for the unace frontend
-static NSString* unaceFrontEndEnableDebug = @"1";
-static NSString* unaceFrontEndDisableDebug = @"0";
-static NSString* unaceFrontEndVersionParameter = @"--version";
-static NSString* unaceFrontDestinationFolderParameter = @"--folder";
-// Information about unace
-static NSString* unaceCmdExtract = @"e";
-static NSString* unaceCmdExtractWithFullPath = @"x";
-static NSString* unaceCmdList = @"l";
-static NSString* unaceCmdListVerbosely = @"v";
-static NSString* unaceCmdTest = @"t";
-static NSString* unaceSwitchShowComments = @"-c";
-static NSString* unaceSwitchOverwriteFiles = @"-o";
-static NSString* unaceSwitchUsePassword = @"-p";
-static NSString* unaceSwitchAssumeYes = @"-y";
+
+/// @brief Conditions used to control the main method of the command thread.
+enum AceXpanderThreadCondition
+{
+  ProcessingCondition,
+  NoProcessingCondition
+};
 
 
 /// @brief This category declares private methods for the AceXpanderThread
 /// class. 
 @interface AceXpanderThread(Private)
 - (void) dealloc;
-- (void) runWithObject:(id)anObject;
-- (void) processItem:(AceXpanderItem*)item withUnace:(NSString*)unaceExecutablePath;
+- (void) main:(id)anObject;
 + (NSString*) determineUnaceExecutablePath;
 - (NSString*) determineDestinationFolder:(NSString*)archiveFileName;
-- (BOOL) stopRunning;
-- (void) setStopRunning:(BOOL)stopRunning;
-- (void) setIsRunning:(BOOL)isRunning;
 @end
+
 
 @implementation AceXpanderThread
 // -----------------------------------------------------------------------------
-/// @brief Initializes an AceXpanderThread object.
+/// @brief Initializes an AceXpanderThread object. A new command thread is
+/// detached before this method returns.
 ///
 /// @note This is the designated initializer of AceXpanderThread.
 // -----------------------------------------------------------------------------
@@ -79,14 +65,17 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   if (! self)
     return nil;
 
+  // Initialize members
   m_itemList = [[NSMutableArray array] retain];
   m_unaceSwitchList = [[NSMutableArray array] retain];
-  m_runLock = [[NSLock alloc] init];
-  m_stopRunningLock = [[NSLock alloc] init];
-  m_isRunningLock = [[NSLock alloc] init];
+  m_mainLock = [[NSConditionLock alloc] initWithCondition:NoProcessingCondition];
+  m_stopProcessingLock = [[NSLock alloc] init];
   m_taskLock = [[NSLock alloc] init];
-  [self setIsRunning:false];
-  [self setStopRunning:false];
+  m_stopProcessing = false;
+  m_terminate = false;
+
+  // Detach new thread
+  [NSThread detachNewThreadSelector:@selector(main:) toTarget:self withObject:nil];
 
   // Return
   return self;
@@ -95,252 +84,276 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 // -----------------------------------------------------------------------------
 /// @brief Deallocates memory allocated by this AceXpanderThread object.
 ///
-/// A command that is still running is stopped by this method.
+/// The command thread is stopped by this method.
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
-  // Make sure that any still running command is stopped
-  [self stop];
+  // Make sure that all processing stops
+  [self stopProcessing];
+  // Acquire the main lock - this should be no problem after stopProcessing
+  // has returned
+  [m_mainLock lockWhenCondition:NoProcessingCondition];
+  // Tell the thread to terminate itself. We can do this safely while we have
+  // the main lock.
+  m_terminate = true;
+  // Unlock and wake up the thread so that it can terminate itself
+  [m_mainLock unlockWithCondition:ProcessingCondition];
 
   // The following members are always filled with constants -> we don't have to
   // release these members
   // - m_unaceCommand
   // - m_unaceFrontendDebugParameter
 
-  if (m_runLock)
-    [m_runLock autorelease];
-  if (m_stopRunningLock)
-    [m_stopRunningLock autorelease];
-  if (m_isRunningLock)
-    [m_isRunningLock autorelease];
+  if (m_mainLock)
+    [m_mainLock autorelease];
+  if (m_stopProcessingLock)
+    [m_stopProcessingLock autorelease];
   if (m_taskLock)
     [m_taskLock autorelease];
   if (m_itemList)
     [m_itemList autorelease];
   if (m_unaceSwitchList)
     [m_unaceSwitchList autorelease];
-  if (m_unaceTask)
-    [m_unaceTask autorelease];
+  if (m_task)
+    [m_task autorelease];
   if (m_destinationFolderAskWhenExpanding)
     [m_destinationFolderAskWhenExpanding autorelease];
   [super dealloc];
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Launches a new thread whose main method is runWithObject:().
-// -----------------------------------------------------------------------------
-- (void) run
-{
-  [NSThread detachNewThreadSelector:@selector(runWithObject:) toTarget:self withObject:nil];
-}
-
-// -----------------------------------------------------------------------------
-/// @brief This is the main method of the command thread. It creates an
-/// autorelease pool, processes all items that have previously been added, then
-/// releases the autorelease pool.
+/// @brief Launches unace in a separate process to get information about the
+/// executable's version.
 ///
-/// At the end of each iteration, before processing of a new item begins, this
-/// method checks whether it should abort the loop because an external source
-/// has called stop:() (usually in reaction to the user clicking the "cancel"
-/// button in the GUI).
+/// This method is synchronous, i.e. it does @not launch a thread to execute
+/// the unace binary. This method is simply a convenient way to get at the
+/// unace binary's version information.
+///
+/// @return a version string, or nil if something goes wrong
+///
+/// @note This is a class method.
 // -----------------------------------------------------------------------------
-- (void) runWithObject:(id)anObject
++ (NSString*) unaceVersion
 {
-  // Some objects that need to be present
-  if (! m_itemList)
-    return;
-
-  // Create an autorelease pool
-  NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-  if (! pool)
-    return;
-
-  // From now on, do not return without unlocking m_runLock
-  if (m_runLock)
-    [m_runLock lock];
-
-  // Determine the path to the unace executable that we should use
   NSString* unaceExecutablePath = [AceXpanderThread determineUnaceExecutablePath];
-
-  // Initialize members
-  [self setIsRunning:true];
-  [self setStopRunning:false];
-  if (m_destinationFolderAskWhenExpanding)
-  {
-    [m_destinationFolderAskWhenExpanding autorelease];
-    m_destinationFolderAskWhenExpanding = nil;
-  }
-
-  NSEnumerator* enumerator = [m_itemList objectEnumerator];
-  AceXpanderItem* iterItem;
-  while (iterItem = (AceXpanderItem*)[enumerator nextObject])
-  {
-    // We need to check the state because it might be possible that
-    // in the meantime the item has become non-QUEUED through the
-    // user's actions
-    if (QueuedState != [iterItem state])
-      continue;
-
-    // Start processing
-    [iterItem setState:ProcessingState];
-    [self processItem:iterItem withUnace:unaceExecutablePath];
-
-    // Abort if necessary
-    if ([self stopRunning])
-      break;
-  }
-
-  // Reset flags
-  [self setIsRunning:false];
-  // Clear the list to make this thread ready for submissions for the next run
-  [m_itemList removeAllObjects];
-
-  // Release the lock
-  if (m_runLock)
-    [m_runLock unlock];
-
-  // Notify any observers that this thread has terminated
-  // Note: do this ***AFTER*** releasing m_runLock to prevent a deadlock where
-  // - the GUI thread is waiting on m_runLock in stop:(), because the
-  //   user clicked the "cancel" button
-  // - posting the notification leads to a GUI update of the "expand" button,
-  //   which will then wait on a lock inside Cocoa that was already acquired
-  //   by the GUI thread when the user clicked the "cancel" button
-  [[NSNotificationCenter defaultCenter] postNotificationName:commandThreadHasFinishedNotification object:nil];
-
-  // Release the autorelease pool
-  [pool release];
+  if (unaceExecutablePath)
+    return [AceXpanderTask unaceVersion:unaceExecutablePath];
+  else
+    return nil;
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Terminates the command thread that is currently running.
+/// @brief This is the main method of the command thread.
 ///
-/// This method does not return until the command thread has been terminated.
+/// It starts processing items when they are submitted by processItems:().
+/// It stops processing items when it either runs out of items, or when it is
+/// told to stop processing items by stopProcessing:(). The latter occurs in
+/// two cases:
+/// - when the user clicks the "cancel" button in the GUI
+/// - when the user terminates the application and the AceXpanderThread object
+///   is deallocated
 // -----------------------------------------------------------------------------
-- (void) stop
+- (void) main:(id)anObject
 {
-  // This will stop the next iteration in the runWithObject() method
-  [self setStopRunning:true];
+  // ------------------------------------------------------------
+  // The thread cannot run successfully if these members are not set
+  if (! m_mainLock || ! m_taskLock || ! m_stopProcessingLock || ! m_itemList)
+    return;
 
-  // The thread waits for the process, so we need to kill the process
-  // in order for the thread to be able to check on the m_stopRunning
-  // flag
+  // ------------------------------------------------------------
+  // Loop until m_terminate is set to true by dealloc:()
+  while (true)
+  {
+    // ------------------------------------------------------------
+    // Acquire main lock
+    [m_mainLock lockWhenCondition:ProcessingCondition];
+
+    // ------------------------------------------------------------
+    // Check if the thread should exit
+    if (m_terminate)
+    {
+      // Release lock, just for completeness sake
+      [m_mainLock unlockWithCondition:NoProcessingCondition];
+      // Break the main loop
+      break;
+    }
+
+    // ------------------------------------------------------------
+    // Create an autorelease pool. This must be one of the very first things
+    // that this thread is doing...
+    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+    if (! pool)
+      return;
+
+    // ------------------------------------------------------------
+    // Notify observers that the command thread has started processing items
+    [[NSNotificationCenter defaultCenter] postNotificationName:commandThreadHasStartedNotification object:nil];
+
+    // ------------------------------------------------------------
+    // Determine the path to the unace executable that we should use
+    NSString* unaceExecutablePath = [AceXpanderThread determineUnaceExecutablePath];
+
+    // ------------------------------------------------------------
+    // Iterate & process items
+    BOOL stopProcessing = false;
+    while ([m_itemList count] > 0 && ! stopProcessing)
+    {
+      // Get item
+      AceXpanderItem* iterItem = (AceXpanderItem*)[m_itemList objectAtIndex:0];
+      [m_itemList removeObjectAtIndex:0];
+      if (! iterItem)
+        continue;
+
+      // We need to check the state because it might be possible that the item
+      // was added even though its state was not QueuedState
+      if (QueuedState != [iterItem state])
+        continue;
+
+      // Destination folder is required only if we expand
+      NSString* destinationFolder = nil;
+      if (ExpandCommand == m_command)
+        destinationFolder = [self determineDestinationFolder:[iterItem fileName]];
+
+      // Create new task
+      [m_taskLock lock];
+      m_task = [[AceXpanderTask alloc] init];
+      if (! m_task)
+      {
+        [m_taskLock unlock];
+        continue;
+      }
+      // Configure task
+      [m_task setUnaceExecutablePath:unaceExecutablePath];
+      [m_task setDestinationFolder:destinationFolder];
+      [m_task setUnaceFrontendDebugParameter:m_unaceFrontendDebugParameter];
+      [m_task setUnaceCommand:m_command commandSwitch:m_unaceCommand];
+      [m_task setUnaceSwitchList:m_unaceSwitchList];
+      [m_task setItem:iterItem];
+      // Execute task
+      // Note: while we wait for the task's termination, we release the lock
+      // that allows for task termination by stopProcessing:()
+      [m_taskLock unlock];
+      /// @todo There is a small loop hole here - if stopProcessing() calls
+      /// [m_taskLock isRunning] right now, it will think that the task is
+      /// not running, yet we are just about to start it...
+      [m_task launch];
+      // Lock again so that we can release the task
+      [m_taskLock lock];
+      [m_task release];
+      m_task = nil;
+      [m_taskLock unlock];
+
+      // Check if we need to abort processing
+      [m_stopProcessingLock lock];
+      if (m_stopProcessing)
+        stopProcessing = true;
+      [m_stopProcessingLock unlock];
+    }
+
+    // ------------------------------------------------------------
+    // Cleanup after processing has finished
+    [m_itemList removeAllObjects];
+    if (m_destinationFolderAskWhenExpanding)
+    {
+      [m_destinationFolderAskWhenExpanding autorelease];
+      m_destinationFolderAskWhenExpanding = nil;
+    }
+
+    // ------------------------------------------------------------
+    // Release main lock
+    [m_mainLock unlockWithCondition:NoProcessingCondition];
+
+    // ------------------------------------------------------------
+    // Notify observers that the command thread has stopped processing items
+    // Note: do this ***AFTER*** releasing m_mainLock to prevent a deadlock
+    //  where
+    // - the GUI thread is waiting on m_mainLock in stopProcessing:(), because
+    //   the user clicked the "cancel" button
+    // - posting the notification leads to a GUI update of the "expand" button,
+    //   which will then wait on a lock inside Cocoa that was already acquired
+    //   by the GUI thread when the user clicked the "cancel" button
+    [[NSNotificationCenter defaultCenter] postNotificationName:commandThreadHasStoppedNotification object:nil];
+
+    // ------------------------------------------------------------
+    // Release the autorelease pool
+    [pool release];
+    pool = nil;
+  }
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Submits a list with AceXpanderItems for processing.
+///
+/// @note If the command thread is currently processing items, this method
+/// blocks until the thread stops processing.
+// -----------------------------------------------------------------------------
+- (void) processItems:(NSArray*)itemList
+{
+  if (! itemList || [itemList count] == 0 || ! m_itemList)
+    return;
+  [m_mainLock lockWhenCondition:NoProcessingCondition];
+  [m_itemList removeAllObjects];
+  [m_itemList addObjectsFromArray:itemList];
+  [m_mainLock unlockWithCondition:ProcessingCondition];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Tells the command thread to stop processing items.
+///
+/// This method does not return until the command thread has stopped
+/// processing.
+// -----------------------------------------------------------------------------
+- (void) stopProcessing
+{
+  // Set the flag that tells the main:() method to stop on its next
+  // iteration
+  if (m_stopProcessingLock)
+    [m_stopProcessingLock lock];
+  m_stopProcessing = true;
+  if (m_stopProcessingLock)
+    [m_stopProcessingLock unlock];
+
+  // The thread waits for the process, so we need to kill the process in
+  // order for the thread to be able to check on the m_stopProcessing flag
   if (m_taskLock)
     [m_taskLock lock];
-  if (nil != m_unaceTask && [m_unaceTask isRunning])
-    [m_unaceTask terminate];
+  if (nil != m_task && [m_task isRunning])
+    [m_task terminate];
   if (m_taskLock)
     [m_taskLock unlock];
 
-  // Try to acquire the run lock - we will get it as soon as runWithObject
-  // returns
-  [m_runLock lock];
-  // We can release the lock immediately
-  [m_runLock unlock];
+  // Try to acquire the main lock - we will get it as soon as main() stops
+  // processing
+  [m_mainLock lockWhenCondition:NoProcessingCondition];
+  // Reset the flag
+  if (m_stopProcessingLock)
+    [m_stopProcessingLock lock];
+  m_stopProcessing = false;
+  if (m_stopProcessingLock)
+    [m_stopProcessingLock unlock];
+  // Release the lock just before we return (without changing the condition)
+  [m_mainLock unlock];
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Updates the m_stopRunning flag to the value @a stopRunning.
-///
-/// This is an internal helper method that protects access to m_stopRunning.
+/// @brief Returns whether or not the command thread is currently processing
+/// items.
 // -----------------------------------------------------------------------------
-- (void) setStopRunning:(BOOL)stopRunning
+- (BOOL) isProcessing
 {
-  if (m_stopRunningLock)
-    [m_stopRunningLock lock];
-  m_stopRunning = stopRunning;
-  if (m_stopRunningLock)
-    [m_stopRunningLock unlock];
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Returns the value of the m_stopRunning flag. If true, a running
-/// thread should terminate as soon as possible.
-///
-/// This is an internal helper method that protects access to m_stopRunning.
-// -----------------------------------------------------------------------------
-- (BOOL) stopRunning
-{
-  if (m_stopRunningLock)
-    [m_stopRunningLock lock];
-  // Make a copy that we can return after releasing the lock
-  BOOL stopRunning = m_stopRunning;
-  if (m_stopRunningLock)
-    [m_stopRunningLock unlock];
-  return stopRunning;
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Updates the m_isRunning flag to the value @a isRunning.
-///
-/// This is an internal helper method that protects access to m_isRunning.
-// -----------------------------------------------------------------------------
-- (void) setIsRunning:(BOOL)isRunning
-{
-  if (m_isRunningLock)
-    [m_isRunningLock lock];
-  m_isRunning = isRunning;
-  if (m_isRunningLock)
-    [m_isRunningLock unlock];
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Returns whether or not the command thread is currently running.
-///
-/// This is an internal helper method that protects access to m_isRunning.
-// -----------------------------------------------------------------------------
-- (BOOL) isRunning
-{
-  if (m_isRunningLock)
-    [m_isRunningLock lock];
-  // Make a copy that we can return after releasing the lock
-  BOOL isRunning = m_isRunning;
-  if (m_isRunningLock)
-    [m_isRunningLock unlock];
-  return isRunning;
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Adds @a item to the list of items that the command thread should
-/// process when it is run the next time.
-///
-/// @a item will be skipped if its state is not #QueuedState when the command
-/// thread runs the next time.
-// -----------------------------------------------------------------------------
-- (void) addItem:(AceXpanderItem*)item
-{
-  if (m_runLock)
-    [m_runLock lock];
-
-  // The array retains the object for us
-  if (m_itemList)
-    [m_itemList addObject:item];
-
-  if (m_runLock)
-    [m_runLock unlock];
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Removes @a item from the list of items that the command thread should
-/// process when it is run the next time.
-// -----------------------------------------------------------------------------
-- (void) removeItem:(AceXpanderItem*)item
-{
-  if (m_runLock)
-    [m_runLock lock];
-
-  // The array releases the item for us
-  if (m_itemList)
-    [m_itemList removeObject:item];
-
-  if (m_runLock)
-    [m_runLock unlock];
+  if (m_mainLock)
+    return ([m_mainLock condition] == ProcessingCondition);
+  else
+    return false;
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Tells the command thread that it should execute the command
 /// @a command, using the other method parameters as command options, when it
-/// is run the next time.
+/// processes the next batch of items.
+///
+/// @note If the command thread is currently processing items, this method
+/// blocks until the thread stops processing.
 // -----------------------------------------------------------------------------
 - (void) setCommand:(int)command
      overwriteFiles:(BOOL)overwriteFiles
@@ -352,8 +365,8 @@ static NSString* unaceSwitchAssumeYes = @"-y";
            password:(NSString*)password
           debugMode:(BOOL)debugMode
 {
-  if (m_runLock)
-    [m_runLock lock];
+  if (m_mainLock)
+    [m_mainLock lockWhenCondition:NoProcessingCondition];
 
   m_unaceCommand = @"";
   [m_unaceSwitchList removeAllObjects];
@@ -381,8 +394,8 @@ static NSString* unaceSwitchAssumeYes = @"-y";
       NSString* errorDescription = [NSString stringWithFormat:@"Unexpected command code %d", command];
       [[NSNotificationCenter defaultCenter] postNotificationName:errorConditionOccurredNotification object:errorDescription];
 
-      if (m_runLock)
-        [m_runLock unlock];
+      if (m_mainLock)
+        [m_mainLock unlock];
       return;
     }
   }
@@ -415,199 +428,8 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   else
     m_unaceFrontendDebugParameter = unaceFrontEndDisableDebug;
 
-  if (m_runLock)
-    [m_runLock unlock];
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Launches unace in a separate process to get information about the
-/// executable's version.
-///
-/// This method is synchronous, i.e. it does @not launch a thread to execute
-/// the unace binary. This method is simply a convenient way to get at the
-/// unace binary's version information.
-///
-/// @return a version string, or nil if something goes wrong
-///
-/// @note This is a class method.
-// -----------------------------------------------------------------------------
-+ (NSString*) unaceVersion
-{
-  NSString* unaceExecutablePath = [AceXpanderThread determineUnaceExecutablePath];
-  if (! unaceExecutablePath)
-    return nil;
-
-  NSMutableArray* arguments = [NSMutableArray array];
-  [arguments addObject:unaceExecutablePath];
-  [arguments addObject:unaceFrontEndVersionParameter];
-  
-  // Create pipe
-  NSPipe* stdoutPipe = [NSPipe pipe];
-  // Create and configure task
-  NSTask* unaceTask = [[NSTask alloc] init];
-  [unaceTask setStandardOutput:stdoutPipe]; 
-  [unaceTask setLaunchPath:[[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil]];
-  [unaceTask setArguments:arguments];
-
-  // The result we want to return
-  NSString* messageStdout = nil;
-
-  // Execute task and wait for its termination
-  @try
-  {
-    [unaceTask launch];
-    [unaceTask waitUntilExit];
-
-    // Evaluate task result
-    int exitValue = [unaceTask terminationStatus];
-    if (0 == exitValue)
-    {
-      NSFileHandle* readHandle = [stdoutPipe fileHandleForReading];
-      NSData* stdoutData = [readHandle readDataToEndOfFile];
-      messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-    }
-  }
-  @catch(NSException* exception)
-  {
-    // Notify the error handler that an error has occurred
-    [[NSNotificationCenter defaultCenter] postNotificationName:errorConditionOccurredNotification
-                                                        object:[exception reason]];
-  }
-
-  // Release objects
-  [unaceTask autorelease];
-
-  // Return entire standard output as the version string
-  if (messageStdout)
-    return [[messageStdout retain] autorelease];
-  else
-    return nil;
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Processes the archive that @a item represents in a separate process.
-/// Waits for the process to terminate.
-///
-/// @a unaceExecutablePath is the path to the unace binary that should be
-/// used to launch the process.
-///
-/// @a item is updated with a new state (usually either #SuccessState or
-/// #FailureState) and the messages acquired from the process' standard output
-/// and standard error.
-// -----------------------------------------------------------------------------
-- (void) processItem:(AceXpanderItem*)item withUnace:(NSString*)unaceExecutablePath
-{
-  if (! item || ! unaceExecutablePath)
-    return;
-  NSString* fileName = [item fileName];
-
-  // Destination folder is required only if we expand
-  NSString* destinationFolder = nil;
-  if (ExpandCommand == m_command)
-  {
-    destinationFolder = [self determineDestinationFolder:fileName];
-    if (! destinationFolder)
-    {
-      [item setState:FailureState];
-      [item setMessageStdout:nil messageStderr:nil containsListing:NO];
-      return;
-    }
-  }
-
-  // Build command line
-  // Note: it is important that the command line is built in a way that retains
-  // spaces in path names! Also, special care must be taken that no empty
-  // strings are passed as arguments to unace because it is confused by this
-  // and will try to expand an archive named ".ace" (empty string followed by
-  // extension ".ace")
-  NSMutableArray* arguments = [NSMutableArray array];
-  [arguments addObject:unaceExecutablePath];
-  if (destinationFolder)
-  {
-    [arguments addObject:unaceFrontDestinationFolderParameter];
-    [arguments addObject:destinationFolder];
-  }
-  [arguments addObject:m_unaceFrontendDebugParameter];
-  [arguments addObject:m_unaceCommand];
-  NSEnumerator* enumerator = [m_unaceSwitchList objectEnumerator];
-  NSString* iterSwitch;
-  while (iterSwitch = (NSString*)[enumerator nextObject])
-    [arguments addObject:iterSwitch];
-  [arguments addObject:fileName];
-
-  /// @todo change working directory first so that the stuff that
-  /// gets un-archived by unace is placed in the right directory
-  /// If the process correctly inherits the working directory, we
-  /// can do without the shell front end and execute unace directly.
-
-  // Create pipe
-  NSPipe* stdoutPipe = [NSPipe pipe];
-  NSPipe* stderrPipe = [NSPipe pipe];
-  // Create and configure task
-  if (m_taskLock)
-    [m_taskLock lock];
-  m_unaceTask = [[NSTask alloc] init];
-  [m_unaceTask setStandardOutput:stdoutPipe]; 
-  [m_unaceTask setStandardError:stderrPipe]; 
-  [m_unaceTask setLaunchPath:[[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil]];
-  [m_unaceTask setArguments:arguments];
-
-  // Execute task and wait for its termination
-  @try
-  {
-    [m_unaceTask launch];
-    // While we wait for the task's termination, we release the lock that
-    // allows for task termination by stop:()
-    if (m_taskLock)
-      [m_taskLock unlock];
-    [m_unaceTask waitUntilExit];
-    if (m_taskLock)
-      [m_taskLock lock];
-  }
-  @catch(NSException* exception)
-  {
-    // Notify the error handler that an error has occurred
-    [[NSNotificationCenter defaultCenter] postNotificationName:errorConditionOccurredNotification
-                                                        object:[exception reason]];
-  }
-
-  // Check if we need to stop the thread
-  if ([self stopRunning])
-  {
-    [item setState:AbortedState];
-    [item setMessageStdout:nil
-             messageStderr:nil
-           containsListing:(m_command == ListCommand)];
-  }
-  else
-  {
-    // Evaluate task result
-    int exitValue = [m_unaceTask terminationStatus];
-    if (0 != exitValue)
-      [item setState:FailureState];
-    else
-      [item setState:SuccessState];
-
-    // Get standard output and error messages
-    NSFileHandle* stdoutReadHandle = [stdoutPipe fileHandleForReading];
-    NSData* stdoutData = [stdoutReadHandle readDataToEndOfFile];
-    NSString* messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-    NSFileHandle* stdErrReadHandle = [stderrPipe fileHandleForReading];
-    NSData* stderrData = [stdErrReadHandle readDataToEndOfFile];
-    NSString* messageStderr = [[NSString alloc] initWithData:stderrData encoding:NSASCIIStringEncoding];
-    [item setMessageStdout:messageStdout
-             messageStderr:messageStderr
-                containsListing:(m_command == ListCommand)];
-    if (messageStdout)
-      [messageStdout autorelease];
-    if (messageStderr)
-      [messageStderr autorelease];
-  }
-
-  [m_unaceTask autorelease];
-  m_unaceTask = nil;
-  if (m_taskLock)
-    [m_taskLock unlock];
+  if (m_mainLock)
+    [m_mainLock unlock];
 }
 
 // -----------------------------------------------------------------------------

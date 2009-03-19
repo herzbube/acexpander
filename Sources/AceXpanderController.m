@@ -31,16 +31,8 @@
 #import "AceXpanderModel.h"
 #import "AceXpanderPreferences.h"
 #import "AceXpanderItem.h"
+#import "AceXpanderGlobals.h"
 
-// Constants
-static NSString* passwordDialogNibName = @"PasswordDialog";
-static NSString* gnuGPLFileName = @"COPYING";
-static NSString* manualFileName = @"MANUAL";
-static NSString* readMeFileName = @"README";
-static NSString* changeLogFileName = @"ChangeLog";
-static NSString* releasePlanFileName = @"ReleasePlan";
-static NSString* toDoFileName = @"TODO";
-static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
 /// @brief This category declares private methods for the AceXpanderController
 /// class. 
@@ -148,7 +140,8 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
 /// @name Notification handlers
 //@{
-- (void) commandThreadHasFinished;
+- (void) commandThreadHasStarted;
+- (void) commandThreadHasStopped;
 - (void) errorConditionOccurred:(NSNotification*)aNotification;
 - (void) updateResultWindow;
 - (void) updateContentListDrawer;
@@ -157,7 +150,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
 /// @name Other methods
 //@{
-- (void) updateGUI:(BOOL)commandIsRunning;
+- (void) updateGUI;
 - (void) setMenuItem:(NSMenuItem*)item state:(BOOL)newState;
 - (void) showTextFileInWindow:(NSString*)fileName;
 - (void) registerForNotifications;
@@ -290,6 +283,11 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 // -----------------------------------------------------------------------------
 - (void) applicationDidFinishLaunching:(NSNotification*)aNotification
 {
+  // Set initial state of some GUI elements (e.g. "expand" button is disabled
+  // if no items have been added by application:openFile:()
+  [self updateGUI];
+
+  // We need the model for all further tasks
   if (! m_theModel)
     return;
 
@@ -465,6 +463,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 {
   [self updateResultWindow];
   [self updateContentListDrawer];
+  [self updateGUI];
 }
 
 // -----------------------------------------------------------------------------
@@ -543,12 +542,10 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 // -----------------------------------------------------------------------------
 - (void) expandItems:(id)sender
 {
-  [self updateGUI:true];
-  BOOL threadWasStarted = false;
-  if (m_theModel)
-    threadWasStarted = [m_theModel startExpandItems];
-  if (! threadWasStarted)
-    [self updateGUI:false];
+  if (! m_theModel)
+    return;
+  [m_theModel startExpandItems];
+  [self updateGUI];
 }
 
 // -----------------------------------------------------------------------------
@@ -558,16 +555,13 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 // -----------------------------------------------------------------------------
 - (void) listItems:(id)sender
 {
-  [self updateGUI:true];
-  BOOL threadWasStarted = false;
-  if (m_theModel)
-    threadWasStarted = [m_theModel startListItems];
-  if (! threadWasStarted)
-    [self updateGUI:false];
-  else if (m_theContentListDrawer)
+  if (! m_theModel)
+    return;
+  [m_theModel startListItems];
+  [self updateGUI];
+  if (m_theContentListDrawer)
   {
-    // If the list thread was started successfully, and the list
-    // content drawer is not visible -> show it
+    // If the list content drawer is not visible -> show it
     switch ([m_theContentListDrawer state])
     {
       case NSDrawerClosedState:
@@ -585,12 +579,10 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 // -----------------------------------------------------------------------------
 - (void) testItems:(id)sender
 {
-  [self updateGUI:true];
-  BOOL threadWasStarted = false;
-  if (m_theModel)
-    threadWasStarted = [m_theModel startTestItems];
-  if (! threadWasStarted)
-    [self updateGUI:false];
+  if (! m_theModel)
+    return;
+  [m_theModel startTestItems];
+  [self updateGUI];
 }
 
 // -----------------------------------------------------------------------------
@@ -615,7 +607,9 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
   // We don't actually launch a thread here - we simply use AceXpanderThread's
   // wrapper facilities for a one-shot execution of unace to get at the version
   // that we are currently using
-  NSString* version = [AceXpanderThread unaceVersion];
+  NSString* version = nil;
+  if (m_theModel)
+    version = [m_theModel unaceVersion];
   if (version)
   {
     NSAlert* alert = [NSAlert alertWithMessageText:@"Version information"
@@ -1046,16 +1040,25 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Updates the GUI after an unace command has finished processing.
+/// @brief Updates the GUI after an unace command has started processing.
+// -----------------------------------------------------------------------------
+- (void) commandThreadHasStarted
+{
+  [self updateGUI];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Updates the GUI after an unace command has finished processing its
+/// items.
 ///
 /// If the application is in non-interactive mode (i.e. the command that has
 /// just finished was the command that was started immediately after application
 /// launch), the application is terminated, unless the user preferences prevent
 /// termination.
 // -----------------------------------------------------------------------------
-- (void) commandThreadHasFinished
+- (void) commandThreadHasStopped
 {
-  [self updateGUI:false];
+  [self updateGUI];
 
   // Terminate application if all items expanded successfully and
   // the application mode is non-interactive. If this method is called
@@ -1210,18 +1213,26 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
 // -----------------------------------------------------------------------------
 /// @brief Disables/enables buttons and other GUI elements depending on whether
-/// an unace command is currently running.
+/// an unace command is currently running, and whether any items are selected
+/// in the GUI main table.
 ///
 /// @note This is an internal helper method.
 // -----------------------------------------------------------------------------
-- (void) updateGUI:(BOOL)commandIsRunning
+- (void) updateGUI
 {
-  if (m_expandButton)
-    [m_expandButton setEnabled:! commandIsRunning];
-  if (m_cancelButton)
-    [m_cancelButton setEnabled: commandIsRunning];
+  bool isCommandRunning = false;
+  if (m_theModel)
+    isCommandRunning = [m_theModel isCommandRunning];
+  int numberOfSelectedRows = 0;
+  if (m_theTable)
+    numberOfSelectedRows = [m_theTable numberOfSelectedRows];
 
-  if (commandIsRunning)
+  if (m_expandButton)
+    [m_expandButton setEnabled:(! isCommandRunning && numberOfSelectedRows > 0)];
+  if (m_cancelButton)
+    [m_cancelButton setEnabled:isCommandRunning];
+
+  if (isCommandRunning)
     [m_progressIndicator startAnimation:self];
   else
     [m_progressIndicator stopAnimation:self];
@@ -1290,11 +1301,17 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
   if (! center)
     return;
 
+  // Register for notification posted by the command thread when it
+  // is launched
+  [center addObserver:self
+             selector:@selector(commandThreadHasStarted)
+                 name:commandThreadHasStartedNotification
+               object:nil];
   // Register for notification posted by the command thread after it
   // has finished processing its items
   [center addObserver:self
-             selector:@selector(commandThreadHasFinished)
-                name:commandThreadHasFinishedNotification
+             selector:@selector(commandThreadHasStopped)
+                name:commandThreadHasStoppedNotification
               object:nil];
   // Register for notification posted by anybody when an error condition
   // occurs

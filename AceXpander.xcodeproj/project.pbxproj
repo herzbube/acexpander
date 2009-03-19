@@ -35,6 +35,7 @@
 		CDCD01EF0A61592E00904705 /* AceXpanderPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD01EA0A61592E00904705 /* AceXpanderPreferences.m */; };
 		CDCD01F00A61592E00904705 /* AceXpanderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD01EC0A61592E00904705 /* AceXpanderTableView.m */; };
 		CDCD99850A5D85F4000EBEDB /* AceXpanderItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD99840A5D85F4000EBEDB /* AceXpanderItem.m */; };
+		CDCFD14A0B0736E500634F2B /* AceXpanderTask.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCFD1490B0736E500634F2B /* AceXpanderTask.m */; };
 		CDECDBBD0AF6D0DE004227BB /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CDECDBBB0AF6D0DE004227BB /* Credits.rtf */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,9 @@
 		CDCD01EC0A61592E00904705 /* AceXpanderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AceXpanderTableView.m; path = Sources/AceXpanderTableView.m; sourceTree = "<group>"; };
 		CDCD99830A5D85F4000EBEDB /* AceXpanderItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpanderItem.h; path = Sources/AceXpanderItem.h; sourceTree = "<group>"; };
 		CDCD99840A5D85F4000EBEDB /* AceXpanderItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AceXpanderItem.m; path = Sources/AceXpanderItem.m; sourceTree = "<group>"; };
+		CDCFD1480B0736E500634F2B /* AceXpanderTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpanderTask.h; path = Sources/AceXpanderTask.h; sourceTree = "<group>"; };
+		CDCFD1490B0736E500634F2B /* AceXpanderTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AceXpanderTask.m; path = Sources/AceXpanderTask.m; sourceTree = "<group>"; };
+		CDCFD14F0B07373B00634F2B /* AceXpanderGlobals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpanderGlobals.h; path = Sources/AceXpanderGlobals.h; sourceTree = "<group>"; };
 		CDDF9D620AFC2D7C001D5BA8 /* AceXpander.mdzip */ = {isa = PBXFileReference; lastKnownFileType = file; name = AceXpander.mdzip; path = UML/AceXpander.mdzip; sourceTree = "<group>"; };
 		CDDF9D630AFC2D7C001D5BA8 /* Class diagram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Class diagram.png"; path = "UML/Class diagram.png"; sourceTree = "<group>"; };
 		CDDF9D640AFC2D7C001D5BA8 /* Sequence Diagram - Expand archive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Sequence Diagram - Expand archive.png"; path = "UML/Sequence Diagram - Expand archive.png"; sourceTree = "<group>"; };
@@ -108,6 +112,7 @@
 				CDCD01E60A61592E00904705 /* AceXpanderContentItem.m */,
 				CDCD01A00A60EE0600904705 /* AceXpanderController.h */,
 				CDCD01A10A60EE0600904705 /* AceXpanderController.m */,
+				CDCFD14F0B07373B00634F2B /* AceXpanderGlobals.h */,
 				CDCD99830A5D85F4000EBEDB /* AceXpanderItem.h */,
 				CDCD99840A5D85F4000EBEDB /* AceXpanderItem.m */,
 				CDCD01A20A60EE0600904705 /* AceXpanderModel.h */,
@@ -116,6 +121,8 @@
 				CDCD01EA0A61592E00904705 /* AceXpanderPreferences.m */,
 				CDCD01EB0A61592E00904705 /* AceXpanderTableView.h */,
 				CDCD01EC0A61592E00904705 /* AceXpanderTableView.m */,
+				CDCFD1480B0736E500634F2B /* AceXpanderTask.h */,
+				CDCFD1490B0736E500634F2B /* AceXpanderTask.m */,
 				CDCD01E20A61589A00904705 /* AceXpanderThread.h */,
 				CDCD01E30A61589A00904705 /* AceXpanderThread.m */,
 			);
@@ -349,6 +356,7 @@
 				CDCD01ED0A61592E00904705 /* AceXpanderContentItem.m in Sources */,
 				CDCD01EF0A61592E00904705 /* AceXpanderPreferences.m in Sources */,
 				CDCD01F00A61592E00904705 /* AceXpanderTableView.m in Sources */,
+				CDCFD14A0B0736E500634F2B /* AceXpanderTask.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

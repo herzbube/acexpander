@@ -28,14 +28,11 @@
 
 // Project includes
 #import "AceXpanderModel.h"
-#import "AceXpanderController.h"
-#import "AceXpanderPreferences.h"
 #import "AceXpanderItem.h"
 #import "AceXpanderThread.h"
+#import "AceXpanderGlobals.h"
 
-#include <stdio.h>
-
-// Constants
+// Private constants
 static NSString* columnIdentifierIcon = @"icon";
 static NSString* columnIdentifierFileName = @"fileName";
 static NSString* columnIdentifierState = @"state";
@@ -90,7 +87,7 @@ static NSString* columnIdentifierState = @"state";
   // Deallocate thread first, before any AceXpanderItem that it still
   // references is deallocated
   if (m_commandThread)
-    [m_commandThread autorelease];
+    [m_commandThread release];
   // When the array is deallocated, it releases all items for us
   if (m_itemList)
     [m_itemList autorelease];
@@ -617,8 +614,8 @@ static NSString* columnIdentifierState = @"state";
 // -----------------------------------------------------------------------------
 - (void) stopCommand
 {
-  if (m_commandThread && [m_commandThread isRunning])
-    [m_commandThread stop];
+  if (m_commandThread && [m_commandThread isProcessing])
+    [m_commandThread stopProcessing];
 }
 
 // -----------------------------------------------------------------------------
@@ -627,7 +624,7 @@ static NSString* columnIdentifierState = @"state";
 - (bool) isCommandRunning
 {
   if (m_commandThread)
-    return [m_commandThread isRunning];
+    return [m_commandThread isProcessing];
   else
     return false;
 }
@@ -642,13 +639,14 @@ static NSString* columnIdentifierState = @"state";
 /// This should be fixed soon, since we are now coding in Objective-C.
 ///
 /// @return true if thread was spawned successfully, false if not. Note that
-/// this method returns true even if the number of selected items was 0.
+/// this method returns false if the number of selected items was 0, i.e. no
+/// thread needed to be spawned.
 // -----------------------------------------------------------------------------
 - (bool) startThreadWithCommand:(int)command
 {
   // Abort if no items are selected
   if (! m_theTable || ! m_itemList || 0 == [m_theTable numberOfSelectedRows])
-    return true;
+    return false;
 
   // Create the thread if it does not exist
   if (! m_commandThread)
@@ -662,11 +660,13 @@ static NSString* columnIdentifierState = @"state";
   NSIndexSet* selectedRowIndexes = [m_theTable selectedRowIndexes];
   if (! selectedRowIndexes)
     return false;
+  NSMutableArray* tempItemList = [NSMutableArray array];
   unsigned int selectedRowIndex;
   for (selectedRowIndex = [selectedRowIndexes firstIndex]; selectedRowIndex != NSNotFound; selectedRowIndex = [selectedRowIndexes indexGreaterThanIndex:selectedRowIndex])
   {
     id item = [m_itemList objectAtIndex:selectedRowIndex];
-    [m_commandThread addItem:(AceXpanderItem*)item];
+    if (item)
+      [tempItemList addObject:item];
   }
 
   // Set the options
@@ -680,11 +680,20 @@ static NSString* columnIdentifierState = @"state";
                      password:m_password
                     debugMode:m_debugMode];
 
-  // Run the thread
-  [m_commandThread run];
+  // Start processing items
+  [m_commandThread processItems:tempItemList];
 
   // Return success
   return true;
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns information about the version of the currently configured
+/// unace executable.
+// -----------------------------------------------------------------------------
+- (NSString*) unaceVersion
+{
+  return [AceXpanderThread unaceVersion];
 }
 
 // -----------------------------------------------------------------------------
@@ -723,7 +732,15 @@ static NSString* columnIdentifierState = @"state";
   else if ([identifier isEqual:columnIdentifierFileName])
     return [item fileName];
   else if ([identifier isEqual:columnIdentifierState])
+  {
+    NSCell* cell = [aTableColumn dataCell];
+    if (cell)
+    {
+      [cell setBackgroundColor:[item backgroundColor]];
+      [cell setTextColor:[item textColor]];
+    }
     return [item stateAsString];
+  }
 
   return nil;
 }

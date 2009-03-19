@@ -32,27 +32,6 @@
 // Forward declarations
 @class AceXpanderModel;
 
-// -----------------------------------------------------------------------------
-// The following line is required so that doxygen documents the enumeration
-// below.
-/// @file
-// -----------------------------------------------------------------------------
-
-
-// -----------------------------------------------------------------------------
-/// @brief States that an AceXpanderItem can have. See class documentation
-/// for more information.
-// -----------------------------------------------------------------------------
-enum AceXpanderItemState
-{
-   QueuedState     = 0,   ///< @brief Items with this state are going to be processed
-   SkipState       = 1,   ///< @brief Items with this state are not going to be processed
-   ProcessingState = 2,   ///< @brief Items with this state are being processed right now
-   AbortedState    = 3,   ///< @brief Items whose ProcessingState was aborted
-   SuccessState    = 4,   ///< @brief Items whose ProcessingState terminated with success
-   FailureState    = 5    ///< @brief Items whose ProcessingState terminated with failure
-};
-
 
 // -----------------------------------------------------------------------------
 /// @class AceXpanderItem
@@ -132,6 +111,8 @@ enum AceXpanderItemState
 - (NSString*) messageStderr;
 - (void) setMessageStderr:(NSString*)aMessage;
 - (void) setMessageStdout:(NSString*)anStdoutMessage messageStderr:(NSString*)anStderrMessage containsListing:(BOOL)containsListing;
+- (NSColor*) backgroundColor;
+- (NSColor*) textColor;
 //@}
 
 @end

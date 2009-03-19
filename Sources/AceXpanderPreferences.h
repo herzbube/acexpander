@@ -29,32 +29,6 @@
 // Cocoa
 #import <Cocoa/Cocoa.h>
 
-// Constant values for the defaults
-static NSString* bundledExecutablePath = @"<bundled>";
-static NSString* destinationFolderTypeSameAsArchive = @"SameAsArchive";
-static NSString* destinationFolderTypeAskWhenExpanding = @"AskWhenExpanding";
-static NSString* destinationFolderTypeFixedLocation = @"FixedLocation";
-// Keys for the defaults
-static NSString* mainWindowFrameNameKey = @"MainWindow";
-static NSString* resultWindowFrameNameKey = @"ResultWindow";
-static NSString* quitAppWhenMainWindowIsClosedKey = @"QuitAppWhenMainWindowIsClosed";
-static NSString* showResultWindowKey = @"ShowResultWindow";
-static NSString* executablePathKey = @"ExecutablePath";
-static NSString* startExpandingAfterLaunchKey = @"StartExpandingAfterLaunch";
-static NSString* quitAfterExpandKey = @"QuitAfterExpand";
-static NSString* alwaysQuitAfterExpandKey = @"AlwaysQuitAfterExpand";
-static NSString* destinationFolderTypeKey = @"DestinationFolderType";
-static NSString* destinationFolderKey = @"DestinationFolder";
-static NSString* createSurroundingFolderKey = @"CreateSurroundingFolder";
-static NSString* lookIntoFoldersKey = @"LookIntoFolders";
-static NSString* treatAllFilesAsArchivesKey = @"TreatAllFilesAsArchives";
-static NSString* optionDefaultsRememberedKey = @"OptionDefaultsRemembered";
-static NSString* overwriteFilesOptionKey = @"OverwriteFilesOption";
-static NSString* extractWithFullPathOptionKey = @"ExtractWithFullPathOption";
-static NSString* assumeYesOptionKey = @"AssumeYesOption";
-static NSString* showCommentsOptionKey = @"ShowCommentsOption";
-static NSString* listVerboselyOptionKey = @"ListVerboselyOption";
-
 
 // -----------------------------------------------------------------------------
 /// @brief The AceXpanderPreferences class is a mini-controller for the user

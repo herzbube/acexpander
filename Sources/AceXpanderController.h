@@ -33,30 +33,6 @@
 @class AceXpanderModel;
 @class AceXpanderPreferences;
 
-// -----------------------------------------------------------------------------
-// The following line is required so that doxygen documents the global items
-// below.
-/// @file
-// -----------------------------------------------------------------------------
-
-/// @brief Any client that encounters an error condition that it cannot handle
-/// properly may post this notification. The user will be presented with a
-/// dialog that offers terminating the application, or simply ignoring the
-/// error.
-static NSString* errorConditionOccurredNotification = @"ErrorConditionOccurred";
-/// @brief This notification is posted when an item's standard output or
-/// standard error message changes.
-static NSString* updateResultWindowNotification = @"UpdateResultWindow";
-/// @brief This notification is posted when an item's standard output message
-/// changes and its content is detected to be a listing of the archive contents
-static NSString* updateContentListDrawerNotification = @"UpdateContentListDrawer";
-/// @brief This notification is posted when the model has finished processing
-/// the awakeFromNib:() method.
-static NSString* modelHasFinishedAwakeFromNibNotification = @"ModelHasFinishedAwakeFromNib";
-/// @brief This notification is posted when the command thread has finished
-/// processing its items.
-static NSString* commandThreadHasFinishedNotification = @"CommandThreadHasFinished";
-
 
 // -----------------------------------------------------------------------------
 /// @brief The AceXpanderController class implements the Controller role of the

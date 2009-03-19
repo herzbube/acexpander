@@ -28,11 +28,8 @@
 
 // Project includes
 #import "AceXpanderPreferences.h"
-#import "AceXpanderController.h"
+#import "AceXpanderGlobals.h"
 
-// Constants
-static NSString* registrationDomainDefaultsFileName = @"RegistrationDomainDefaults.plist";
-static NSString* preferencesDialogNibName = @"PreferencesDialog";
 
 /// @brief This category declares private methods for the AceXpanderPreferences
 /// class. 

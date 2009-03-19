@@ -137,6 +137,7 @@
 - (bool) startTestItems;
 - (void) stopCommand;
 - (bool) isCommandRunning;
+- (NSString*) unaceVersion;
 //@}
 
 /// @name Other methods

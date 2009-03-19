@@ -1,3 +1,8 @@
+Sat Nov 11 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- bug fixed where command thread seemed to run forever when no item was
+  selected and the "expand" button was clicked
+- expand button is now disabled if no archive is selected
+
 Thu Nov 09 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - objects are now deallocated when the application terminates
 - various retain/release bugs found (and fixed) while testing deallocation
