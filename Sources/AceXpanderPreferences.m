@@ -125,28 +125,6 @@ static NSString* preferencesDialogNibName = @"PreferencesDialog";
     [m_destinationFolderType autorelease];
   if (m_destinationFolder)
     [m_destinationFolder autorelease];
-  /// @todo Release outlets, too? If yes, do we need to retain them in
-  /// awakeFromNib:(), or are they retained automatically when they are set?
-//  if (m_preferencesDialog)
-//    [m_preferencesDialog autorelease];
-//  if (m_quitAppWhenMainWindowIsClosedButton)
-//    [m_quitAppWhenMainWindowIsClosedButton autorelease];
-//  if (m_executablePathButton)
-//    [m_executablePathButton autorelease];
-//  if (m_startExpandingAfterLaunchButton)
-//    [m_startExpandingAfterLaunchButton autorelease];
-//  if (m_quitAfterExpandButton)
-//    [m_quitAfterExpandButton autorelease];
-//  if (m_alwaysQuitAfterExpandButton)
-//    [m_alwaysQuitAfterExpandButton autorelease];
-//  if (m_destinationFolderButton)
-//    [m_destinationFolderButton autorelease];
-//  if (m_createSurroundingFolderButton)
-//    [m_createSurroundingFolderButton autorelease];
-//  if (m_lookIntoFoldersButton)
-//    [m_lookIntoFoldersButton autorelease];
-//  if (m_treatAllFilesAsArchivesButton)
-//    [m_treatAllFilesAsArchivesButton autorelease];
   [super dealloc];
 }
 

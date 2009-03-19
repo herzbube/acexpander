@@ -52,8 +52,8 @@ enum AceXpanderCommand
 
 // -----------------------------------------------------------------------------
 /// @brief The AceXpanderThread class encapsulates access to the unace binary,
-/// either the one that is included with the application as a resource, or the
-/// one that the user specifies in the user preferences dialog.
+/// either the one that is included with the application bundle as a resource,
+/// or the one that the user specifies in the user preferences dialog.
 ///
 /// The main function of AceXpanderThread is to execute all the possible unace
 /// commands, using the unace binary that it encapsulates. It does so by
@@ -71,17 +71,19 @@ enum AceXpanderCommand
 /// iterate all archive items previously added and try to process those that
 /// have their state set to #QueuedState. For each item, a new system process is
 /// launched that executes the unace binary with the command (i.e. expand, list,
-/// test) specified through setArguments:(). The process is run synchronously,
+/// test) specified through setCommand:(). The process is run synchronously,
 /// i.e. the thread waits for it to complete before it processes the next item.
 ///
 /// After all items were processed, the notification
 /// #commandThreadHasFinishedNotification is posted to the application's default
 /// notification centre and the thread exits. To interrupt the thread while it
-/// is still processing items, a client may send the message stopRunning:().
+/// is still processing items, a client may send the message stop:().
 /// The thread then tries to stop its operation as soon as possible.
 ///
 /// Items are updated with results as soon as their system process exits. Items
-/// are responsible for making these results visible to the user.
+/// are responsible for making these results visible to the user. This means
+/// that GUI updates are happening in the context of AceXpanderThread (i.e.
+/// a non-GUI thread).
 // -----------------------------------------------------------------------------
 @interface AceXpanderThread : NSObject
 {
@@ -111,6 +113,17 @@ enum AceXpanderCommand
 
   /// @brief The command currently running, or last run, in its numerical form
   int m_command;
+  
+  /// @brief This lock protects access to the runWithObject:() method, i.e.
+  /// only one thread may be active at a time using this AceXpanderThread
+  /// object's recources.
+  NSLock* m_runLock;
+  /// @brief This lock protects access to the m_stopRunning flag
+  NSLock* m_stopRunningLock;
+  /// @brief This lock protects access to the m_isRunning flag
+  NSLock* m_isRunningLock;
+  /// @brief This lock protects access to the m_unaceTask member
+  NSLock* m_taskLock;
 }
 
 /// @name Initializers
@@ -121,7 +134,7 @@ enum AceXpanderCommand
 /// @name Start/stop thread
 //@{
 - (void) run;
-- (void) stopRunning;
+- (void) stop;
 - (BOOL) isRunning;
 //@}
 
@@ -142,7 +155,7 @@ enum AceXpanderCommand
         usePasswort:(BOOL)usePassword
            password:(NSString*)password
           debugMode:(BOOL)debugMode;
-- (NSString*) unaceVersion;
++ (NSString*) unaceVersion;
 //@}
 
 @end

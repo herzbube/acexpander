@@ -1,3 +1,20 @@
+Thu Nov 09 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- objects are now deallocated when the application terminates
+- various retain/release bugs found (and fixed) while testing deallocation
+  on application shutdown
+
+Mon Nov 06 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- any command that is still running is now cancelled when the application
+  terminates (this fixes a bug where AceXpander would leave a still running
+  command hanging around as an orphaned process)
+
+Fri Nov 04 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- added UML folder & created MagicDraw project to draw class + sequence diagrams
+
+Mon Oct 31 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- added "Credits.rtf" to application bundle for improved "About" panel
+  (see NSApplication::orderFrontStandardAboutPanelWithOptions:())
+
 Wed Oct 25 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - completed re-implementation of project with Objective-C
 - added "run doxygen" build phase to Xcode project

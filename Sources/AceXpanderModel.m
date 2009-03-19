@@ -33,6 +33,7 @@
 #import "AceXpanderItem.h"
 #import "AceXpanderThread.h"
 
+#include <stdio.h>
 
 // Constants
 static NSString* columnIdentifierIcon = @"icon";
@@ -86,15 +87,13 @@ static NSString* columnIdentifierState = @"state";
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
-  /// @todo Release the table too? If yes, do we need to retain it in
-  /// awakeFromNib:(), or is it retained automatically when this model is
-  /// configured with the table object?
-  /// if (m_theTable)
-  ///   [m_theTable autorelease];
-  if (m_itemList)
-    [m_itemList autorelease];
+  // Deallocate thread first, before any AceXpanderItem that it still
+  // references is deallocated
   if (m_commandThread)
     [m_commandThread autorelease];
+  // When the array is deallocated, it releases all items for us
+  if (m_itemList)
+    [m_itemList autorelease];
   if (m_theDocumentController)
     [m_theDocumentController autorelease];
   [super dealloc];
@@ -195,8 +194,10 @@ static NSString* columnIdentifierState = @"state";
   else
   {
     // Create the item
-    // Note: The array retains and releases the object for us
     AceXpanderItem* item = [[AceXpanderItem alloc] initWithFile:fileName model:self];
+    // We want the array to retain and release the object for us -> decrease
+    // the retain count by 1 (was set to 1 by alloc/init)
+    [item autorelease];
     [m_itemList addObject:item];
 
     // Update the table
@@ -617,7 +618,7 @@ static NSString* columnIdentifierState = @"state";
 - (void) stopCommand
 {
   if (m_commandThread && [m_commandThread isRunning])
-    [m_commandThread stopRunning];
+    [m_commandThread stop];
 }
 
 // -----------------------------------------------------------------------------

@@ -33,14 +33,15 @@
 #import "AceXpanderPreferences.h"
 
 // Constants
+// Resource file names
+static NSString* unaceFrontEndResourceName = @"unace.sh";
+static NSString* unaceBundledResourceName = @"unace";
 // Parameters for the unace frontend
 static NSString* unaceFrontEndEnableDebug = @"1";
 static NSString* unaceFrontEndDisableDebug = @"0";
 static NSString* unaceFrontEndVersionParameter = @"--version";
 static NSString* unaceFrontDestinationFolderParameter = @"--folder";
 // Information about unace
-static NSString* unaceFrontEnd;
-static NSString* unaceBundledExecutable;
 static NSString* unaceCmdExtract = @"e";
 static NSString* unaceCmdExtractWithFullPath = @"x";
 static NSString* unaceCmdList = @"l";
@@ -58,8 +59,11 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 - (void) dealloc;
 - (void) runWithObject:(id)anObject;
 - (void) processItem:(AceXpanderItem*)item withUnace:(NSString*)unaceExecutablePath;
-- (NSString*) determineUnaceExecutablePath;
++ (NSString*) determineUnaceExecutablePath;
 - (NSString*) determineDestinationFolder:(NSString*)archiveFileName;
+- (BOOL) stopRunning;
+- (void) setStopRunning:(BOOL)stopRunning;
+- (void) setIsRunning:(BOOL)isRunning;
 @end
 
 @implementation AceXpanderThread
@@ -75,26 +79,14 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   if (! self)
     return nil;
 
-  // Check if static variable hasn't been filled yet by the initializer of a
-  // different thread instance
-  /// @todo Someone must send release messages when the application shuts down
-  if (! unaceFrontEnd)
-  {
-    unaceFrontEnd = [[NSBundle mainBundle] pathForResource:@"unace.sh" ofType:nil];
-    if (unaceFrontEnd)
-      [unaceFrontEnd retain];
-  }
-  if (! unaceBundledExecutable)
-  {
-    unaceBundledExecutable = [[NSBundle mainBundle] pathForResource:@"unace" ofType:nil];
-    if (unaceBundledExecutable)
-      [unaceBundledExecutable retain];
-  }
-
   m_itemList = [[NSMutableArray array] retain];
   m_unaceSwitchList = [[NSMutableArray array] retain];
-  m_isRunning = false;
-  m_stopRunning = false;
+  m_runLock = [[NSLock alloc] init];
+  m_stopRunningLock = [[NSLock alloc] init];
+  m_isRunningLock = [[NSLock alloc] init];
+  m_taskLock = [[NSLock alloc] init];
+  [self setIsRunning:false];
+  [self setStopRunning:false];
 
   // Return
   return self;
@@ -102,14 +94,27 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 
 // -----------------------------------------------------------------------------
 /// @brief Deallocates memory allocated by this AceXpanderThread object.
+///
+/// A command that is still running is stopped by this method.
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
+  // Make sure that any still running command is stopped
+  [self stop];
+
   // The following members are always filled with constants -> we don't have to
   // release these members
   // - m_unaceCommand
   // - m_unaceFrontendDebugParameter
 
+  if (m_runLock)
+    [m_runLock autorelease];
+  if (m_stopRunningLock)
+    [m_stopRunningLock autorelease];
+  if (m_isRunningLock)
+    [m_isRunningLock autorelease];
+  if (m_taskLock)
+    [m_taskLock autorelease];
   if (m_itemList)
     [m_itemList autorelease];
   if (m_unaceSwitchList)
@@ -136,14 +141,11 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 ///
 /// At the end of each iteration, before processing of a new item begins, this
 /// method checks whether it should abort the loop because an external source
-/// has called stopRunning:() (usually in reaction to the user clicking the
-/// "cancel" button in the GUI).
+/// has called stop:() (usually in reaction to the user clicking the "cancel"
+/// button in the GUI).
 // -----------------------------------------------------------------------------
 - (void) runWithObject:(id)anObject
 {
-  if (m_isRunning)   // overcautios - this should never happen
-    return;
-
   // Some objects that need to be present
   if (! m_itemList)
     return;
@@ -153,12 +155,16 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   if (! pool)
     return;
 
+  // From now on, do not return without unlocking m_runLock
+  if (m_runLock)
+    [m_runLock lock];
+
   // Determine the path to the unace executable that we should use
-  NSString* unaceExecutablePath = [self determineUnaceExecutablePath];
+  NSString* unaceExecutablePath = [AceXpanderThread determineUnaceExecutablePath];
 
   // Initialize members
-  m_isRunning = true;
-  m_stopRunning = false;
+  [self setIsRunning:true];
+  [self setStopRunning:false];
   if (m_destinationFolderAskWhenExpanding)
   {
     [m_destinationFolderAskWhenExpanding autorelease];
@@ -180,45 +186,118 @@ static NSString* unaceSwitchAssumeYes = @"-y";
     [self processItem:iterItem withUnace:unaceExecutablePath];
 
     // Abort if necessary
-    if (m_stopRunning)
+    if ([self stopRunning])
       break;
   }
 
   // Reset flags
-  m_isRunning = false;
-  m_stopRunning = false;
+  [self setIsRunning:false];
   // Clear the list to make this thread ready for submissions for the next run
   [m_itemList removeAllObjects];
 
+  // Release the lock
+  if (m_runLock)
+    [m_runLock unlock];
+
   // Notify any observers that this thread has terminated
+  // Note: do this ***AFTER*** releasing m_runLock to prevent a deadlock where
+  // - the GUI thread is waiting on m_runLock in stop:(), because the
+  //   user clicked the "cancel" button
+  // - posting the notification leads to a GUI update of the "expand" button,
+  //   which will then wait on a lock inside Cocoa that was already acquired
+  //   by the GUI thread when the user clicked the "cancel" button
   [[NSNotificationCenter defaultCenter] postNotificationName:commandThreadHasFinishedNotification object:nil];
 
   // Release the autorelease pool
-  [pool release];  
+  [pool release];
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Makes sure that the command thread is terminating as soon as
-/// possible.
+/// @brief Terminates the command thread that is currently running.
+///
+/// This method does not return until the command thread has been terminated.
 // -----------------------------------------------------------------------------
-- (void) stopRunning
+- (void) stop
 {
   // This will stop the next iteration in the runWithObject() method
-  m_stopRunning = true;
+  [self setStopRunning:true];
 
   // The thread waits for the process, so we need to kill the process
   // in order for the thread to be able to check on the m_stopRunning
   // flag
+  if (m_taskLock)
+    [m_taskLock lock];
   if (nil != m_unaceTask && [m_unaceTask isRunning])
     [m_unaceTask terminate];
+  if (m_taskLock)
+    [m_taskLock unlock];
+
+  // Try to acquire the run lock - we will get it as soon as runWithObject
+  // returns
+  [m_runLock lock];
+  // We can release the lock immediately
+  [m_runLock unlock];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Updates the m_stopRunning flag to the value @a stopRunning.
+///
+/// This is an internal helper method that protects access to m_stopRunning.
+// -----------------------------------------------------------------------------
+- (void) setStopRunning:(BOOL)stopRunning
+{
+  if (m_stopRunningLock)
+    [m_stopRunningLock lock];
+  m_stopRunning = stopRunning;
+  if (m_stopRunningLock)
+    [m_stopRunningLock unlock];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Returns the value of the m_stopRunning flag. If true, a running
+/// thread should terminate as soon as possible.
+///
+/// This is an internal helper method that protects access to m_stopRunning.
+// -----------------------------------------------------------------------------
+- (BOOL) stopRunning
+{
+  if (m_stopRunningLock)
+    [m_stopRunningLock lock];
+  // Make a copy that we can return after releasing the lock
+  BOOL stopRunning = m_stopRunning;
+  if (m_stopRunningLock)
+    [m_stopRunningLock unlock];
+  return stopRunning;
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Updates the m_isRunning flag to the value @a isRunning.
+///
+/// This is an internal helper method that protects access to m_isRunning.
+// -----------------------------------------------------------------------------
+- (void) setIsRunning:(BOOL)isRunning
+{
+  if (m_isRunningLock)
+    [m_isRunningLock lock];
+  m_isRunning = isRunning;
+  if (m_isRunningLock)
+    [m_isRunningLock unlock];
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Returns whether or not the command thread is currently running.
+///
+/// This is an internal helper method that protects access to m_isRunning.
 // -----------------------------------------------------------------------------
 - (BOOL) isRunning
 {
-  return m_isRunning;
+  if (m_isRunningLock)
+    [m_isRunningLock lock];
+  // Make a copy that we can return after releasing the lock
+  BOOL isRunning = m_isRunning;
+  if (m_isRunningLock)
+    [m_isRunningLock unlock];
+  return isRunning;
 }
 
 // -----------------------------------------------------------------------------
@@ -230,9 +309,15 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 // -----------------------------------------------------------------------------
 - (void) addItem:(AceXpanderItem*)item
 {
+  if (m_runLock)
+    [m_runLock lock];
+
   // The array retains the object for us
   if (m_itemList)
     [m_itemList addObject:item];
+
+  if (m_runLock)
+    [m_runLock unlock];
 }
 
 // -----------------------------------------------------------------------------
@@ -241,9 +326,15 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 // -----------------------------------------------------------------------------
 - (void) removeItem:(AceXpanderItem*)item
 {
+  if (m_runLock)
+    [m_runLock lock];
+
   // The array releases the item for us
   if (m_itemList)
     [m_itemList removeObject:item];
+
+  if (m_runLock)
+    [m_runLock unlock];
 }
 
 // -----------------------------------------------------------------------------
@@ -261,6 +352,9 @@ static NSString* unaceSwitchAssumeYes = @"-y";
            password:(NSString*)password
           debugMode:(BOOL)debugMode
 {
+  if (m_runLock)
+    [m_runLock lock];
+
   m_unaceCommand = @"";
   [m_unaceSwitchList removeAllObjects];
 
@@ -286,6 +380,9 @@ static NSString* unaceSwitchAssumeYes = @"-y";
     {
       NSString* errorDescription = [NSString stringWithFormat:@"Unexpected command code %d", command];
       [[NSNotificationCenter defaultCenter] postNotificationName:errorConditionOccurredNotification object:errorDescription];
+
+      if (m_runLock)
+        [m_runLock unlock];
       return;
     }
   }
@@ -317,6 +414,9 @@ static NSString* unaceSwitchAssumeYes = @"-y";
     m_unaceFrontendDebugParameter = unaceFrontEndEnableDebug;
   else
     m_unaceFrontendDebugParameter = unaceFrontEndDisableDebug;
+
+  if (m_runLock)
+    [m_runLock unlock];
 }
 
 // -----------------------------------------------------------------------------
@@ -328,10 +428,12 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 /// unace binary's version information.
 ///
 /// @return a version string, or nil if something goes wrong
+///
+/// @note This is a class method.
 // -----------------------------------------------------------------------------
-- (NSString*) unaceVersion
++ (NSString*) unaceVersion
 {
-  NSString* unaceExecutablePath = [self determineUnaceExecutablePath];
+  NSString* unaceExecutablePath = [AceXpanderThread determineUnaceExecutablePath];
   if (! unaceExecutablePath)
     return nil;
 
@@ -344,7 +446,7 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   // Create and configure task
   NSTask* unaceTask = [[NSTask alloc] init];
   [unaceTask setStandardOutput:stdoutPipe]; 
-  [unaceTask setLaunchPath:unaceFrontEnd];
+  [unaceTask setLaunchPath:[[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil]];
   [unaceTask setArguments:arguments];
 
   // The result we want to return
@@ -407,7 +509,7 @@ static NSString* unaceSwitchAssumeYes = @"-y";
     if (! destinationFolder)
     {
       [item setState:FailureState];
-      /// @todo Shouldn't we set standard output/error to nil?
+      [item setMessageStdout:nil messageStderr:nil containsListing:NO];
       return;
     }
   }
@@ -441,21 +543,26 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   // Create pipe
   NSPipe* stdoutPipe = [NSPipe pipe];
   NSPipe* stderrPipe = [NSPipe pipe];
-  // Release a task from an earlier run
-  if (m_unaceTask)
-    [m_unaceTask autorelease];
   // Create and configure task
+  if (m_taskLock)
+    [m_taskLock lock];
   m_unaceTask = [[NSTask alloc] init];
   [m_unaceTask setStandardOutput:stdoutPipe]; 
   [m_unaceTask setStandardError:stderrPipe]; 
-  [m_unaceTask setLaunchPath:unaceFrontEnd];
+  [m_unaceTask setLaunchPath:[[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil]];
   [m_unaceTask setArguments:arguments];
 
   // Execute task and wait for its termination
   @try
   {
     [m_unaceTask launch];
+    // While we wait for the task's termination, we release the lock that
+    // allows for task termination by stop:()
+    if (m_taskLock)
+      [m_taskLock unlock];
     [m_unaceTask waitUntilExit];
+    if (m_taskLock)
+      [m_taskLock lock];
   }
   @catch(NSException* exception)
   {
@@ -465,52 +572,57 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   }
 
   // Check if we need to stop the thread
-  if (m_stopRunning)
+  if ([self stopRunning])
   {
     [item setState:AbortedState];
-    /// @todo Shouldn't we set standard output/error to nil?
-    return;
+    [item setMessageStdout:nil
+             messageStderr:nil
+           containsListing:(m_command == ListCommand)];
+  }
+  else
+  {
+    // Evaluate task result
+    int exitValue = [m_unaceTask terminationStatus];
+    if (0 != exitValue)
+      [item setState:FailureState];
+    else
+      [item setState:SuccessState];
+
+    // Get standard output and error messages
+    NSFileHandle* stdoutReadHandle = [stdoutPipe fileHandleForReading];
+    NSData* stdoutData = [stdoutReadHandle readDataToEndOfFile];
+    NSString* messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
+    NSFileHandle* stdErrReadHandle = [stderrPipe fileHandleForReading];
+    NSData* stderrData = [stdErrReadHandle readDataToEndOfFile];
+    NSString* messageStderr = [[NSString alloc] initWithData:stderrData encoding:NSASCIIStringEncoding];
+    [item setMessageStdout:messageStdout
+             messageStderr:messageStderr
+                containsListing:(m_command == ListCommand)];
+    if (messageStdout)
+      [messageStdout autorelease];
+    if (messageStderr)
+      [messageStderr autorelease];
   }
 
-  // Evaluate task result
-  int exitValue = [m_unaceTask terminationStatus];
-  if (0 != exitValue)
-    [item setState:FailureState];
-  else
-    [item setState:SuccessState];
-  // Get standard output and error messages
-  NSFileHandle* stdoutReadHandle = [stdoutPipe fileHandleForReading];
-  NSData* stdoutData = [stdoutReadHandle readDataToEndOfFile];
-  NSString* messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-  NSFileHandle* stdErrReadHandle = [stderrPipe fileHandleForReading];
-  NSData* stderrData = [stdErrReadHandle readDataToEndOfFile];
-  NSString* messageStderr = [[NSString alloc] initWithData:stderrData encoding:NSASCIIStringEncoding];
-  [item setMessageStdout:messageStdout
-           messageStderr:messageStderr
-              forCommand:m_command];
-
-  // Release objects
-  if (messageStdout)
-    [messageStdout autorelease];
-  if (messageStderr)
-    [messageStderr autorelease];
   [m_unaceTask autorelease];
-
-  // Reset members
   m_unaceTask = nil;
+  if (m_taskLock)
+    [m_taskLock unlock];
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Returns the path to the unace executable that should be used
 /// according to the user defaults.
+///
+/// @note This is a class method.
 // -----------------------------------------------------------------------------
-- (NSString*) determineUnaceExecutablePath
++ (NSString*) determineUnaceExecutablePath
 {
   NSString* unaceExecutablePath = [[NSUserDefaults standardUserDefaults] stringForKey:executablePathKey];
   if (! unaceExecutablePath || [unaceExecutablePath isEqualToString:bundledExecutablePath])
-    return unaceBundledExecutable;
+    return [[NSBundle mainBundle] pathForResource:unaceBundledResourceName ofType:nil];
   else
-    return [[unaceExecutablePath retain] autorelease];
+    return unaceExecutablePath;
 }
 
 // -----------------------------------------------------------------------------
@@ -591,6 +703,5 @@ static NSString* unaceSwitchAssumeYes = @"-y";
   else
     return nil;
 }
-
 
 @end

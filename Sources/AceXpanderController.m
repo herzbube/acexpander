@@ -56,6 +56,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 //@{
 - (BOOL) application:(NSApplication*)theApplication openFile:(NSString*)fileName;
 - (void) applicationDidFinishLaunching:(NSNotification*)aNotification;
+- (void) applicationWillTerminate:(NSNotification*)aNotification;
 //@}
 
 /// @name NSWindow delegate
@@ -183,7 +184,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
   // Next create the applications user defaults/preferences object.
   // It will provide sensible defaults in the NSRegistration domain.
-  m_thePreferences = [[[AceXpanderPreferences alloc] init] retain];
+  m_thePreferences = [[AceXpanderPreferences alloc] init];
   // Store instance in a member variable because it is frequently used
   m_userDefaults = [[NSUserDefaults standardUserDefaults] retain];
 
@@ -216,10 +217,12 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 {
   if (m_thePreferences)
     [m_thePreferences autorelease];
+  if (m_theModel)
+    [m_theModel autorelease];
+  if (m_theTable)
+    [m_theTable autorelease];
   if (m_userDefaults)
     [m_userDefaults autorelease];
-  /// @todo Release outlets, too? If yes, do we need to retain them in
-  /// awakeFromNib:(), or are they retained automatically when they are set?
   [super dealloc];
 }
 
@@ -310,6 +313,23 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 
   [m_theModel selectItemsWithState:QueuedState];
   [self expandItems:self];
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Stops any running command (as if the user had clicked the "cancel"
+/// button, then sends an autorelease message to this AceXpanderController.
+///
+/// Autoreleasing and therefore deallocating this controller triggers
+/// deallocation of all the application's objects (e.g. application model).
+///
+/// @a aNotification is ignored.
+///
+/// @note This is an NSApplication delegate method.
+// -----------------------------------------------------------------------------
+- (void)applicationWillTerminate:(NSNotification*)aNotification
+{
+  [self cancelCommand:nil];
+  [self autorelease];
 }
 
 // -----------------------------------------------------------------------------
@@ -595,11 +615,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
   // We don't actually launch a thread here - we simply use AceXpanderThread's
   // wrapper facilities for a one-shot execution of unace to get at the version
   // that we are currently using
-  AceXpanderThread* pThread = [[AceXpanderThread alloc] init];
-  if (! pThread)
-    return;
-  NSString* version = [pThread unaceVersion];
-  [pThread release];
+  NSString* version = [AceXpanderThread unaceVersion];
   if (version)
   {
     NSAlert* alert = [NSAlert alertWithMessageText:@"Version information"
@@ -1019,7 +1035,7 @@ static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Removes all items that are selected in the GUI.
+/// @brief Cancels the command that is currently running.
 ///
 /// @note This is an action method.
 // -----------------------------------------------------------------------------

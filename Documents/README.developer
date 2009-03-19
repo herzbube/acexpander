@@ -22,6 +22,8 @@ Folder structure
  +-- Sources           this folder contains the project's source code
  +-- Testfiles         this folder contains .ace files that can be used to run
  |                     test with AceXpander
+ +-- UML               this folder contains a MagicDraw project file (.mdzip)
+ |                     and a couple of exported diagrams in .png format
  +-- unace             this folder contains the unace binary run by AceXpander
 
 
@@ -105,6 +107,18 @@ Archive/unace.tgz.pgp
    encrypted file and never distribute it. If the WinAce people ever request
    it, I will remove this file from the repository.
 
+UML/AceXpander.mdzip
+   MagicDraw project file created with MagicDraw Community Edition (see
+   http://www.magicdraw.com/). If you create a new diagram or modify an existing
+   one, you should export the diagram to .png format so that other people can
+   have a look at the diagrams even if they do not have MagicDraw installed.
+
+UML/Sequence Diagram - Expand archive.png
+   This sequence diagram provides a rough overview what happens when the user
+   drops an .ace archive file on the application bundle in the Finder. The
+   diagram does not show every detail, instead it tries to give pointers to
+   the main methods invoked during the sequence. If you want to know more you
+   should study the code and doxygen documentation of these methods.
 
 Platform notes
 --------------

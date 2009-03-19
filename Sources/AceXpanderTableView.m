@@ -83,15 +83,10 @@
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Deallocates memory allocated by this AceXpanderModel object.
+/// @brief Deallocates memory allocated by this AceXpanderTableView object.
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
-  /// @todo Release the model too? If yes, do we need to retain it in
-  /// awakeFromNib:(), or is it retained automatically when this table is
-  /// configured with the model object?
-  /// if (m_theModel)
-  ///   [m_theModel autorelease];
   [super dealloc];
 }
 

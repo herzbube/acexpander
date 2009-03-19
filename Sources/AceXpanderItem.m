@@ -31,7 +31,6 @@
 #import "AceXpanderItem.h"
 #import "AceXpanderController.h"
 #import "AceXpanderModel.h"
-#import "AceXpanderThread.h"
 
 // Constants
 static const NSString* columnIdentifierDate = @"date";
@@ -93,7 +92,9 @@ static const NSString* columnIdentifierFileName = @"fileName";
     return nil;
   }
 
-  m_theModel = [theModel retain];
+  // Do ***NOT*** retain the model, otherwise we get a "retain cycle" (i.e.
+  // the model retains this item, and this item retains the model)
+  m_theModel = theModel;
   m_contentItemList = [[NSMutableArray array] retain];
   m_state = QueuedState;
 
@@ -111,6 +112,7 @@ static const NSString* columnIdentifierFileName = @"fileName";
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
+  // When the array is deallocated, it releases all items for us
   if (m_contentItemList)
     [m_contentItemList autorelease];
   if (m_fileName)
@@ -202,7 +204,6 @@ static const NSString* columnIdentifierFileName = @"fileName";
 // -----------------------------------------------------------------------------
 - (NSString*) stateAsString
 {
-  /// @todo Do we have to do something stupid like "return [[@"Queued" retain] autorelease]?
   switch (m_state)
   {
     case QueuedState:
@@ -254,11 +255,13 @@ static const NSString* columnIdentifierFileName = @"fileName";
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Sets the standard output message of the most recent command (of
-/// type @a command, see #AceXpanderCommand) that operated on this
-/// AceXpanderItem.
+/// @brief Sets the standard output message of the most recent command that
+/// operated on this AceXpanderItem.
+///
+/// @a containsListing is true if @a aMessage contains a listing of the
+/// archive's contents.
 // -----------------------------------------------------------------------------
-- (void) setMessageStdout:(NSString*)aMessage forCommand:(int)command
+- (void) setMessageStdout:(NSString*)aMessage containsListing:(BOOL)containsListing;
 {
   if (m_messageStdout == aMessage)
     return;
@@ -269,7 +272,7 @@ static const NSString* columnIdentifierFileName = @"fileName";
   else
     m_messageStdout = nil;
 
-  if (ListCommand == command)
+  if (containsListing)
     [self parseMessageStdout];
 
   [[NSNotificationCenter defaultCenter] postNotificationName:updateResultWindowNotification object:nil];
@@ -314,9 +317,10 @@ static const NSString* columnIdentifierFileName = @"fileName";
 /// This is a convenience method that can be used so that only one notification
 /// is posted instead of two, if the messages were set independently.
 ///
-/// @note The @a command parameter is ignored if @a anStdoutMessage is @e nil.
+/// @a containsListing is true if @a anStdoutMessage contains a listing of the
+/// archive's contents.
 // -----------------------------------------------------------------------------
-- (void) setMessageStdout:(NSString*)anStdoutMessage messageStderr:(NSString*)anStderrMessage forCommand:(int)command
+- (void) setMessageStdout:(NSString*)anStdoutMessage messageStderr:(NSString*)anStderrMessage containsListing:(BOOL)containsListing;
 {
   if (m_messageStdout == anStdoutMessage && m_messageStderr == anStderrMessage)
     return;
@@ -328,7 +332,7 @@ static const NSString* columnIdentifierFileName = @"fileName";
       m_messageStdout = [anStdoutMessage retain];
     else
       m_messageStdout = nil;
-    if (ListCommand == command)
+    if (containsListing)
       [self parseMessageStdout];
   }
   if (m_messageStderr != anStderrMessage)
@@ -400,7 +404,9 @@ static const NSString* columnIdentifierFileName = @"fileName";
           continue;
         // Create an AceXpanderContentItem that parses the content line
         AceXpanderContentItem* contentItem = [[AceXpanderContentItem alloc] initWithLine:trimmedMessageLine];
-        // Add the item to the array, this retains the object for us
+        // We want the array to retain and release the object for us -> decrease
+        // the retain count by 1 (was set to 1 by alloc/init)
+        [contentItem autorelease];
         [m_contentItemList addObject:contentItem];
       }
     }

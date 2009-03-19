@@ -128,10 +128,10 @@ enum AceXpanderItemState
 - (NSString*) stateAsString;
 - (void) setState:(int)state;
 - (NSString*) messageStdout;
-- (void) setMessageStdout:(NSString*)aMessage forCommand:(int)command;
+- (void) setMessageStdout:(NSString*)aMessage containsListing:(BOOL)containsListing;
 - (NSString*) messageStderr;
 - (void) setMessageStderr:(NSString*)aMessage;
-- (void) setMessageStdout:(NSString*)anStdoutMessage messageStderr:(NSString*)anStderrMessage forCommand:(int)command;
+- (void) setMessageStdout:(NSString*)anStdoutMessage messageStderr:(NSString*)anStderrMessage containsListing:(BOOL)containsListing;
 //@}
 
 @end

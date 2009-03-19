@@ -35,6 +35,7 @@
 		CDCD01EF0A61592E00904705 /* AceXpanderPreferences.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD01EA0A61592E00904705 /* AceXpanderPreferences.m */; };
 		CDCD01F00A61592E00904705 /* AceXpanderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD01EC0A61592E00904705 /* AceXpanderTableView.m */; };
 		CDCD99850A5D85F4000EBEDB /* AceXpanderItem.m in Sources */ = {isa = PBXBuildFile; fileRef = CDCD99840A5D85F4000EBEDB /* AceXpanderItem.m */; };
+		CDECDBBD0AF6D0DE004227BB /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CDECDBBB0AF6D0DE004227BB /* Credits.rtf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -80,6 +81,10 @@
 		CDCD01EC0A61592E00904705 /* AceXpanderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AceXpanderTableView.m; path = Sources/AceXpanderTableView.m; sourceTree = "<group>"; };
 		CDCD99830A5D85F4000EBEDB /* AceXpanderItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpanderItem.h; path = Sources/AceXpanderItem.h; sourceTree = "<group>"; };
 		CDCD99840A5D85F4000EBEDB /* AceXpanderItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AceXpanderItem.m; path = Sources/AceXpanderItem.m; sourceTree = "<group>"; };
+		CDDF9D620AFC2D7C001D5BA8 /* AceXpander.mdzip */ = {isa = PBXFileReference; lastKnownFileType = file; name = AceXpander.mdzip; path = UML/AceXpander.mdzip; sourceTree = "<group>"; };
+		CDDF9D630AFC2D7C001D5BA8 /* Class diagram.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Class diagram.png"; path = "UML/Class diagram.png"; sourceTree = "<group>"; };
+		CDDF9D640AFC2D7C001D5BA8 /* Sequence Diagram - Expand archive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Sequence Diagram - Expand archive.png"; path = "UML/Sequence Diagram - Expand archive.png"; sourceTree = "<group>"; };
+		CDECDBBC0AF6D0DE004227BB /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CDF922FE0AEEA29800BCF111 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = doxygen/Doxyfile; sourceTree = "<group>"; };
 		CDF923010AEEA2BA00BCF111 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = doxygen/html/index.html; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -153,6 +158,7 @@
 				CDBC093D0A5B349D008C18B4 /* unace */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				CDF922F90AEEA23D00BCF111 /* doxygen */,
+				CDDF9D600AFC2D50001D5BA8 /* UML */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
 			);
@@ -171,6 +177,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CDECDBBB0AF6D0DE004227BB /* Credits.rtf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
 				CDBC09670A5B37C4008C18B4 /* PasswordDialog.nib */,
@@ -224,6 +231,16 @@
 				CDBC093F0A5B34B0008C18B4 /* unace.sh */,
 			);
 			name = unace;
+			sourceTree = "<group>";
+		};
+		CDDF9D600AFC2D50001D5BA8 /* UML */ = {
+			isa = PBXGroup;
+			children = (
+				CDDF9D620AFC2D7C001D5BA8 /* AceXpander.mdzip */,
+				CDDF9D630AFC2D7C001D5BA8 /* Class diagram.png */,
+				CDDF9D640AFC2D7C001D5BA8 /* Sequence Diagram - Expand archive.png */,
+			);
+			name = UML;
 			sourceTree = "<group>";
 		};
 		CDF922F90AEEA23D00BCF111 /* doxygen */ = {
@@ -296,6 +313,7 @@
 				CDBC09440A5B34E8008C18B4 /* RegistrationDomainDefaults.plist in Resources */,
 				CDBC096B0A5B37C4008C18B4 /* PasswordDialog.nib in Resources */,
 				CDBC096C0A5B37C4008C18B4 /* PreferencesDialog.nib in Resources */,
+				CDECDBBD0AF6D0DE004227BB /* Credits.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,6 +377,14 @@
 				CDBC096A0A5B37C4008C18B4 /* English */,
 			);
 			name = PreferencesDialog.nib;
+			sourceTree = "<group>";
+		};
+		CDECDBBB0AF6D0DE004227BB /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CDECDBBC0AF6D0DE004227BB /* English */,
+			);
+			name = Credits.rtf;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
