@@ -1,26 +1,40 @@
-- the .nib uses the format for Mac OS X 10.2 and later. Therefore (but
+- Info: the .nib uses the format for Mac OS X 10.2 and later. Therefore (but
   also because various Cocoa classes available only on 10.2 or later are
   used) the application will not run on pre-10.2 systems
-- it is by design that the table cannot be sorted, otherwise the
+- Info: it is by design that the table cannot be sorted, otherwise the
   row index could not be guaranteed to match the correct item in the
   model's item list
-- the MainWindow instance icon in MainMenu.nib indicates that a child
+- Info: the MainWindow instance icon in MainMenu.nib indicates that a child
   has a bad/missing connection. This is normal: there is no connection
   for the target of the NSTextField instance that acts as a label for the
   table
-- When the application is run from ProjectBuilder, Cocoa prints out the
+- TODO: get more information about this.
+  When the application is run from ProjectBuilder, Cocoa prints out the
   following warning to the application's output window when the
   variant of NSOpenPanel.runModalInDirectory() is invoked where the parent
   window can be specified and the open panel is opened as a sheet:
   
   *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
 
-- AceExpanderModel.setInteractive(true) should be called only during the
-  application's launch sequence, or right after an initial expand thread
-  has finished.
-- it is important that AceExpanderPreferences is created at the earliest
-  possible time so that it can set up the user defaults database for the
-  other classes to use
-- OpenRecent: the maximum number of entries in the OpenRecent menu is
-  determined by the value of the user default NSRecentDocumentsLimit. The
-  value is of type Integer.
+- Info: AceExpanderModel.setInteractive(true) should be called only during
+  the application's launch sequence, or immediately after an initial expand
+  thread has finished.
+- Info: it is important that AceExpanderPreferences is created at the
+  earliest possible time so that it can set up the user defaults database
+  for the other classes to use
+- Info for later implementation: the maximum number of entries in the
+  OpenRecent menu is determined by the value of the user default
+  NSRecentDocumentsLimit. The value is of type Integer.
+- Info for later implementation: NSPerformService is available only in ObjC
+  as an ApplicationKit global function
+
+- ideas for a better "list archive" concept:
+  - when the user selects a single item for the first time, spawn a
+    background thread and process in the background
+  - if the drawer is open, indicate the scan-in-progress by a spinner
+  - if the scan fails, indicate this
+  - when the scan finishes, notify the controller so that it can
+    give the table a hint to update itself
+  - when a single item is selected, show the cached content list
+  - provide an update button, so that the user can update the list
+  - still an option "verbose?" -> probably yes

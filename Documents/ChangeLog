@@ -1,3 +1,24 @@
+Wed June 24 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- finished version 0.9
+- main window now has a drawer that shows the ACE archive's content
+  in a list
+
+Tue June 22 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- replaced unace binary by a binary with version 2.5i, ripped from the
+  MacAce application by Gabriel Gritsch (http://gritsch-soft.com/)
+- updated Info.plist and InfoPlist.strings
+- the edit-unqueue commands only set items to state "skipped" that have
+  the state "queued"
+- updated README
+
+Mon June 21 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- added support for Services system menu. The first of selected files
+  in the table is provided as String, this allows to select Finder-ShowInfo
+  or Finder-Reveal
+- disabled the items "Show Info" and "Reveal in Finder" in the File menu
+  -> they will be enabled and implemented only when the AceExpander moves
+  to Objective-C
+
 Sat June 19 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - finished version 0.8
 - added NSDocumentController to the model to manage the File-OpenRecent menu

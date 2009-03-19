@@ -54,6 +54,11 @@ public class AceExpanderModel
    // Member variables
    // ======================================================================
 
+   // Constants
+   public final static String ColumnIdentifierIcon = "icon";
+   public final static String ColumnIdentifierFileName = "fileName";
+   public final static String ColumnIdentifierState = "state";
+   
    // These variables are outlets and therefore initialized in the .nib
    private NSTableView m_theTable;
 
@@ -98,7 +103,7 @@ public class AceExpanderModel
       {
          // Replace the icon column cell with a cell that can display
          // images. I didn't find any way to set this in InterfaceBuilder
-         NSTableColumn iconColumn = m_theTable.tableColumnWithIdentifier("icon");
+         NSTableColumn iconColumn = m_theTable.tableColumnWithIdentifier(ColumnIdentifierIcon);
          NSImageCell iconCell = new NSImageCell();
          iconColumn.setDataCell(iconCell);
       }
@@ -183,22 +188,36 @@ public class AceExpanderModel
    }
 
    // Set the state of all items, regardless of whether they are selected
-   // or not
-   public void setAllItemsToState(int iState)
+   // or not. An item is only set to the new state if its current state
+   // is equal to iFromState. If iFromState is given as -1, this check
+   // is skipped.
+   public void setAllItemsToStateFromState(int iState, int iFromState)
    {
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
          AceExpanderItem item = (AceExpanderItem)enumerator.nextElement();
-         item.setState(iState);
+         if (-1 == iFromState || item.getState() == iFromState)
+         {
+            item.setState(iState);
+         }
       }
 
       // No need to tell the table to reload data -> the items that have
       // changed have already done this for us
    }
 
-   // Set the state only of the selected items
-   public void setItemsToState(int iState)
+   // Convenience method that calls setAllItemsToStateFromState with
+   // iFromState = -1.
+   public void setAllItemsToState(int iState)
+   {
+      setAllItemsToStateFromState(iState, -1);
+   }
+
+   // Set the state of only the selected items. An item is only set to the
+   // new state if its current state is equal to iFromState. If iFromState
+   // is given as -1, this check is skipped.
+   public void setItemsToStateFromState(int iState, int iFromState)
    {
       if (0 == m_theTable.numberOfSelectedRows())
       {
@@ -210,11 +229,21 @@ public class AceExpanderModel
       {
          Integer iSelectedRow = (Integer)enumerator.nextElement();
          AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(iSelectedRow.intValue());
-         item.setState(iState);
+         if (-1 == iFromState || item.getState() == iFromState)
+         {
+            item.setState(iState);
+         }
       }
 
       // No need to tell the table to reload data -> the items that have
       // changed have already done this for us
+   }
+
+   // Convenience method that calls setItemsToStateFromState with
+   // iFromState = -1.
+   public void setItemsToState(int iState)
+   {
+      setItemsToStateFromState(iState, -1);
    }
 
    // Returns true if all items have the given state. Returns false
@@ -247,7 +276,7 @@ public class AceExpanderModel
          }
       }
    }
-   
+
    // ======================================================================
    // Accessor methods for options
    // ======================================================================
@@ -418,7 +447,7 @@ public class AceExpanderModel
 
       return true;
    }
-   
+
    // ======================================================================
    // NSTableView.DataSource interface methods
    // ======================================================================
@@ -432,16 +461,15 @@ public class AceExpanderModel
    {
       AceExpanderItem item = (AceExpanderItem)m_itemList.objectAtIndex(rowIndex);
       Object id = aTableColumn.identifier();
-      String foo = id.toString();
-      if (id.equals("icon"))
+      if (id.equals(ColumnIdentifierIcon))
       {
          return item.getIcon();
       }
-      else if (id.equals("fileName"))
+      else if (id.equals(ColumnIdentifierFileName))
       {
          return item.getFileName();
       }
-      else if (id.equals("state"))
+      else if (id.equals(ColumnIdentifierState))
       {
          return item.getStateAsString();
       }

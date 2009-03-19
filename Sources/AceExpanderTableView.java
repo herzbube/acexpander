@@ -87,7 +87,7 @@ public class AceExpanderTableView extends NSTableView
    public int draggingEntered(NSDraggingInfo sender)
    {
       // Check if drag is valid
-      if (null == validateDrag(sender))
+      if (! validateDrag(sender))
       {
          // No, drag is not valid -> drag cannot be accepted
          return NSDraggingInfo.DragOperationNone;
@@ -104,18 +104,17 @@ public class AceExpanderTableView extends NSTableView
    }
 
    // Is called while the drag remains within the table's boundaries
+   // Note: this method must be implemented, even though the article
+   // "Receiving Drag Operations" in the "Drag and Drop" topic of ADC
+   // claims otherwise!
    public int draggingUpdated(NSDraggingInfo sender)
    {
-      if (null == validateDrag(sender))
-      {
+      if (! validateDrag(sender))
          return NSDraggingInfo.DragOperationNone;
-      }
       else
-      {
          return NSDraggingInfo.DragOperationCopy;
-      }
    }
-
+   
    // Is called when the drag leaves the table's boundaries
    public void draggingExited(NSDraggingInfo sender)
    {
@@ -124,19 +123,16 @@ public class AceExpanderTableView extends NSTableView
       setNeedsDisplay(true);
    }
 
+/*
+ * We don't need this - just for demonstration
+ *
    // Is called when the drop is made and the most recent call to
    // draggingEntered() or draggingUpdated() accepted the drag
    public boolean prepareForDragOperation(NSDraggingInfo sender)
    {
-      if (null == validateDrag(sender))
-      {
-         return false;
-      }
-      else
-      {
-         return true;   // OK, we're prepared
-      }
+      return validateDrag(sender);
    }
+ */
 
    // Is called when prepareForDragOperation() returned true
    public boolean performDragOperation(NSDraggingInfo sender)
@@ -168,7 +164,7 @@ public class AceExpanderTableView extends NSTableView
 
          return true;
       }
-      // Should not happen
+      // Should never happen
       else
       {
          NSAlertPanel alert = new NSAlertPanel();
@@ -177,32 +173,130 @@ public class AceExpanderTableView extends NSTableView
          return false;
       }
    }
-   
+
+   // ======================================================================
+   // Methods managing the Services application menu
+   // ======================================================================
+
+   // This method is called because this object is in the responder chain.
+   // The method must check if the object is able to provide data for a
+   // Service, or if it can accept data from a Service.
+   public Object validRequestorForTypes(String sendType, String returnType)
+   {
+      // We don't want to receive data -> returnType must be null
+      // We only send data of types Filename, URL, String
+      // We can only provide data if something is selected
+      if (null == returnType
+          && (sendType.equals(NSPasteboard.FilenamesPboardType) ||
+              sendType.equals(NSPasteboard.URLPboardType) ||
+              sendType.equals(NSPasteboard.StringPboardType))
+          && numberOfSelectedRows() > 0)
+      {
+         // Confirm that this object can provide data
+         return this;
+      }
+
+      // Let the next responder handle the request
+      return super.validRequestorForTypes(sendType, returnType);
+   }
+
+   // This method is called when we have to provide data for a Service
+   boolean writeSelectionToPasteboardOfTypes(NSPasteboard pboard, NSArray types)
+   {
+      // Can we handle the requested types?
+      if (! types.containsObject(NSPasteboard.StringPboardType) &&
+          ! types.containsObject(NSPasteboard.FilenamesPboardType) &&
+          ! types.containsObject(NSPasteboard.URLPboardType))
+         return false;
+
+      // Do we have any data to provide?
+      if (numberOfSelectedRows() == 0)
+      {
+         return false;
+      }
+      
+      // Get the filenames of the selected table rows
+      NSMutableArray fileNames = new NSMutableArray();
+      NSEnumerator tableEnumerator = selectedRowEnumerator();
+      while (tableEnumerator.hasMoreElements())
+      {
+         Integer iSelectedRow = (Integer)tableEnumerator.nextElement();
+         fileNames.addObject(m_theModel.getItem(iSelectedRow.intValue()).getFileName());
+      }
+
+      // For every type that we can handle, write the data to the pasteboard
+      // in the appropriate form
+      NSArray typesDeclared;
+      if (types.containsObject(NSPasteboard.StringPboardType))
+      {
+         typesDeclared = new NSArray(NSPasteboard.StringPboardType);
+         pboard.declareTypes(typesDeclared, null);
+         // Only paste the first filename
+         return pboard.setStringForType((String)fileNames.objectAtIndex(0), NSPasteboard.StringPboardType);
+      }
+      
+      if (types.containsObject(NSPasteboard.FilenamesPboardType))
+      {
+         typesDeclared = new NSArray(NSPasteboard.FilenamesPboardType);
+         pboard.declareTypes(typesDeclared, null);
+         // Not sure if this is the right way to do it: the "Data Types"
+         // article in the "Copying and Pasting" topic on ADC says:
+         // "NSFilenamesPboardTypeÕs form is an array of NSStrings"
+         // -> it could be the right way, because performDragOperation()
+         //    demonstrates how it works backwards
+         return pboard.setPropertyListForType(fileNames, NSPasteboard.StringPboardType);
+      }
+
+      if (types.containsObject(NSPasteboard.URLPboardType))
+      {
+         typesDeclared = new NSArray(NSPasteboard.URLPboardType);
+         pboard.declareTypes(typesDeclared, null);
+         // TODO: change this to something sensible! The "Data Types"
+         // article in the "Copying and Pasting" topic on ADC says
+         // to use NSURL::writeToPasteboard(), but we don't have NSURL
+         // in Java :-(
+         return false;
+      }
+
+      return false;
+   }
+
    // ======================================================================
    // Methods
    // ======================================================================
 
    // Test whether we can handle the dragged object. If no, return
-   // null. If yes return the type of the dragged object as string.
-   public String validateDrag(NSDraggingInfo sender)
+   // false, otherwise return true
+   public boolean validateDrag(NSDraggingInfo sender)
    {
-      // Only accept the object if it does not originate from this window
-      if (sender.draggingSource() != this)
+      // Reject the object if it originates from the window that contains
+      // this table
+      if (sender.draggingSource() == window())
       {
-         // Get the pasteboard and check whether it contains dragged data
-         // of the type FilenamesPboardType
-         NSPasteboard pboard = sender.draggingPasteboard();
-         String type = pboard.availableTypeFromArray(new NSArray(NSPasteboard.FilenamesPboardType));
-
-         if (null != type)
-         {
-            return pboard.stringForType(type);
-         }
+         return false;
       }
-      return null;
+      
+       // Get the pasteboard and check whether it contains dragged data
+       // of the type FilenamesPboardType
+       NSPasteboard pboard = sender.draggingPasteboard();
+       String type = pboard.availableTypeFromArray(new NSArray(NSPasteboard.FilenamesPboardType));
+       if (null == type)
+       {
+          return false;
+       }
+       
+       // Check what type of drag the source allows. We accept any type.
+       if (sender.draggingSourceOperationMask() == NSDraggingInfo.DragOperationNone)
+       {
+          return false;
+       }
+
+       // Finally accept the drag
+       return true;
    }
 
    // Add highlighting to drawing of box
+   // TODO: make this work!
    public void drawRect(NSRect rect)
    {
       if (m_bHighlight)

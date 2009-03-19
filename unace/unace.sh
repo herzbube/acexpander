@@ -24,7 +24,7 @@ if test ! -d "$destinationFolder"; then
    mkdir -p "$destinationFolder"
    if test $? -ne 0; then exit 1; fi
 fi
-  
+
 # Change working directory to the destination folder
 cd "$destinationFolder"
 if test $? -ne 0; then exit 1; fi
@@ -34,7 +34,9 @@ shift 1
 
 if test $debugMode = "1"; then
    echo "Debug mode on."
-   echo "Number of arguments: $#"
+   echo "unace binary: $unaceBin"
+   echo "Destination folder: $destinationFolder"
+   echo "Number of remaining parameters: $#"
    i=0
    for param in "$@"; do
       i=$(expr $i + 1)

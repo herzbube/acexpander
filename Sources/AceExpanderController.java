@@ -77,6 +77,7 @@ public class AceExpanderController
    private AceExpanderModel m_theModel;
    private NSWindow m_mainWindow;
    private NSTableView m_theTable;
+   private NSTableView m_theContentListTable;
    private NSButton m_cancelButton;
    private NSButton m_expandButton;
    private NSProgressIndicator m_progressIndicator;
@@ -95,6 +96,8 @@ public class AceExpanderController
    private NSMenuItem m_showMainWindowMenuItem;
    private NSMenuItem m_showResultWindowMenuItem;
    private NSMenuItem m_homepageMenuItem;
+   private NSMenuItem m_showInfoInFinderMenuItem;
+   private NSMenuItem m_revealInFinderMenuItem;
 
    // --- from PasswordDialog.nib
    private NSPanel m_passwordDialog;
@@ -111,6 +114,20 @@ public class AceExpanderController
    public AceExpanderController()
    {
       m_thePreferences = new AceExpanderPreferences();
+
+      // Register for services in the Services system menu
+      // We are not interested in receiving data of any type
+      NSArray returnTypes = null;
+      // We can send data of the types
+      // - String (for Finder-ShowInfo, Finder-Reveal),
+      // - Filename
+      // - URL
+      NSMutableArray sendTypes = new NSMutableArray();
+      sendTypes.addObject(NSPasteboard.StringPboardType);
+      sendTypes.addObject(NSPasteboard.FilenamesPboardType);
+      sendTypes.addObject(NSPasteboard.URLPboardType);
+      // Do the registering
+      NSApplication.sharedApplication().registerServicesMenuTypes(sendTypes, returnTypes);
    }
 
    // ======================================================================
@@ -270,6 +287,14 @@ public class AceExpanderController
             else
                return true;
          }
+         // TODO: Enable these items if application is able to call
+         // the corresponding services in the Services system menu.
+         // -> probably possible only with ObjC function NSPerformService()
+         else if (menuItem == m_showInfoInFinderMenuItem ||
+                  menuItem == m_revealInFinderMenuItem)
+         {
+            return false;
+         }
          // Enable items in all other circumstances
          else
          {
@@ -285,6 +310,7 @@ public class AceExpanderController
    public void tableViewSelectionDidChange(NSNotification aNotification)
    {
       updateResultsWindow();
+      updateContentListDrawer();
    }
 
    // ======================================================================
@@ -304,12 +330,12 @@ public class AceExpanderController
 
    public void unqueueAllItems(Object sender)
    {
-      m_theModel.setAllItemsToState(AceExpanderItem.SKIP);
+      m_theModel.setAllItemsToStateFromState(AceExpanderItem.SKIP, AceExpanderItem.QUEUED);
    }
 
    public void unqueueItems(Object sender)
    {
-      m_theModel.setItemsToState(AceExpanderItem.SKIP);
+      m_theModel.setItemsToStateFromState(AceExpanderItem.SKIP, AceExpanderItem.QUEUED);
    }
 
    public void removeAllItems(Object sender)
@@ -611,7 +637,8 @@ public class AceExpanderController
    {
       updateGUI(false);
       updateResultsWindow();
-
+      updateContentListDrawer();
+   
       // Terminate application if all items expanded successfully and
       // the application mode is non-interactive. If this method is called
       // after the initial launch sequence's expand thread has finished,
@@ -662,6 +689,21 @@ public class AceExpanderController
          m_stdoutTextView.setString(item.getMessageStdout());
          m_stderrTextView.setString(item.getMessageStderr());
       }
+   }
+
+   private void updateContentListDrawer()
+   {
+      if (1 != m_theTable.numberOfSelectedRows())
+      {
+         m_theContentListTable.setDataSource(null);
+      }
+      else
+      {
+         AceExpanderItem item = m_theModel.getItem(m_theTable.selectedRow());
+         m_theContentListTable.setDataSource(item);
+      }
+      
+      m_theContentListTable.reloadData();
    }
 
    private void showTextFileInWindow(String textFileName)

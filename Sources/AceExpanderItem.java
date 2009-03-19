@@ -28,9 +28,8 @@
 //
 // AceExpanderItem.java
 //
-// This class references an ACE archive in the file system and, at the same
-// time, is represented in the application's GUI by a row in the table of
-// archives.
+// This class represents an ACE archive in the file system and, at the same
+// time, a row in the table of archives in the application's GUI.
 //
 // An item always has one of the following states:
 //  - QUEUED: This is the initial state when the item is created. An item
@@ -59,19 +58,34 @@ public class AceExpanderItem
    // Member variables
    // ======================================================================
 
+   // Constants
    public final static int QUEUED = 0;
    public final static int SKIP = 1;
    public final static int PROCESSING = 2;
    public final static int ABORTED = 3;
    public final static int SUCCESS = 4;
    public final static int FAILURE = 5;
+   public final static String ColumnIdentifierDate = "date";
+   public final static String ColumnIdentifierTime = "time";
+   public final static String ColumnIdentifierPacked = "packed";
+   public final static String ColumnIdentifierSize = "size";
+   public final static String ColumnIdentifierRatio = "ratio";
+   public final static String ColumnIdentifierFileName = "fileName";
+   
+   // Attributes to the file item
+   private String m_fileName;
+   private NSImage m_icon;
 
+   // Attributes to the unace execution state
+   private int m_iState;
+   private String m_messageStdout;
+   private String m_messageStderr;
+
+   // Content list of this item
+   private NSMutableArray m_contentItemList = new NSMutableArray();
+
+   // Other members
    private AceExpanderModel m_theModel;
-   private String m_fileName = "";
-   private NSImage m_icon = null;
-   private int m_iState = QUEUED;
-   private String m_messageStdout = "";
-   private String m_messageStderr = "";
 
    // ======================================================================
    // Constructors
@@ -80,7 +94,8 @@ public class AceExpanderItem
    public AceExpanderItem(String fileName, AceExpanderModel theModel)
    {
       m_fileName = fileName;
-      UpdateIcon();
+      updateIcon();
+      clearAttributes();
 
       // TODO: throw an exception when theModel is null
       m_theModel = theModel;
@@ -98,7 +113,8 @@ public class AceExpanderItem
    public void setFilename(String fileName)
    {
       m_fileName = fileName;
-      UpdateIcon();
+      updateIcon();
+      clearAttributes();
 
       m_theModel.itemHasChanged(this);
    }
@@ -155,6 +171,9 @@ public class AceExpanderItem
    public void setMessageStdout(String messageStdout)
    {
       m_messageStdout = messageStdout;
+      parseMessageStdout();
+      // TODO: should notify somebody so that the result window can be
+      // updated
    }
 
    public String getMessageStderr()
@@ -165,6 +184,129 @@ public class AceExpanderItem
    public void setMessageStderr(String messageStderr)
    {
       m_messageStderr = messageStderr;
+      // TODO: should notify somebody so that the result window can be
+      // updated
+   }
+
+   // ======================================================================
+   // Methods for managing the archive content list
+   // ======================================================================
+
+   // Internal helper method
+   // Parses the currently set stdout message string and tries to determine
+   // if it contains a listing of the archive contents. If a listing appears
+   // to be there, the listing is parsed and each line of content is
+   // appended to an array of line strings. This array is then passed
+   // to another method for updating the content item list.
+   private void parseMessageStdout()
+   {
+      boolean bMessageContainsListing = false;
+      int bLeadInLines = 3;
+      
+      NSMutableArray contentLinesArray = new NSMutableArray();
+      java.util.StringTokenizer tokenizer = new java.util.StringTokenizer(m_messageStdout, "\n");
+      while (tokenizer.hasMoreElements())
+      {
+         String messageLine = (String)tokenizer.nextElement();
+         // As long as we don't know whether or not the message contains
+         // a listing of the archive contents, we go on looking for
+         // a trigger line
+         if (! bMessageContainsListing)
+         {
+            if (messageLine.startsWith("Contents of archive"))
+            {
+               bMessageContainsListing = true;
+            }
+         }
+         // OK, now we know that the message contains a listing, but we
+         // still have to skip a number of lead-in lines
+         else if (bLeadInLines > 0)
+         {
+            bLeadInLines--;
+         }
+         // OK, everything from now on is a content line
+         else
+         {
+            // A line starting like this marks the end of the listing
+            if (messageLine.startsWith("listed:"))
+            {
+               break;
+            }
+            
+            String trimmedMessageLine = messageLine.trim();
+            // Ignore empty lines 
+            if (0 == trimmedMessageLine.length())
+            {
+               continue;
+            }
+            
+            contentLinesArray.addObject(trimmedMessageLine);
+         }
+      }
+
+      updateContentItemList(contentLinesArray);
+   }
+   
+   // The given array should contain String objects, each of which
+   // represents one content line from the unace list command.
+   // For each line, create a new AceExpanderContentItem object and
+   // let it parse the content line. Store the object in an internal list
+   // (the list is cleared at the beginning)
+   private void updateContentItemList(NSArray contentLines)
+   {
+      m_contentItemList.removeAllObjects();
+
+      java.util.Enumeration enumerator = contentLines.objectEnumerator();
+      while (enumerator.hasMoreElements())
+      {
+         String contentLine = (String)enumerator.nextElement();
+
+         AceExpanderContentItem contentItem = new AceExpanderContentItem(contentLine);
+         m_contentItemList.addObject(contentItem);
+      }
+   }
+
+      // ======================================================================
+   // NSTableView.DataSource interface methods
+   // ======================================================================
+
+   public int numberOfRowsInTableView(NSTableView theTableView)
+   {
+      return m_contentItemList.count();
+   }
+
+   public Object tableViewObjectValueForLocation(NSTableView theTableView, NSTableColumn aTableColumn, int rowIndex)
+   {
+      AceExpanderContentItem contentItem = (AceExpanderContentItem)m_contentItemList.objectAtIndex(rowIndex);
+      Object id = aTableColumn.identifier();
+      if (id.equals(ColumnIdentifierDate))
+      {
+         return contentItem.getDate();
+      }
+      else if (id.equals(ColumnIdentifierTime))
+      {
+         return contentItem.getTime();
+      }
+      else if (id.equals(ColumnIdentifierPacked))
+      {
+         return contentItem.getPacked();
+      }
+      else if (id.equals(ColumnIdentifierSize))
+      {
+         return contentItem.getSize();
+      }
+      else if (id.equals(ColumnIdentifierRatio))
+      {
+         return contentItem.getRatio();
+      }
+      else if (id.equals(ColumnIdentifierFileName))
+      {
+         return contentItem.getFileName();
+      }
+      else
+      {
+         return null;
+      }
    }
 
    // ======================================================================
@@ -172,9 +314,18 @@ public class AceExpanderItem
    // ======================================================================
 
    // Fetch the icon for the currently set file name
-   private void UpdateIcon()
+   private void updateIcon()
    {
       // false = the wrapper is not for a symlink
       m_icon = new NSFileWrapper(m_fileName, false).icon();
+   }
+
+   // Clear attributes / set them to their default values
+   private void clearAttributes()
+   {
+      m_iState = QUEUED;
+      m_messageStdout = "";
+      m_messageStderr = "";
+      m_contentItemList.removeAllObjects();
    }
 }

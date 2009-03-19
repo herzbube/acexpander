@@ -283,12 +283,14 @@
 	<string>ch.herzbube.aceexpander</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>AceExpander</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>Version 0.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>0.8</string>
 	<key>NSJavaNeeded</key>
 	<string>YES</string>
 	<key>NSJavaPath</key>
@@ -341,6 +343,7 @@
 				CDBF8E460678D12900A80104,
 				CDBF8E470678D12900A80104,
 				CDBF8E480678D12900A80104,
+				CD8C08C1068B747800A80104,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,6 +453,7 @@
 			children = (
 				CDBF8E3D0678D12900A80104,
 				CDBF8E3E0678D12900A80104,
+				CD8C08C0068B747800A80104,
 				CDBF8E3F0678D12900A80104,
 				CDBF8E400678D12900A80104,
 				CDBF8E410678D12900A80104,
@@ -458,6 +462,18 @@
 			isa = PBXGroup;
 			path = Sources;
 			refType = 4;
+		};
+		CD8C08C0068B747800A80104 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = AceExpanderContentItem.java;
+			refType = 4;
+		};
+		CD8C08C1068B747800A80104 = {
+			fileRef = CD8C08C0068B747800A80104;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		CDBF8E3D0678D12900A80104 = {
 			fileEncoding = 4;

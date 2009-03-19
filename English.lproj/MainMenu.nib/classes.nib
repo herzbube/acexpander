@@ -46,13 +46,16 @@
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
                 "m_progressIndicator" = NSProgressIndicator; 
                 "m_resultWindow" = NSWindow; 
+                "m_revealInFinderMenuItem" = NSMenuItem; 
                 "m_showCommentsMenuItem" = NSMenuItem; 
+                "m_showInfoInFinderMenuItem" = NSMenuItem; 
                 "m_showMainWindowMenuItem" = NSMenuItem; 
                 "m_showResultWindowMenuItem" = NSMenuItem; 
                 "m_stderrTextView" = NSTextView; 
                 "m_stdoutTextView" = NSTextView; 
                 "m_textView" = NSTextView; 
                 "m_textViewWindow" = NSWindow; 
+                "m_theContentListTable" = NSTableView; 
                 "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
                 "m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; 
                 "m_usePasswordMenuItem" = NSMenuItem; 
