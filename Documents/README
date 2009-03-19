@@ -1,19 +1,45 @@
-What is it all about
---------------------
+Table of Contents
+-----------------
+1. Introduction
+2. Changes in this release (0.9.1)
+3. License and source code
+4. unace binary
+5. Limitations of AceExpander
+6. Limitations of unace
+7. Personal note
+
+
+Introduction
+------------
 AceExpander is a Mac OS X graphical user interface to the unace command line
 utility. With AceExpander installed, you can simply double-click on any
-ACE archive(s) in the Finder and the contents of the archive(s) will be
-extracted to any place you like. Although the application can do a couple
-of other things with ACE archives, this is its main function. See below
-for a more detailed description of AceExpander.
+ACE archive(s) in the Finder and the contents of the archive will be
+extracted to a sub-folder of the same folder where the original archive
+is located. To configure AceExpander, or to use additional program features,
+you have to directly launch the application.
 
-The original archiving tool is WinAce. The compression algorithms it uses
-are not free, but AceExpander does not implement these algorithms - it
-rather uses the command line utility unace to perform the expansion task.
-For more information on WinAce, see http://www.winace.com.
+For a detailed description of AceExpander's features, see the MANUAL
+document (available from AceExpander's Help menu).
+
+ACE archives can be created with WinAce. For more information about this
+application, see http://www.winace.com.
 
 You can check for the most recent version of AceExpander on its homepage
-http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml
+http://aceexpander.herzbube.ch/
+
+
+Changes in this release
+-----------------------
+- released version 0.9.1
+- added central handling for severe error conditions via the notification
+  sub-system of Cocoa
+- archive content listing is not lost anymore after the archive is expanded
+- the content list drawer now opens automatically if it is closed and
+  the list command is selected
+- added items "MANUAL", "ReleasePlan" and "TODO" to the Help menu
+
+For more details see the ChangeLog document.
+
 
 
 License and source code
@@ -26,208 +52,6 @@ license.
 The source code for AceExpander can be downloaded from its homepage
 http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml
 You will get the source files ready for building with ProjectBuilder.
-
-
-Binary installation
---------------------
-If you don't want to build AceExpander from source by yourself, just
-follow these steps:
-
-- download the installation disk image (.dmg file) from the AceExpander
-  homepage
-- open the disk image with Apple's Disk Copy programm
-- in the Finder, drag the application icon to any location on one of your
-  volumes
-- that's all, folks :-)
-
-If you want to completely remove AceExpander from your system, simply
-delete the application and the associated user defaults file
-~/Library/Preferences/ch.herzbube.aceexpander.plist
-(the tilde sign "~" stands for your user home directory) 
-
-
-Expanding ACE archives
-----------------------
-When you launch AceExpander the first time after you have installed it
-on your system, it displays a big main window with an empty table that
-waits to be filled with ACE archive files. You can either put files
-into the table by selecting the File-Open command, or by dragging files
-from the Finder onto the table.
-
-Each file in the table is displayed with its icon, its full path name,
-and its state. The state expresses what AceExpander has done so far with
-the archive. When a file is added to the table its state is "Queued", i.e.
-AceExpander will try to expand the archive when you have selected it
-and click on the "Expand selected" button.
-
-If you have put several files into the table you can select them all and
-click on the "Expand selected" button to let AceExpander process one
-archive after the other. While expansion is in progress, a spinning
-progress indicator becomes visible and the "Cancel" button becomes active.
-The archive that is currently being expanded is marked with the state
-"Processing". If it could be expanded successfully, it is marked with the
-state "Success" and the next archive is being processed. If something
-went wrong, the archive is marked with the state "Failure", but AceExpander
-still proceeds expanding the next archive.
-
-If you click on the "Cancel" button, AceExpander stops working as soon as
-possible. Usually, the archive that was being processed when you clicked
-on "Cancel" is marked with the state "Aborted". You will have to check
-in the Finder whether or not any of the archive's content has been
-extracted already.
-
-After you have put too many files into the table, you may remove some or
-all of them. Use the "Remove" or "Remove all" commands from the Edit menu.
-"Remove" will only remove the files that are selected.
-
-Instead of removing files, you could also prevent AceExpander from
-processing some of them. Select those files that you do not want to be
-processed and use the "Unqueue" command from the Edit menu. The items
-will be marked with the state "Skip". Note: "Unqueue" only works for
-files that have the state "Queued".
-
-If you accidentally click on the "Expand selected" button a second time,
-after archives have already been expanded, nothing happens. This is
-because AceExpander only processes files that have the state "Queued",
-and those files that have already been processed now have the state
-"Success" or "Failure" (or "Aborted", if you pressed the "Cancel" button).
-
-If you want to expand an archive a second time (e.g. because the archive
-failed to expand the first time, and you have remedied the situation in
-the meantime), select the archive file in the table and use the "Requeue"
-command from the Edit menu. Whatever state the file is in, the command
-resets it back to the state "Queued" so that you can have another go.
-
-When an archive has failed to expand, you might get a hint about the
-reason for the failure if you look at the result window (open it from
-the Window menu). For the result window to display information, only
-one file may be selected in the main window's table. However, you may
-select any file in the table and the result window will update its
-information to match that file.
-
-The result window contains two text boxes that show the messages printed
-by the unace process on the standard output and standard error,
-respectively (if you do not know what these are, think of them as
-"normal output" and "error output"). In case of a failure, the standard
-error box may contain some useful information about the nature of the
-failure.
-
-So far the discussion was about 1) manually adding files to the table in
-the main window, 2) selecting, and 3) expanding them. This process is
-actually quite tedious and you will not normally operate AceExpander like
-this. The more common case is that you just double-click on an ACE
-archive in the Finder. AceExpander will launch, add the file to the main
-window's table, and process it. After it has successfully expanded the
-archive, it will terminate.
-
-ACE archives that are double-clickable in the Finder are files that have the
-extension ".ace". If you ever have an ACE archive without the extension, you
-can either rename it and add the extension, or you can launch AceExpander
-and process the file manually. Neither the File-Open command nor dragging
-to the main window's table are restricted to files with the ".ace"
-extension.
-
-If AceExpander encounters an error after you have launched it by
-double-clicking on an ACE archive in the Finder, it does not terminate
-automatically. Rather it remains launched so that you may inspect the result
-window to identify the error.
-
-Preferences
------------
-An important setting that you can change in the Preferences dialog is 
-the location where an archive's content should be placed upon expansion.
-This location is called the destination folder. You can choose from three
-locations:
-- the same folder as the archive's
-- a destination folder that you choose once in the Preferences dialog
-- AceExpander lets you choose a destination folder each time an archive
-  is expanded
-You can combine these with the option to let AceExpander create a folder
-for each archive that it is expanding and to place the archive's content
-within that folder. This so-called surrounding folder is created inside
-the destination folder.
-
-All other preferences are self-explaining and are not discussed in this
-document.
-
-
-Expand options
---------------
-The following items from the Options menu pertain to the "Expand" command
-of AceExpander:
-
-- Overwrite files
-  If a file is extracted from an archive, but this file already exists,
-  the expansion process will fail for that archive. If you turn on the
-  "Overwrite files" option, however, the expansion process will succeed,
-  because any existing files will be overwritten. This is a somewhat
-  dangerous option and therefore turned off by default.
-  Note: due to a bug in unace the "Assume yes" option is always turned
-  on automatically by AceExpander when you turn on "Overwrite files".
-  When you turn off "Overwrite files" you must turn off "Assume yes"
-  manually
-- Extract with full path
-  Use this option if the archive was created using a directory structure
-  and you want to restore this directory structure. The option is turned
-  on by default.
-- Assume yes
-  Use this option to tell unace that it should assume you would answer
-  "yes" to any questions it could ask. This is especially useful for
-  AceExpander, because AceExpander insulates you from unace and any
-  questions it could ask: if you notice in the result window that unace
-  wants to ask you questions, it might be appropriate to turn this option
-  on. Because "Assume yes" takes away control from the user this option
-  is turned off by default.
-- Use password
-  Choose this option if you need to expand an archive that contains
-  password-protected files. A dialog will pop up where you can enter
-  a password. If you cancel the dialog, the "Use password" option remains
-  turned off. Otherwise it becomes turned on and AceExpander will remember
-  to use the password you entered for all subsequent expand operations.
-  Turn off the option if you want AceExpander to forget the password. This
-  option is turned off by default.
-  Note: the password will be passed to unace as a command line argument
-  in clear text. If someone watches your system's process list that person
-  might be able to catch the password as it is part of the unace command
-  line. It is also possible (notably if you also turn on the option
-  "Debug mode") that the password might appear in clear text in one of the
-  text boxes in the result window.
-- Debug mode
-  This option is an AceExpander option only, it has nothing to do with
-  unace. If you turn on this option, the result window will contain
-  additional information in the standard output text box about the
-  parameters that were used to start unace.
-  Note: if the "Use password" option is also on, the password will be
-  displayed in clear text in the standard output text box!!!!!
-
-
-Listing and testing
--------------------
-The previous sections described how AceExpander performs its main function,
-i.e. expanding ACE archives. There are two more modes of operation:
-
-- Instead of expanding an archive you may list its contents. Select the
-  archive and choose the command "List content" from the Commands menu.
-  The archive's contents could be listed if its processing state becomes
-  "Success". The archive's contents could not be listed if its state
-  becomes "Failure".
-  
-  The list of contents is available in its raw form in the standard output
-  text box in the result window. It is however recommended to use the
-  drawer on the bottom of the main window for a nicer view of the content
-  list. The drawer can be toggled by the corresponding show/hide button;
-  it is not visible by default.
-
-  You may modify how the "List content" command works by turning on one
-  or both of the options "Show comments" and "List verbosely". If you
-  don't see any difference in the output, the archive has no comments
-  and no special content that could be listed verbosely.
-
-- Instead of expanding an archive you may test it for integrity. Select
-  the archive and choose the command "Test integrity" from the Commands
-  menu. The archive passes the integrity check if its processing state
-  becomes "Success". The archive fails the check if its state becomes
-  "Failure".
 
 
 unace binary
@@ -312,37 +136,17 @@ Limitations of unace
   forget about this issue.
 
 
-Keyboard shortcuts
-------------------
-- Standard Cocoa shortcuts
-  Cmd-,           Open preferences
-  Cmd-H           Hide application
-  Cmd-Shift-H     Hide others
-  Cmd-Q           Quit application
-  Cmd-O           Open file
-  Cmd-W           Close window
-  Cmd-A           Select all items
-  Cmd-M           Minimize
-- AceExpander shortcuts
-  Cmd-V           Show unace version
-  Cmd-Shift-I     Show info in Finder for selected items
-  Cmd-Shift-R     Reveal in Finder for selected items
-  Cmd-E           Expand selected items
-  Cmd-L           List content for selected items
-  Cmd-T           Test selected items
-  Cmd-R           (Re)Queue selected items
-  Cmd-U           Unqueue selected items
-  Backspace       Remove selected items
-  Cmd-Backspace   Remove all items
-  Cmd-Shift-M     Show Main Window
-  Cmd-Shift-R     Show Result Window
-
-
 Personal note
 -------------
-Thanks for using this little program. It is my first Cocoa application,
-and in fact, it is also the first Open Source software that I release.
-As such it is probably full of shortcomings, if not bugs. If you see
-something that needs improvement, please don't hesitate to let me know.
+I would like to thank Marcel Lemke for providing us with unace, and Kolja
+Koischwitz for porting unace to the Mac. I would also like to mention
+another GUI frontend to unace, MacUnace by Gabriel Gritsch, which has
+influenced some of AceExpander's features (http://www.gritsch-soft.com/).
+
+And, of course, a big Thanks to you for trying out this little program. It
+is my first Cocoa application, and in fact, it is also the first Open
+Source software that I release. As such it is probably full of shortcomings,
+if not bugs. If you see something that needs improvement, please don't
+hesitate to let me know.
 
 Patrick Näf <aceexpander@herzbube.ch>

@@ -288,7 +288,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>Version 0.9</string>
+	<string>Version 0.9.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>NSJavaNeeded</key>
@@ -325,10 +325,12 @@
 				CDBF8E560678D14900A80104,
 				CDBF8E5B0678D16900A80104,
 				CDBF8E5C0678D16900A80104,
-				CDBF8E5E0678D18C00A80104,
 				CDBF8E620678D1DB00A80104,
 				CDBF8E630678D1DB00A80104,
 				CDBF8E650678D2FF00A80104,
+				CDEC245F068EBD9900A80104,
+				CDEC2463068EBE2900A80104,
+				CDF726870690B34200A80104,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,6 +346,7 @@
 				CDBF8E470678D12900A80104,
 				CDBF8E480678D12900A80104,
 				CD8C08C1068B747800A80104,
+				CDF7268C0690BB8700A80104,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -434,12 +437,14 @@
 		};
 		CD8139B90678D05F00A80104 = {
 			children = (
-				CDBF8E490678D14900A80104,
-				CDBF8E4B0678D14900A80104,
-				CDBF8E4F0678D14900A80104,
 				CDBF8E640678D2FF00A80104,
-				CDBF8E4A0678D14900A80104,
+				CDEC2462068EBE2900A80104,
+				CDBF8E4B0678D14900A80104,
+				CDBF8E490678D14900A80104,
 				CDBF8E4C0678D14900A80104,
+				CDBF8E4F0678D14900A80104,
+				CDEC2460068EBE1500A80104,
+				CDBF8E4A0678D14900A80104,
 				CDBF8E4D0678D14900A80104,
 				CDBF8E4E0678D14900A80104,
 				CD0BAA7D068498D300A80104,
@@ -458,6 +463,7 @@
 				CDBF8E400678D12900A80104,
 				CDBF8E410678D12900A80104,
 				CDBF8E420678D12900A80104,
+				CDF7268B0690BB8700A80104,
 			);
 			isa = PBXGroup;
 			path = Sources;
@@ -662,12 +668,6 @@
 			path = RegistrationDomainDefaults.plist;
 			refType = 4;
 		};
-		CDBF8E5E0678D18C00A80104 = {
-			fileRef = CDBF8E5D0678D18C00A80104;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		CDBF8E5F0678D1B500A80104 = {
 			children = (
 				CDBF8E600678D1DB00A80104,
@@ -712,6 +712,50 @@
 		};
 		CDBF8E650678D2FF00A80104 = {
 			fileRef = CDBF8E640678D2FF00A80104;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CDEC245F068EBD9900A80104 = {
+			fileRef = CDBF8E4C0678D14900A80104;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CDEC2460068EBE1500A80104 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = INSTALL;
+			path = Documents/INSTALL;
+			refType = 2;
+		};
+		CDEC2462068EBE2900A80104 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = MANUAL;
+			path = Documents/MANUAL;
+			refType = 2;
+		};
+		CDEC2463068EBE2900A80104 = {
+			fileRef = CDEC2462068EBE2900A80104;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CDF726870690B34200A80104 = {
+			fileRef = CDBF8E5D0678D18C00A80104;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		CDF7268B0690BB8700A80104 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = AceExpanderException.java;
+			refType = 4;
+		};
+		CDF7268C0690BB8700A80104 = {
+			fileRef = CDF7268B0690BB8700A80104;
 			isa = PBXBuildFile;
 			settings = {
 			};

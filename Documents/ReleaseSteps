@@ -1,13 +1,36 @@
-﻿Perform the following steps to make a release
+Perform the following steps to make a release
 - update the ChangeLog (should have been done continuously, anyway)
-- update the README, if necessary
-- update the TODO, if necessary
+- compile the "Changes in this release" section of the README from the
+  entries in the ChangeLog
 - bump the version number
   - in InfoPlist.strings in the Resources section
   - in ProjectBuilder on the "Targets" pane under "InfoPlist Entries"
+  - in README
 - CVS: check in all changes
   cd <basedir>
   cvs commit
 - CVS: set a tag, e.g.
   cd <basedir>
   cvs tag v0-5 .
+- to distribute binary
+  - switch build style to deployment and build target
+  - if build is successful, the binary is now in the "build" folder
+    which is a sub-folder of the project folder
+  - !!!!!!!!!!!!!!! make a basic sanity test !!!!!!!!!!!!!!!
+  - launch disk copy
+  - create a new emty disk image with the following properties:
+    - Mac OS Extended
+    - an appropriate size (usually the minimal 5 MB should suffice)
+    - a volume name that matches the product and version number
+    - a file name that matches the volume name
+  - drag the built application into the volume that was automatically
+    mounted from the disk image
+  - un-mount the disk image
+  - in disk copy, choose the "convert image" command. Choose "compressed"
+    as the new image format.
+  - the new image is compressed and read-only; it can now be distributed
+- to distribute sources
+  - go to terminal
+  - call "<path-to-project-folder>/distribute.sh 0.9"
+  - a tarball is created which can now be distributed; it is placed in the
+    same folder where the project folder is

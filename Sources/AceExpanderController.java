@@ -46,6 +46,10 @@
 //   class set as their target, the method validateMenuItem() is queried to
 //   automatically enable or disable those menu items
 // - is the delegate of the main table view
+// - central handling for severe application errors; this class registers
+//   with the default notification center for the notification
+//   ErrorConditionOccurred. Classes may post such a notification if they
+//   detect an error they cannot handle
 // - instantiates AceExpanderPreferences in the constructor, in order for
 //   AceExpanderPreferences to correctly set up the user defaults database
 //   NOTE: make sure that this class does not query the user defaults
@@ -68,16 +72,25 @@ public class AceExpanderController
    // Constants
    private final static String PasswordDialogNibName = "PasswordDialog";
    private final static String GnuGPLFileName = "COPYING";
+   private final static String ManualFileName = "MANUAL";
    private final static String ReadMeFileName = "README";
    private final static String ChangeLogFileName = "ChangeLog";
+   private final static String ReleasePlanFileName = "ReleasePlan";
+   private final static String ToDoFileName = "TODO";
    private final static String HomePageURL = "http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml";
-
+   // Notifications
+   public static final String ExpandThreadHasFinishedNotification = "ExpandThreadHasFinished";
+   public static final String ErrorConditionOccurredNotification = "ErrorConditionOccurred";
+   public static final String UpdateResultWindowNotification = "UpdateResultWindow";
+   public static final String UpdateContentListDrawerNotification = "UpdateContentListDrawer";
+   
    // These variables are outlets and therefore initialized in the .nib
    // --- from MainMenu.nib
    private AceExpanderModel m_theModel;
    private NSWindow m_mainWindow;
    private NSTableView m_theTable;
    private NSTableView m_theContentListTable;
+   private NSDrawer m_theContentListDrawer;
    private NSButton m_cancelButton;
    private NSButton m_expandButton;
    private NSProgressIndicator m_progressIndicator;
@@ -98,7 +111,6 @@ public class AceExpanderController
    private NSMenuItem m_homepageMenuItem;
    private NSMenuItem m_showInfoInFinderMenuItem;
    private NSMenuItem m_revealInFinderMenuItem;
-
    // --- from PasswordDialog.nib
    private NSPanel m_passwordDialog;
    private NSSecureTextField m_passwordTextField;
@@ -113,6 +125,12 @@ public class AceExpanderController
 
    public AceExpanderController()
    {
+      // This must be the very first action, so that other classes may
+      // report any errors to this central error handling class
+      registerForNotifications();
+
+      // Next create the applications user defaults/preferences object.
+      // It will provide sensible defaults in the NSRegistration domain.
       m_thePreferences = new AceExpanderPreferences();
 
       // Register for services in the Services system menu
@@ -138,16 +156,6 @@ public class AceExpanderController
    // the .nib
    public void awakeFromNib()
    {
-      // Register for notification posted by the expand thread after it
-      // has finished
-      Class[] parameterTypes = {};   // must not be null
-      NSNotificationCenter.
-      defaultCenter().
-      addObserver(this,
-                  new NSSelector("expandThreadHasFinished", parameterTypes),
-                  AceExpanderThread.ExpandThreadHasFinishedNotification,
-                  null);
-
       // When the .nib is edited with InterfaceBuilder, the progress
       // indicator should be visible, otherwise it might be overlooked
       // by the person who is editing the .nib
@@ -309,7 +317,7 @@ public class AceExpanderController
 
    public void tableViewSelectionDidChange(NSNotification aNotification)
    {
-      updateResultsWindow();
+      updateResultWindow();
       updateContentListDrawer();
    }
 
@@ -370,6 +378,18 @@ public class AceExpanderController
       if (! bThreadWasStarted)
       {
          updateGUI(false);
+      }
+      else
+      {
+         // If the list thread was started successfully, and the list
+         // content drawer is not visible -> show it
+         switch(m_theContentListDrawer.state())
+         {
+            case NSDrawer.ClosedState:
+            case NSDrawer.ClosingState:
+               m_theContentListDrawer.open();
+               break;
+         }
       }
    }
 
@@ -449,6 +469,11 @@ public class AceExpanderController
       showTextFileInWindow(GnuGPLFileName);
    }
 
+   public void showManual(Object sender)
+   {
+      showTextFileInWindow(ManualFileName);
+   }
+
    public void showReadme(Object sender)
    {
       showTextFileInWindow(ReadMeFileName);
@@ -457,6 +482,16 @@ public class AceExpanderController
    public void showChangeLog(Object sender)
    {
       showTextFileInWindow(ChangeLogFileName);
+   }
+
+   public void showReleasePlan(Object sender)
+   {
+      showTextFileInWindow(ReleasePlanFileName);
+   }
+
+   public void showToDo(Object sender)
+   {
+      showTextFileInWindow(ToDoFileName);
    }
 
    public void gotoHomepage(Object sender)
@@ -605,26 +640,9 @@ public class AceExpanderController
       NSApplication.sharedApplication().stopModal();
    }
 
-  
    // ======================================================================
-   // Methods
+   // Methods handling NSNotifications
    // ======================================================================
-
-   // Disable/enable buttons when the expansion process starts/finishes 
-   private void updateGUI(boolean bExpandIsRunning)
-   {
-      m_cancelButton.setEnabled(bExpandIsRunning);
-      if (bExpandIsRunning)
-      {
-         m_progressIndicator.startAnimation(this);
-      }
-      else
-      {
-         m_progressIndicator.stopAnimation(this);
-      }
-      
-      m_expandButton.setEnabled(! bExpandIsRunning);
-   }
 
    // Is called by the NSNotificationCenter when the expansion thread
    // has finished. The thread posts the notification.
@@ -636,13 +654,11 @@ public class AceExpanderController
    public void expandThreadHasFinished()
    {
       updateGUI(false);
-      updateResultsWindow();
-      updateContentListDrawer();
-   
+
       // Terminate application if all items expanded successfully and
       // the application mode is non-interactive. If this method is called
       // after the initial launch sequence's expand thread has finished,
-      // the application mode should still be non-interactive. 
+      // the application mode should still be non-interactive.
       if (! m_theModel.getInteractive())
       {
          // If the user defaults say so, don't terminate the application
@@ -663,20 +679,42 @@ public class AceExpanderController
       }
    }
 
-   // Sets the state of the given menu item to the new state
-   private void setMenuItemState(NSMenuItem item, boolean bNewState)
+   // This method is called by the NSNotificationCenter when a severe error
+   // condition is detected. Trivial errors should be handled by the
+   // code that detects the error.
+   // If a method detects a severe error condition it should take the
+   // appropriate steps for a first-level reaction to the error (usually it
+   // just terminates/aborts the operation it was supposed to perform in a
+   // clean way). Then it it should compose a text (ideally one or more
+   // whole sentences) describing the error condition and post it together
+   // with an NSNotification to the NSNotificationCenter.
+   // This method reacts to the notification by displaying a dialog to the
+   // user, informing her about the problem and including the error
+   // description. The dialog offers the user to terminate the application
+   // (the default button), or to ignore the error.
+   public void errorConditionOccurred(NSNotification notification)
    {
-      if (bNewState)
+      String errorDescription = (String)notification.object();
+      String errorMessage = "AceExpander encountered a critical error!";
+      int iButtonClicked = NSAlertPanel.runCriticalAlert(errorMessage, errorDescription, "Terminate application", "Ignore error & continue", null);
+      // Only do nothing if the "Ignore" button was clicked
+      if (NSAlertPanel.AlternateReturn == iButtonClicked)
       {
-         item.setState(NSCell.OnState);
+         return;
       }
+      // Otherwise terminate the application
       else
       {
-         item.setState(NSCell.OffState);
+         NSApplication.sharedApplication().terminate(this);
       }
    }
 
-   private void updateResultsWindow()
+   // Updates the result window, depending on what is selected in the
+   // main table. Is called by the default notification centre when an
+   // AceExpanderItem sends a corresponding notification to indicate that
+   // its stdout and stderr messages have changed. Is also called when the
+   // main table's selection changes
+   public void updateResultWindow()
    {
       if (1 != m_theTable.numberOfSelectedRows())
       {
@@ -691,7 +729,12 @@ public class AceExpanderController
       }
    }
 
-   private void updateContentListDrawer()
+   // Updates the archive content drawer, depending on what is selected
+   // in the main table. Is called by the default notification centre when
+   // an AceExpanderItem sends a corresponding notification to indicate that
+   // its content list has changed. Is also called when the main table's
+   // selection changes
+   public void updateContentListDrawer()
    {
       if (1 != m_theTable.numberOfSelectedRows())
       {
@@ -702,10 +745,47 @@ public class AceExpanderController
          AceExpanderItem item = m_theModel.getItem(m_theTable.selectedRow());
          m_theContentListTable.setDataSource(item);
       }
-      
+
       m_theContentListTable.reloadData();
    }
 
+   // ======================================================================
+   // Other methods
+   // ======================================================================
+
+   // Internal helper method.
+   // Disable/enable buttons and other GUI elements depending on whether
+   // an expand process is currently running
+   private void updateGUI(boolean bExpandIsRunning)
+   {
+      m_expandButton.setEnabled(! bExpandIsRunning);
+      m_cancelButton.setEnabled(bExpandIsRunning);
+      if (bExpandIsRunning)
+      {
+         m_progressIndicator.startAnimation(this);
+      }
+      else
+      {
+         m_progressIndicator.stopAnimation(this);
+      }
+   }
+
+   // Internal helper method.
+   // Sets the state of the given menu item to the new state
+   private void setMenuItemState(NSMenuItem item, boolean bNewState)
+   {
+      if (bNewState)
+      {
+         item.setState(NSCell.OnState);
+      }
+      else
+      {
+         item.setState(NSCell.OffState);
+      }
+   }
+
+   // Internal helper method.
+   // Shows the content of the given file in a separate window
    private void showTextFileInWindow(String textFileName)
    {
       NSBundle mainBundle = NSBundle.mainBundle();
@@ -717,5 +797,36 @@ public class AceExpanderController
       m_textViewWindow.setTitle(textFileName);
       m_textViewWindow.makeKeyAndOrderFront(this);
       // No need to call makeMainWindow()
+   }
+
+   // Register with the default notification center for getting various
+   // notifications
+   private void registerForNotifications()
+   {
+      // Register for notification posted by the expand thread after it
+      // has finished
+      NSNotificationCenter center = NSNotificationCenter.defaultCenter();
+      center.addObserver(this,
+                         new NSSelector("expandThreadHasFinished", new Class[] {}),
+                         ExpandThreadHasFinishedNotification,
+                         null);
+      // Register for notification posted by anybody when an error condition
+      // occurs
+      center.addObserver(this,
+                         new NSSelector("errorConditionOccurred", new Class[] {NSNotification.class}),
+                         ErrorConditionOccurredNotification,
+                         null);
+      // Register for notification posted by AceExpanderItem instances
+      // when their stdout and stderr messages have changed
+      center.addObserver(this,
+                         new NSSelector("updateResultWindow", new Class[] {}),
+                         UpdateResultWindowNotification,
+                         null);
+      // Register for notification posted by AceExpanderItem instances
+      // when their content list has changed
+      center.addObserver(this,
+                         new NSSelector("updateContentListDrawer", new Class[] {}),
+                         UpdateContentListDrawerNotification,
+                         null);
    }
 }

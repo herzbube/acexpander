@@ -4,6 +4,7 @@
         {
             ACTIONS = {
                 cancelCommand = id; 
+                errorConditionOccurred = id; 
                 expandItems = id; 
                 gotoHomepage = id; 
                 listItems = id; 
@@ -16,10 +17,13 @@
                 showFinderInfo = id; 
                 showGPL = id; 
                 showMainWindow = id; 
+                showManual = id; 
                 showOpenDialog = id; 
                 showPreferencesDialog = id; 
                 showReadme = id; 
+                showReleasePlan = id; 
                 showResultWindow = id; 
+                showToDo = id; 
                 showUnaceVersion = id; 
                 testItems = id; 
                 toggleAssumeYes = id; 
@@ -55,6 +59,7 @@
                 "m_stdoutTextView" = NSTextView; 
                 "m_textView" = NSTextView; 
                 "m_textViewWindow" = NSWindow; 
+                "m_theContentListDrawer" = NSDrawer; 
                 "m_theContentListTable" = NSTableView; 
                 "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
                 "m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; 

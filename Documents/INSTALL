@@ -1,0 +1,37 @@
+Binary installation
+--------------------
+If you don't want to build AceExpander from source by yourself, just
+follow these steps:
+
+- download the installation disk image (.dmg file) of the version of
+  AceExpander you wish to install from the download section of the
+  AceExpander homepage
+- open the disk image with Apple's Disk Copy programm
+- in the Finder, drag the application icon to any location on one of your
+  volumes
+- the application is now being copied, that's all, folks :-)
+
+If you want to completely remove AceExpander from your system, simply
+delete the application and the associated user defaults file
+~/Library/Preferences/ch.herzbube.aceexpander.plist
+(the tilde sign "~" stands for your user home directory) 
+
+Source installation
+-------------------
+Get the tar ball containing the sources of the version of AceExpander
+you wish to build from the download section of the AceExpander homepage.
+
+The tar ball will expand into its own sub-directory. The source files
+are located in the Sources sub-directory (duh!).
+
+To build AceExpander, first launch ProjectBuilder by double-clicking on the
+.pbproj file in the Finder. The project contains only one target, but you
+may choose between one of the build-styles "Development" and "Deployment".
+Unless you want to do some programming and test your changes, you should
+choose "Deployment" build style. Now you can choose "Build", or
+"Build and Run" from the Build menu.
+
+AceExpander should build without errors. If it doesn't, please let me know
+so that I may correct the error in the project settings for future releases.
+After the build has finished, the application can be found in the project
+directory's sub-folder "build".

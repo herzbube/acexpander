@@ -53,9 +53,6 @@ public class AceExpanderThread extends Thread
    // Member variables
    // ======================================================================
 
-   // Name of notification that is sent when thread has finished
-   public static final String ExpandThreadHasFinishedNotification = "ExpandThreadHasFinished";
-
    public static final int EXPAND = 0;
    public static final int LIST = 1;
    public static final int TEST = 2;
@@ -106,6 +103,9 @@ public class AceExpanderThread extends Thread
    // This folder is used to store the destination folder for which the
    // user has been queried when the first item was expanded.
    String m_destinationFolderAskWhenExpanding;
+
+   // The command in its numerical form
+   int m_iCommand;
    
    // ======================================================================
    // Constructors
@@ -149,8 +149,7 @@ public class AceExpanderThread extends Thread
          expandItem(item);
 
          // The messages can be set in any case
-         item.setMessageStdout(m_messageStdout);
-         item.setMessageStderr(m_messageStderr);
+         item.setMessages(m_messageStdout, m_messageStderr, m_iCommand);
 
          // Check if we need to stop the thread
          if (m_bStopRunning)
@@ -172,7 +171,7 @@ public class AceExpanderThread extends Thread
       m_bStopRunning = false;
 
       // Notify any observers that this thread has terminated
-      NSNotificationCenter.defaultCenter().postNotification(ExpandThreadHasFinishedNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ExpandThreadHasFinishedNotification, null);
    }
 
    // Take actions to terminate the thread
@@ -283,34 +282,28 @@ public class AceExpanderThread extends Thread
    {
       m_unaceCommand = "";
       m_unaceSwitchList.removeAllObjects();
-      
+
+      m_iCommand = iCommand;
       switch (iCommand)
       {
          case EXPAND:
             if (bExtractFullPath)
-            {
                m_unaceCommand = m_unaceCmdExtractWithFullPath;
-            }
             else
-            {
                m_unaceCommand = m_unaceCmdExtract;
-            }
             break;
          case LIST:
             if (bListVerbosely)
-            {
                m_unaceCommand = m_unaceCmdListVerbosely;
-            }
             else
-            {
                m_unaceCommand = m_unaceCmdList;
-            }
             break;
          case TEST:
             m_unaceCommand = m_unaceCmdTest;
             break;
          default:
-            // TODO throw exception
+            String errorDescription = "Unexpected command code " + iCommand + " in AceExpanderThread.setArguments().";
+            NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
             return;
       }
 

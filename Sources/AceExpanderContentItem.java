@@ -76,7 +76,8 @@ public class AceExpanderContentItem
    {
       if (! setAndParseContentLine(contentLine))
       {
-         // TODO: throw an exception
+         String errorDescription = "AceExpanderContentItem.setAndParseContentLine() returned an error.";
+         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
       }
    }
 

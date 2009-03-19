@@ -92,8 +92,13 @@ public class AceExpanderPreferences
 
    public AceExpanderPreferences()
    {
-      // Stored in a member variable because it is frequently used
+      // Store instance in a member variable because it is frequently used
       m_userDefaults = NSUserDefaults.standardUserDefaults();
+      if (null == m_userDefaults)
+      {
+         String errorDescription = "Shared user defaults instance is null."; 
+         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+      }
       loadDefaultsToRegistrationDomain();
    }
 
@@ -407,32 +412,52 @@ public class AceExpanderPreferences
    // inside the application bundle
    private void loadDefaultsToRegistrationDomain()
    {
-      NSBundle mainBundle = NSBundle.mainBundle();
-      // TODO: check what happens if defaults are not there...
-      java.io.File defaultsFile = new java.io.File(mainBundle.pathForResource(RegistrationDomainDefaultsFileName, null));
-      NSData defaultsXMLData = new NSData(defaultsFile);
-      Object defaultsObject = NSPropertyListSerialization.
-         propertyListFromData(defaultsXMLData,
-                              NSPropertyListSerialization.PropertyListImmutable,
-                              null, null);
-      // Did we get a valid property list?
-      if (null == defaultsObject)
+      try
       {
-         // TODO: throw an exception or do something
-      }
+         NSBundle mainBundle = NSBundle.mainBundle();
+         String defaultsPathName = mainBundle.pathForResource(RegistrationDomainDefaultsFileName, null);
+         if (null == defaultsPathName)
+         {
+            throw new AceExpanderException("The defaults file " + RegistrationDomainDefaultsFileName + " could not be found in the resources of the application bundle.");
+         }
+         java.io.File defaultsFile = new java.io.File(defaultsPathName);
+         if (! defaultsFile.exists())
+         {
+            throw new AceExpanderException("The defaults file " + defaultsPathName + " does not exist.");
+         }
+         else if (! defaultsFile.canRead())
+         {
+            throw new AceExpanderException("No read access to defaults file " + defaultsPathName + ".");
+         }
+         NSData defaultsXMLData = new NSData(defaultsFile);
+         Object defaultsObject = NSPropertyListSerialization.
+            propertyListFromData(defaultsXMLData,
+                                 NSPropertyListSerialization.PropertyListImmutable,
+                                 null, null);
+         // Did we get a valid property list?
+         if (null == defaultsObject)
+         {
+            throw new AceExpanderException("A property list could not be generated from defaults file " + defaultsPathName + ".");
+         }
 
-      // Make sure that we got an NSMutableDictionary. I have not found
-      // this documented anywhere in Apple's topics/examples/documentation.
-      // The example by Apple only shows the way until we get the Object
-      // result from the call to propertyListFromData()
-      String defaultsObjectType = defaultsObject.getClass().getName();
-      if ("com.apple.cocoa.foundation.NSMutableDictionary" == defaultsObjectType)
-      {
-         m_userDefaults.registerDefaults((NSMutableDictionary)defaultsObject);
+         // Make sure that we got an NSMutableDictionary. I have not found
+         // this documented anywhere in Apple's topics/examples/documentation.
+         // The example by Apple only shows the way until we get the Object
+         // result from the call to propertyListFromData()
+         String defaultsObjectType = defaultsObject.getClass().getName();
+         if ("com.apple.cocoa.foundation.NSMutableDictionary" == defaultsObjectType)
+         {
+            m_userDefaults.registerDefaults((NSMutableDictionary)defaultsObject);
+         }
+         else
+         {
+            throw new AceExpanderException("The property list generated from defaults file " + defaultsPathName + " is of unexpected type " + defaultsObjectType + ".");
+         }
       }
-      else
+      catch(AceExpanderException exception)
       {
-         // TODO: throw an exception or do something...
+         // Notify the error handler that an error has occurred
+         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, exception.getMessage());
       }
    }
 

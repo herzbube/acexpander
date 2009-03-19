@@ -29,7 +29,15 @@
 // AceExpanderItem.java
 //
 // This class represents an ACE archive in the file system and, at the same
-// time, a row in the table of archives in the application's GUI.
+// time, a row in the table of archives in the application's GUI. It
+// is responsible for notifying others if its state changes (exceptions
+// are construction/destruction):
+// - whenever anything changes that is displayed in the main window table,
+//   call the model's itemHasChanged() method
+// - whenever anything changes that is displayed in the result window,
+//   post a UpdateResultWindowNotification notification
+// - whenever anything changes that is displayed in the content list drawer,
+//   post a UpdateContentListDrawerNotification notification
 //
 // An item always has one of the following states:
 //  - QUEUED: This is the initial state when the item is created. An item
@@ -93,12 +101,18 @@ public class AceExpanderItem
 
    public AceExpanderItem(String fileName, AceExpanderModel theModel)
    {
+      m_theModel = theModel;
+      if (null == m_theModel)
+      {
+         String errorDescription = "The AceExpanderModel instance given in the AceExpanderItem constructor is null.";
+         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
+      }
+
+      // Do not call setFileName; we don't want that notifications are
+      // posted during construction
+      clearAttributes();
       m_fileName = fileName;
       updateIcon();
-      clearAttributes();
-
-      // TODO: throw an exception when theModel is null
-      m_theModel = theModel;
    }
 
    // ======================================================================
@@ -110,13 +124,16 @@ public class AceExpanderItem
       return m_fileName;
    }
 
-   public void setFilename(String fileName)
+   public void setFileName(String fileName)
    {
+      clearAttributes();
       m_fileName = fileName;
       updateIcon();
-      clearAttributes();
 
+      // Notify others that state has changed
       m_theModel.itemHasChanged(this);
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateContentListDrawerNotification, null);
    }
 
    public NSImage getIcon()
@@ -155,11 +172,12 @@ public class AceExpanderItem
       if (QUEUED != iState && SKIP != iState && PROCESSING != iState
           && ABORTED != iState && SUCCESS != iState && FAILURE != iState)
       {
-         // TODO: throw an exception
+         String errorDescription = "Unexpected state " + iState + " in AceExpanderItem.setState().";
+         NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.ErrorConditionOccurredNotification, errorDescription);
          return;
       }
       m_iState = iState;
-      
+
       m_theModel.itemHasChanged(this);
    }
 
@@ -168,12 +186,14 @@ public class AceExpanderItem
       return m_messageStdout;
    }
 
-   public void setMessageStdout(String messageStdout)
+   public void setMessageStdout(String messageStdout, int iCommand)
    {
       m_messageStdout = messageStdout;
-      parseMessageStdout();
-      // TODO: should notify somebody so that the result window can be
-      // updated
+      if (AceExpanderThread.LIST == iCommand)
+      {
+         parseMessageStdout();
+      }
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
    }
 
    public String getMessageStderr()
@@ -184,8 +204,21 @@ public class AceExpanderItem
    public void setMessageStderr(String messageStderr)
    {
       m_messageStderr = messageStderr;
-      // TODO: should notify somebody so that the result window can be
-      // updated
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
+   }
+
+   // Is implemented as a convenience method, and so that only one
+   // notification is posted instead of two, if the messages were set
+   // independently
+   public void setMessages(String messageStdout, String messageStderr, int iCommand)
+   {
+      m_messageStdout = messageStdout;
+      if (AceExpanderThread.LIST == iCommand)
+      {
+         parseMessageStdout();
+      }
+      m_messageStderr = messageStderr;
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateResultWindowNotification, null);
    }
 
    // ======================================================================
@@ -245,6 +278,7 @@ public class AceExpanderItem
       }
 
       updateContentItemList(contentLinesArray);
+      NSNotificationCenter.defaultCenter().postNotification(AceExpanderController.UpdateContentListDrawerNotification, null);
    }
    
    // The given array should contain String objects, each of which
@@ -316,13 +350,19 @@ public class AceExpanderItem
    // Fetch the icon for the currently set file name
    private void updateIcon()
    {
+      if (null == m_fileName)
+      {
+         return;
+      }
       // false = the wrapper is not for a symlink
       m_icon = new NSFileWrapper(m_fileName, false).icon();
    }
 
-   // Clear attributes / set them to their default values
+   // Clear attributes / set them to their default values.
    private void clearAttributes()
    {
+      m_fileName = "";
+      m_icon = null;
       m_iState = QUEUED;
       m_messageStdout = "";
       m_messageStderr = "";

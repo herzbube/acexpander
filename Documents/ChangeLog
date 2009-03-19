@@ -1,3 +1,16 @@
+Mon June 28 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- released version 0.9.1
+- added central handling for severe error conditions via the notification
+  sub-system of Cocoa
+- better handling of GUI updates when something changes in the main table
+- archive content listing is not lost anymore after the archive is expanded
+- the content list drawer now opens automatically if it is closed and
+  the list command is selected
+
+Sun June 27 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- added items "MANUAL", "ReleasePlan" and "TODO" to the Help menu
+- updated various documents
+
 Wed June 24 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - finished version 0.9
 - main window now has a drawer that shows the ACE archive's content

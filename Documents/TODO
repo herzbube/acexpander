@@ -1,35 +1,28 @@
+This document contains a list of minor features and technical stuff that
+should be implemented when time permits it. The TODO list is updated
+frequently as new ideas crop up during programming.
+
+For a broader view of how the application will develop over time, you
+should see the ReleasePlan document.
+
+
 Priority 1 (important)
 ----------------------
-- write the "full description" paragraph in README
-- find out where the null pointer exception hides. must have something
-  to do with expanding/cancelling expansion; maybe also when items were
-  deleted and expansion follows afterwards with new items; or simply when
-  there are two items, and one or both are already processed
-- list command should extract listed files from stdout and list them
-  in a separate view, e.g. a drawer
-- describe the list command in the README
-- decide whether new documents should be created from the blown README;
-  for instance: INSTALL, MANUAL
-- table should be highlighted in some way while a valid drag hovers over it
-- better error handling
-  - throw an exception when anything goes wrong with loading the
-    NSRegistration domain defaults
-  - throw exception when shared NSUserDefaults object is null in
-    AceExpanderPreferences()
-  - throw exception when error occurs during
-    AceExpanderThread.setArguments()
-  - throw exception when state of AceExpanderItem is set to something
-    invalid
-  - throw exception when AceExpanderItem is created with theModel == null
-  - throw exception when AceExpanderThread is created with theModel == null
-- AceExpanderItem should notify somebody when the stdout and stderr
-  texts change so that the result window can be updated
+- add application icon
+- after selecting File-Open (and possibly other menu commands), the table
+  should get the focus automatically so that Cmd-A can immediately select
+  all items, without having to use the mouse to give the focus to the
+  table
+- password should not appear in clear text in result window. update
+  README if you implement this
+- add basic file checks (exists, readable) to AceExpanderThread; this
+  will provide better error handling than what unace can provide; it
+  will also prevent the unnecessary creation of a folder when the archive
+  file does not exist or cannot be read
 
 Priority 2 (nice to have)
 -------------------------
-- invisible button should not receive mouse clicks
-- table should color-code states
-- should be possible to change state by clicking on the table cell
+- table should be highlighted in some way while a valid drag hovers over it
 - better file handling when a new item is created or its filename is
   set: e.g. what happens when it's a symlink? when it's an alias?
   when we don't have read permissions?  
@@ -38,14 +31,19 @@ Priority 2 (nice to have)
 - entire path should be shown in tooltip for items in preferences dialog
 - cancel button should become default button ("Enter" button) while
   expansion is in progress
-- after selecting File-Open (and possibly other menu commands), the table
-  should get the focus automatically so that Cmd-A can immediately select
-  all items, without having to use the mouse to give the focus to the
-  table
-- password should not appear in clear text in result window
+- get more information about this:
+  when the application is run from ProjectBuilder, Cocoa prints out the
+  following warning to the application's output window when the
+  variant of NSOpenPanel.runModalInDirectory() is invoked where the parent
+  window can be specified and the open panel is opened as a sheet:
+
+  *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
+- make dialogs/windows smaller so that the application is less intrusive
+  on the user's desktop
 
 Priority 3 (not important)
 --------------------------
+- user default: set the number of documents in the File-OpenRecent menu
 - user default: choose destination folder only once per expand batch
 - create test files that produce comments, that can be listed verbosely,
   and that require the "assume yes" option.
@@ -55,6 +53,8 @@ Priority 3 (not important)
 - show main window when it is hidden and the user clicks on the
   application's dock icon
 - delete key should also remove selected items
+- in MainMenu.nib, the menu item "remove selected" should be marked with
+  the "Backspace" key; the invisible button can then be removed
 - when the user chooses the unace executable in the preferences dialog,
   a check should be made if the chosen file really is executable.
   This seems to be not so easy in Java, although in Obj-C the class
@@ -73,7 +73,8 @@ Priority 3 (not important)
 Mac OS X 10.3
 -------------
 - when changing to Mac OS X 10.3, the following deprecated things
-  should be corrected:
+  should be corrected (maybe use pre-processor #ifdefs to keep old code
+  so that it can still be run on Mac OS X 10.2):
   - in the model: NSTableView.selectedRowEnumerator() should be replaced by
     NSTableView.selectedRowIndexes()
   - in the model: NSTableView.selectRow() should be replaced by
