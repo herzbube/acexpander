@@ -12,7 +12,7 @@ again with a revision number appended to the current version (e.g. 0.4.1).
 A revision number will also be appended if things from the TODO list
 become important enough to warrant an in-between release
 
-Version 0.5
+Version 0.5 (complete)
 - add preference panel
 - preferences are loaded and saved
 - add a .plist file with default preferences to the project
@@ -20,13 +20,13 @@ Version 0.5
 - add preference "close application when main window is closed"
 - implement menu item to show the main window after it has been closed
 
-Version 0.6
+Version 0.6 (complete)
 - stdout and stderr output of the unace process can be viewed
   separately for each item
 - new user default to change the path to the unace binary
 - show unace version information
 
-Version 0.7
+Version 0.7 (complete)
 - by default, the application terminates itself after a successful
   expansion if it was started by double-clicking on an archive file in the
   Finder
@@ -35,15 +35,15 @@ Version 0.7
 - new user default to set a destination folder where expanded items
   should be placed
 
-Version 0.8
+Version 0.8 (complete)
 - new user default for "open recent"
 - display text files (e.g. GPL) in the help menu
 - add help menu item "AceXpander Homepage"
 
-Version 0.9
+Version 0.9 (complete)
 - list contents in drawer
 
-Version 1.0
+Version 1.0 (complete)
 - current option settings are saved to user defaults
 - process entire folders
 

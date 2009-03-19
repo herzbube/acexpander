@@ -24,11 +24,11 @@ Perform the following steps to make a release
     - Subversion
       ???
 - to make the binary distribution
-  - switch build style to "deployment" and build target
+  - set active build configuration in Xcode to "Release" and build target
   - if build is successful, the binary is now in the "build" folder
     which is a sub-folder of the project folder
   - !!!!!!!!!!!!!!! make a basic sanity test !!!!!!!!!!!!!!!
-    you want to be sure that the "deployment" version works as well as the
+    you want to be sure that the release version works as well as the
     debug version
   - launch disk copy
   - create a new empty disk image with the following properties:

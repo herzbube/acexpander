@@ -1,7 +1,7 @@
 // !$*UTF8*$!
 {
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeBuildStyle = 4A9504D3FFE6A4CB11CA0CBA /* Debug */;
 		activeExecutable = CD93FE250A05478C00F98FEB /* AceXpander */;
 		activeTarget = 29B97326FDCFA39411CA2CEA /* AceXpander */;
@@ -44,7 +44,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					300,
-					200,
+					773,
 				);
 				PBXFileTableDataSourceColumnsKey = (
 					PBXErrorsWarningsDataSource_TypeID,
@@ -74,8 +74,22 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 169247676;
-			PBXWorkspaceStateSaveDate = 169247676;
+			PBXPerProjectTemplateStateSaveDate = 173559867;
+			PBXWorkspaceStateSaveDate = 173559867;
+		};
+		perUserProjectItems = {
+			CDC515120A5850F900D9D4B2 /* PBXTextBookmark */ = CDC515120A5850F900D9D4B2 /* PBXTextBookmark */;
+			CDC515130A5850F900D9D4B2 /* PBXBookmark */ = CDC515130A5850F900D9D4B2 /* PBXBookmark */;
+			CDC515140A5850F900D9D4B2 /* PBXBookmark */ = CDC515140A5850F900D9D4B2 /* PBXBookmark */;
+			CDC515150A5850F900D9D4B2 /* PBXTextBookmark */ = CDC515150A5850F900D9D4B2 /* PBXTextBookmark */;
+			CDC515160A5850F900D9D4B2 /* PBXBookmark */ = CDC515160A5850F900D9D4B2 /* PBXBookmark */;
+			CDC515170A5850F900D9D4B2 /* PBXBookmark */ = CDC515170A5850F900D9D4B2 /* PBXBookmark */;
+			CDC515180A5850F900D9D4B2 /* PBXBookmark */ = CDC515180A5850F900D9D4B2 /* PBXBookmark */;
+			CDC515240A58514400D9D4B2 /* PBXBookmark */ = CDC515240A58514400D9D4B2 /* PBXBookmark */;
+			CDD08E0C0A583D0300B8B70C = CDD08E0C0A583D0300B8B70C /* PBXTextBookmark */;
+			CDD08E0D0A583D0300B8B70C = CDD08E0D0A583D0300B8B70C /* PBXBookmark */;
+			CDD08E0E0A583D0300B8B70C = CDD08E0E0A583D0300B8B70C /* PBXTextBookmark */;
+			CDD08E250A58446800B8B70C = CDD08E250A58446800B8B70C /* PBXTextBookmark */;
 		};
 		sourceControlManager = CD93FE310A0547AB00F98FEB /* Source Control */;
 		userBuildSettings = {
@@ -172,8 +186,8 @@
 	CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1075, 5947}}";
-			sepNavSelRange = "{3143, 0}";
-			sepNavVisRect = "{{0, 1137}, {1075, 824}}";
+			sepNavSelRange = "{2556, 57}";
+			sepNavVisRect = "{{0, 988}, {1075, 824}}";
 			sepNavWindowFrame = "{{15, 177}, {1032, 820}}";
 		};
 	};
@@ -186,37 +200,58 @@
 	};
 	CD93FE710A05498700F98FEB /* ChangeLog */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1075, 3724}}";
-			sepNavSelRange = "{167, 0}";
+			sepNavIntBoundsRect = "{{0, 0}, {1075, 3743}}";
+			sepNavSelRange = "{1127, 113}";
+			sepNavVisRect = "{{0, 0}, {1075, 824}}";
+		};
+	};
+	CD93FE720A05498700F98FEB /* COPYING */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1075, 6479}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {1075, 824}}";
+		};
+	};
+	CD93FE730A05498700F98FEB /* INSTALL */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1075, 824}}";
+			sepNavSelRange = "{129, 0}";
 			sepNavVisRect = "{{0, 0}, {1075, 824}}";
 		};
 	};
 	CD93FE740A05498700F98FEB /* MANUAL */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1075, 4921}}";
-			sepNavSelRange = "{12138, 0}";
-			sepNavVisRect = "{{0, 4098}, {1075, 823}}";
+			sepNavSelRange = "{11194, 0}";
+			sepNavVisRect = "{{0, 1667}, {1075, 824}}";
 		};
 	};
 	CD93FE750A05498700F98FEB /* README */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1075, 3287}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 253}, {1075, 822}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1075, 3211}}";
+			sepNavSelRange = "{7611, 0}";
+			sepNavVisRect = "{{0, 2387}, {1075, 824}}";
 		};
 	};
 	CD93FE760A05498700F98FEB /* README.developer */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1075, 3743}}";
-			sepNavSelRange = "{9251, 0}";
-			sepNavVisRect = "{{0, 2921}, {1075, 822}}";
+			sepNavSelRange = "{8404, 0}";
+			sepNavVisRect = "{{0, 2919}, {1075, 824}}";
+		};
+	};
+	CD93FE770A05498700F98FEB /* ReleasePlan */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1075, 2223}}";
+			sepNavSelRange = "{3913, 0}";
+			sepNavVisRect = "{{0, 1399}, {1075, 824}}";
 		};
 	};
 	CD93FE780A05498700F98FEB /* ReleaseSteps */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1075, 988}}";
-			sepNavSelRange = "{656, 0}";
-			sepNavVisRect = "{{0, 0}, {1075, 822}}";
+			sepNavSelRange = "{484, 0}";
+			sepNavVisRect = "{{0, 0}, {1075, 824}}";
 		};
 	};
 	CD93FE7A0A05498700F98FEB /* Testing */ = {
@@ -245,5 +280,83 @@
 		name = "Project Breakpoints";
 		objects = (
 		);
+	};
+	CDC515120A5850F900D9D4B2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = CD93FE710A05498700F98FEB /* ChangeLog */;
+		name = "ChangeLog: 2";
+		rLen = 0;
+		rLoc = 101;
+		rType = 0;
+		vrLen = 2271;
+		vrLoc = 0;
+	};
+	CDC515130A5850F900D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150C0A58507300D9D4B2 /* Document.icns */;
+	};
+	CDC515140A5850F900D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150B0A58507300D9D4B2 /* Application.icns */;
+	};
+	CDC515150A5850F900D9D4B2 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = CD93FE710A05498700F98FEB /* ChangeLog */;
+		name = "ChangeLog: 2";
+		rLen = 0;
+		rLoc = 101;
+		rType = 0;
+		vrLen = 2271;
+		vrLoc = 0;
+	};
+	CDC515160A5850F900D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150B0A58507300D9D4B2 /* Application.icns */;
+	};
+	CDC515170A5850F900D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150C0A58507300D9D4B2 /* Document.icns */;
+	};
+	CDC515180A5850F900D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150B0A58507300D9D4B2 /* Application.icns */;
+	};
+	CDC515240A58514400D9D4B2 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CDC5150B0A58507300D9D4B2 /* Application.icns */;
+	};
+	CDD08E0C0A583D0300B8B70C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */;
+		name = "AppKitJava: uncaught exception OBJCJava_RUNTIME_EXCEPTION";
+		rLen = 57;
+		rLoc = 2556;
+		rType = 0;
+		vrLen = 1832;
+		vrLoc = 2000;
+	};
+	CDD08E0D0A583D0300B8B70C /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = CD93FE710A05498700F98FEB /* ChangeLog */;
+	};
+	CDD08E0E0A583D0300B8B70C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = CD93FE390A0547C600F98FEB /* AceXpanderTableView.java */;
+		name = "AppKitJava: uncaught exception OBJCJava_RUNTIME_EXCEPTION";
+		rLen = 57;
+		rLoc = 2556;
+		rType = 0;
+		vrLen = 1832;
+		vrLoc = 2000;
+	};
+	CDD08E250A58446800B8B70C /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = CD93FE710A05498700F98FEB /* ChangeLog */;
+		name = "ChangeLog: 2";
+		rLen = 0;
+		rLoc = 101;
+		rType = 0;
+		vrLen = 2271;
+		vrLoc = 0;
 	};
 }

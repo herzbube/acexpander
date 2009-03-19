@@ -29,8 +29,9 @@ if test $? -ne 0; then
 fi
 
 find $ACEXPANDER_DISTRIBUTE_DIR -type f | \
-   egrep -v "(CVS|.DS_Store|$MYNAME|$ACEXPANDER_DISTRIBUTE_DIR/build|$ACEXPANDER_DISTRIBUTE_DIR/Archive|$ACEXPANDER_DISTRIBUTE_DIR/Testfiles)" \
+   egrep -v "(CVS|.svn|.DS_Store|$MYNAME|$ACEXPANDER_DISTRIBUTE_DIR/build|$ACEXPANDER_DISTRIBUTE_DIR/Archive|$ACEXPANDER_DISTRIBUTE_DIR/Testfiles|$ACEXPANDER_DISTRIBUTE_DIR/Graphics)" \
    >$TMPFILE
+ls $ACEXPANDER_DISTRIBUTE_DIR/Graphics/*.icns >>$TMPFILE
 if test ! -s $TMPFILE; then
    mv $ACEXPANDER_DISTRIBUTE_DIR $ACEXPANDER_DIR
    echo "No files to distribute"

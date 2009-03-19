@@ -129,14 +129,14 @@
 		CD93FE860A05498700F98FEB /* TODO in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE7B0A05498700F98FEB /* TODO */; };
 		CD93FE890A05499800F98FEB /* unace in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE870A05499800F98FEB /* unace */; };
 		CD93FE8A0A05499800F98FEB /* unace.sh in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE880A05499800F98FEB /* unace.sh */; };
-		CD93FE8D0A0549A400F98FEB /* Application.icns in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8B0A0549A400F98FEB /* Application.icns */; };
-		CD93FE8E0A0549A400F98FEB /* Document.icns in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8C0A0549A400F98FEB /* Document.icns */; };
 		CD93FE910A0549E800F98FEB /* distribute.sh in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE8F0A0549E800F98FEB /* distribute.sh */; };
 		CD93FE920A0549E800F98FEB /* RegistrationDomainDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */; };
 		CDB32CA20A163170000A07EC /* PasswordDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDB32C9E0A163170000A07EC /* PasswordDialog.nib */; };
 		CDB32CA30A163170000A07EC /* PreferencesDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDB32CA00A163170000A07EC /* PreferencesDialog.nib */; };
 		CDB32DAE0A1648F9000A07EC /* AceXpander_Prefix.h in Headers */ = {isa = PBXBuildFile; fileRef = CDB32DAC0A1648F9000A07EC /* AceXpander_Prefix.h */; };
 		CDB32DAF0A1648F9000A07EC /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB32DAD0A1648F9000A07EC /* main.m */; };
+		CDC5150D0A58507300D9D4B2 /* Application.icns in Resources */ = {isa = PBXBuildFile; fileRef = CDC5150B0A58507300D9D4B2 /* Application.icns */; };
+		CDC5150E0A58507300D9D4B2 /* Document.icns in Resources */ = {isa = PBXBuildFile; fileRef = CDC5150C0A58507300D9D4B2 /* Document.icns */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildStyle section */
@@ -199,14 +199,14 @@
 		CD93FE7B0A05498700F98FEB /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = Documents/TODO; sourceTree = "<group>"; };
 		CD93FE870A05499800F98FEB /* unace */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = unace; path = unace/unace; sourceTree = "<group>"; };
 		CD93FE880A05499800F98FEB /* unace.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = unace.sh; path = unace/unace.sh; sourceTree = "<group>"; };
-		CD93FE8B0A0549A400F98FEB /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Application.icns; path = Icons/Application.icns; sourceTree = "<group>"; };
-		CD93FE8C0A0549A400F98FEB /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Document.icns; path = Icons/Document.icns; sourceTree = "<group>"; };
 		CD93FE8F0A0549E800F98FEB /* distribute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = distribute.sh; sourceTree = "<group>"; };
 		CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RegistrationDomainDefaults.plist; sourceTree = "<group>"; };
 		CDB32C9F0A163170000A07EC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PasswordDialog.nib; sourceTree = "<group>"; };
 		CDB32CA10A163170000A07EC /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencesDialog.nib; sourceTree = "<group>"; };
 		CDB32DAC0A1648F9000A07EC /* AceXpander_Prefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AceXpander_Prefix.h; path = Sources/AceXpander_Prefix.h; sourceTree = "<group>"; };
 		CDB32DAD0A1648F9000A07EC /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Sources/main.m; sourceTree = "<group>"; };
+		CDC5150B0A58507300D9D4B2 /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Application.icns; path = Graphics/Application.icns; sourceTree = "<group>"; };
+		CDC5150C0A58507300D9D4B2 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Document.icns; path = Graphics/Document.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,9 +268,9 @@
 				080E96DDFE201D6D7F000001 /* Java Sources */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				CD93FE530A05487500F98FEB /* Documents */,
+				CDC515090A58505100D9D4B2 /* Graphics */,
 				CD93FE6F0A0548F200F98FEB /* unace */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
-				CD93FE6A0A0548D200F98FEB /* Icons */,
 				CD93FE8F0A0549E800F98FEB /* distribute.sh */,
 				CD93FE900A0549E800F98FEB /* RegistrationDomainDefaults.plist */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
@@ -325,15 +325,6 @@
 			name = Documents;
 			sourceTree = "<group>";
 		};
-		CD93FE6A0A0548D200F98FEB /* Icons */ = {
-			isa = PBXGroup;
-			children = (
-				CD93FE8B0A0549A400F98FEB /* Application.icns */,
-				CD93FE8C0A0549A400F98FEB /* Document.icns */,
-			);
-			name = Icons;
-			sourceTree = "<group>";
-		};
 		CD93FE6F0A0548F200F98FEB /* unace */ = {
 			isa = PBXGroup;
 			children = (
@@ -341,6 +332,15 @@
 				CD93FE880A05499800F98FEB /* unace.sh */,
 			);
 			name = unace;
+			sourceTree = "<group>";
+		};
+		CDC515090A58505100D9D4B2 /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				CDC5150B0A58507300D9D4B2 /* Application.icns */,
+				CDC5150C0A58507300D9D4B2 /* Document.icns */,
+			);
+			name = Graphics;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -404,12 +404,12 @@
 				CD93FE860A05498700F98FEB /* TODO in Resources */,
 				CD93FE890A05499800F98FEB /* unace in Resources */,
 				CD93FE8A0A05499800F98FEB /* unace.sh in Resources */,
-				CD93FE8D0A0549A400F98FEB /* Application.icns in Resources */,
-				CD93FE8E0A0549A400F98FEB /* Document.icns in Resources */,
 				CD93FE910A0549E800F98FEB /* distribute.sh in Resources */,
 				CD93FE920A0549E800F98FEB /* RegistrationDomainDefaults.plist in Resources */,
 				CDB32CA20A163170000A07EC /* PasswordDialog.nib in Resources */,
 				CDB32CA30A163170000A07EC /* PreferencesDialog.nib in Resources */,
+				CDC5150D0A58507300D9D4B2 /* Application.icns in Resources */,
+				CDC5150E0A58507300D9D4B2 /* Document.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

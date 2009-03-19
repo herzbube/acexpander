@@ -163,7 +163,7 @@ provokes the following comments:
 - the icon is quite colorful and therefore belongs to the "user application"
   genre; if you see AceXpander more as a utility than a user application, the
   icon therefore announces AceXpander as the wrong type of application
-  
+
 Version information vs. property list keys
 ------------------------------------------
 When the target-specific Info.plist is edited using the "Simple view" panel

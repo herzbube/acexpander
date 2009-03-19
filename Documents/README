@@ -1,7 +1,7 @@
 Table of Contents
 -----------------
 1. Introduction
-2. Changes in this release (1.0)
+2. Changes in this release (1.0.1)
 3. License and source code
 4. unace binary
 5. Limitations of AceXpander
@@ -32,22 +32,15 @@ If you are interested in AceXpander as a developer, you should have a look
 at the README.developer document.
 
 
-Changes in this release
------------------------
-- released version 1.0
-- added two new menu items to the Options menu: "Remember as my defaults"
-  allows to save the current option settings to the user preferences;
-  "Forget my defaults" will restore the option settings to their
-  factory defaults
-- menu item Help-Homepage now opens http://acexpander.herzbube.ch/
-  instead of the longer URL located beneath www.herzbube.ch
-- folders can now be dropped on the application icon, or selected through
-  the File-Open command
-- added preference items "LookIntoFolders" and "TreatAllFilesAsArchives"
-- if "LookIntoFolders" is turned on, folders are recursively scanned for
-  archives
-- fixed bug where the preferences for "CreateSurroundingFolder" and
-  "DestinationFolderType" were examined for the List and Test commands
+Changes in this release (1.0.1)
+-------------------------------
+- added application and document icons
+- menu items "requeue", "unqueue", "remove", "expand", "list content" and
+  "test integrity" are now disabled if no archive is selected
+- changed all homepage references to point to the new homepage URL
+  http://www.herzbube.ch/drupal/?q=acexpander
+- renamed project to AceXpander (old name was AceExpander)
+
 
 For more details see the ChangeLog document.
 
@@ -69,9 +62,12 @@ Universal binary (MacIntel) support
 -----------------------------------
 Xcode currently does not support creating universal binaries for projects
 that use Java (I am using Xcode 2.2, which is the most recent Xcode version
-available from Apple). Since AceXpander is written in Cocoa/Java, it is
-therefore not possible to distribute it as a universal binary, hence it will
-not run on MacIntel.
+available from Apple). Since AceXpander is currently written in Cocoa/Java, it
+is therefore not possible to distribute it as a universal binary on short
+notice.
+
+In the next release, though, I plan to rewrite AceXpander to Objective-C. The
+next release will therefore be distributed as a universal binary.
 
 
 unace binary
