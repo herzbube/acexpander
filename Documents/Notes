@@ -8,3 +8,10 @@
   has a bad/missing connection. This is normal: there is no connection
   for the target of the NSTextField instance that acts as a label for the
   table
+- When the application is run from ProjectBuilder, Cocoa prints out the
+  following warning to the application's output window when the
+  variant of NSOpenPanel.runModalInDirectory() is invoked where the parent
+  window can be specified and the open panel is opened as a sheet:
+  
+  *** WARNING: Method runModalForDirectory:file:types:relativeToWindow: in class NSOpenPanel is obsolete and will be removed in release GM ***
+

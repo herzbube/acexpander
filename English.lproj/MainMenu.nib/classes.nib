@@ -18,6 +18,7 @@
                 showOpenDialog = id; 
                 showPreferencesDialog = id; 
                 showReadme = id; 
+                showResultWindow = id; 
                 showUnaceVersion = id; 
                 testItems = id; 
                 toggleAssumeYes = id; 
@@ -42,9 +43,14 @@
                 "m_mainWindow" = NSWindow; 
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
                 "m_progressIndicator" = NSProgressIndicator; 
+                "m_resultWindow" = NSWindow; 
                 "m_showCommentsMenuItem" = NSMenuItem; 
                 "m_showMainWindowMenuItem" = NSMenuItem; 
+                "m_showResultWindowMenuItem" = NSMenuItem; 
+                "m_stderrTextView" = NSTextView; 
+                "m_stdoutTextView" = NSTextView; 
                 "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
+                "m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; 
                 "m_usePasswordMenuItem" = NSMenuItem; 
             }; 
             SUPERCLASS = "java.lang.Object"; 

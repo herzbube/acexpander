@@ -94,6 +94,8 @@ Keyboard shortcuts
   Cmd-U           Unqueue selected items
   Backspace       Remove selected items
   Cmd-Backspace   Remove all items
+  Cmd-Shift-M     Show Main Window
+  Cmd-Shift-R     Show Result Window
 
 Personal note
 -------------

@@ -1,3 +1,13 @@
+Mon June 14 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- bumped up version to 0.6
+- added result window to show stdout and stderr
+- the result window's frame is saved to user defaults
+- save to user defaults whether or not the result window is visible
+  on application start
+- added preference item where the user can choose a different executable
+  than the one bundled with the application
+- added menu item to show version information about the unace executable
+
 Thu June 10 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - bumped up version to 0.5
 - added preference item "QuitAppWhenMainWindowIsClosed"

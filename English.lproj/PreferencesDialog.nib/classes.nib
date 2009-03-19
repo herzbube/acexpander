@@ -2,12 +2,18 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {preferencesDialogCancelClicked = id; preferencesDialogOKClicked = id; }; 
+            ACTIONS = {
+                preferencesDialogCancelClicked = id; 
+                preferencesDialogOKClicked = id; 
+                setExecutableChooseLocation = id; 
+                setExecutableToBundled = id; 
+            }; 
             CLASS = "ch.herzbube.aceexpander.AceExpanderPreferences"; 
             LANGUAGE = Java; 
             OUTLETS = {
                 "m_preferencesDialog" = NSPanel; 
                 "m_quitAppWhenMainWindowIsClosedButton" = NSButton; 
+                "m_setExecutablePathButton" = NSPopUpButton; 
             }; 
             SUPERCLASS = "java.lang.Object"; 
         }, 

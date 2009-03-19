@@ -39,13 +39,13 @@
 // drags them on a representation of the application in the Finder,
 // such as on the application icon residing in the dock.
 //
-// In addition, this class implements the following protocols and
-// interfaces:
-// - NSNibAwaking protocol: to do stuff after the class has been
+// In addition, this class has the following responsibilities:
+// - implements NSNibAwaking protocol: to do stuff after the class has been
 //   loaded and instantiated from the .nib file
-// - MenuValidation interface: for all menu items that have this class set
-//   as their target, the method validateMenuItem() is queried to
+// - implements MenuValidation interface: for all menu items that have this
+//   class set as their target, the method validateMenuItem() is queried to
 //   automatically enable or disable those menu items
+// - is the delegate of the main table view
 // 
 
 package ch.herzbube.aceexpander;
@@ -66,9 +66,13 @@ public class AceExpanderController
    // --- from MainMenu.nib
    private AceExpanderModel m_theModel;
    private NSWindow m_mainWindow;
+   private NSTableView m_theTable;
    private NSButton m_cancelButton;
    private NSButton m_expandButton;
    private NSProgressIndicator m_progressIndicator;
+   private NSWindow m_resultWindow;
+   private NSTextView m_stdoutTextView;
+   private NSTextView m_stderrTextView;
    private NSMenuItem m_overwriteFilesMenuItem;
    private NSMenuItem m_extractFullPathMenuItem;
    private NSMenuItem m_assumeYesMenuItem;
@@ -77,6 +81,7 @@ public class AceExpanderController
    private NSMenuItem m_usePasswordMenuItem;
    private NSMenuItem m_debugModeMenuItem;
    private NSMenuItem m_showMainWindowMenuItem;
+   private NSMenuItem m_showResultWindowMenuItem;
 
    // --- from PasswordDialog.nib
    private NSPanel m_passwordDialog;
@@ -129,10 +134,17 @@ public class AceExpanderController
       setMenuItemState(m_usePasswordMenuItem, m_theModel.getUsePassword());
       setMenuItemState(m_debugModeMenuItem, m_theModel.getDebugMode());
 
-      // The main window automatically restores its frame from the
-      // user defaults, and saves it to the user defaults if any changes
-      // occur
+      // These windows automatically restore their frame from the user
+      // defaults, and save it to the user defaults if any changes occur
       m_mainWindow.setFrameAutosaveName(AceExpanderPreferences.MainWindowFrameName);
+      m_resultWindow.setFrameAutosaveName(AceExpanderPreferences.ResultWindowFrameName);
+
+      // Show the result window if the user defaults say so
+      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.ShowResultWindow))
+      {
+         m_resultWindow.makeKeyAndOrderFront(this);
+         m_mainWindow.makeKeyAndOrderFront(this);
+      }
    }
 
    // ======================================================================
@@ -153,13 +165,30 @@ public class AceExpanderController
    // NSWindow delegate methods
    // ======================================================================
 
-   // Depending on the user default, terminate the application when the
-   // main window is closed
    public void windowWillClose(NSNotification notification)
    {
-      if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.QuitAppWhenMainWindowIsClosed))
+      Object window = notification.object();
+      if (window == m_mainWindow)
       {
-         NSApplication.sharedApplication().terminate(this);
+         // Depending on the user default, terminate the application when the
+         // main window is closed
+         if (NSUserDefaults.standardUserDefaults().booleanForKey(AceExpanderPreferences.QuitAppWhenMainWindowIsClosed))
+         {
+            NSApplication.sharedApplication().terminate(this);
+         }
+      }
+      else if (window == m_resultWindow)
+      {
+         NSUserDefaults.standardUserDefaults().setBooleanForKey(false, AceExpanderPreferences.ShowResultWindow);
+      }
+   }
+
+   public void windowDidBecomeMain(NSNotification notification)
+   {
+      Object window = notification.object();
+      if (window == m_resultWindow)
+      {
+         NSUserDefaults.standardUserDefaults().setBooleanForKey(true, AceExpanderPreferences.ShowResultWindow);
       }
    }
 
@@ -196,6 +225,14 @@ public class AceExpanderController
             else
                return true;
          }
+         // Disable "main window" menu item if main window is already shown
+         else if (menuItem == m_showResultWindowMenuItem)
+         {
+            if (m_resultWindow.isVisible())
+               return false;
+            else
+               return true;
+         }
          // Enable items in all other circumstances
          else
          {
@@ -203,7 +240,16 @@ public class AceExpanderController
          }
       }
    }
-      
+
+   // ======================================================================
+   // NSTableView delegate methods
+   // ======================================================================
+
+   public void tableViewSelectionDidChange(NSNotification aNotification)
+   {
+      updateResultsWindow();
+   }
+
    // ======================================================================
    // Methods that are actions and therefore connected in the .nib.
    // These methods are manipulating items and their state.
@@ -285,7 +331,15 @@ public class AceExpanderController
 
    public void showUnaceVersion(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", "OK", "OK");
+      String version = new AceExpanderThread().getVersion();
+      if (null == version)
+      {
+         NSAlertPanel.runCriticalAlert("Could not determine version information", "", null, null, null);
+      }
+      else
+      {
+         NSAlertPanel.runInformationalAlert("Version information", version, null, null, null);
+      }
    }
 
    // ======================================================================
@@ -301,7 +355,7 @@ public class AceExpanderController
       String directory = null;
       String selectedFile = null;
       NSArray fileTypes = null;
-      int iResult = openPanel.runModalInDirectory(directory, selectedFile, fileTypes);
+      int iResult = openPanel.runModalInDirectory(directory, selectedFile, fileTypes, m_mainWindow);
       if (NSPanel.OKButton == iResult)
       {
          NSArray filesToOpen = openPanel.filenames();
@@ -349,6 +403,12 @@ public class AceExpanderController
    public void showMainWindow(Object sender)
    {
       m_mainWindow.makeKeyAndOrderFront(this);
+      // No need to call makeMainWindow()
+   }
+
+   public void showResultWindow(Object sender)
+   {
+      m_resultWindow.makeKeyAndOrderFront(this);
       // No need to call makeMainWindow()
    }
 
@@ -496,6 +556,7 @@ public class AceExpanderController
    public void expandThreadHasFinished()
    {
       updateGUI(false);
+      updateResultsWindow();
    }
 
    // Sets the state of the given menu item to the new state
@@ -508,6 +569,21 @@ public class AceExpanderController
       else
       {
          item.setState(NSCell.OffState);
+      }
+   }
+
+   private void updateResultsWindow()
+   {
+      if (1 != m_theTable.numberOfSelectedRows())
+      {
+         m_stdoutTextView.setString("");
+         m_stderrTextView.setString("");
+      }
+      else
+      {
+         AceExpanderItem item = m_theModel.getItem(m_theTable.selectedRow());
+         m_stdoutTextView.setString(item.getMessageStdout());
+         m_stderrTextView.setString(item.getMessageStderr());
       }
    }
 }

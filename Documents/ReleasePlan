@@ -1,6 +1,4 @@
-Release plan
-------------
-The following release plan gives a broad view of the order how possible features
+This release plan gives a broad view of the order how possible features
 will be implemented. There is no time schedule associated with releases. It
 happens when it happens :-)
 
@@ -18,7 +16,7 @@ Version 0.5
 Version 0.6
 - stdout and stderr output of the unace process can be viewed
   separately for each item
-- new preference to change the path to the unace binary
+- new user default to change the path to the unace binary
 - show unace version information
 
 Version 0.7
@@ -27,6 +25,7 @@ Version 0.7
   Finder
 - new preferences to control this behaviour
 - new preference "create surrounding folder"
+- new user defaults for "open recent" and "remember last open folder"
 
 Version 0.8
 - new preference to set a destination folder where expanded items

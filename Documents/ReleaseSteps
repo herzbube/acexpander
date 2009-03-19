@@ -5,3 +5,6 @@ Perform the following steps to make a release
 - bump the version number
   - in InfoPlist.strings in the Resources section
   - in ProjectBuilder on the "Targets" pane under "InfoPlist Entries"
+- CVS: check in all changes
+- CVS: set a tag, e.g.
+  cvs tag v0-5 .

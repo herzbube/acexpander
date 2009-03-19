@@ -30,7 +30,7 @@ Priority 2 (nice to have)
 
 Priority 3 (not important)
 --------------------------
-- main window resize
+- invisible button should not receive mouse clicks
 - preferences: reset to factory settings -> removes all defaults in the
   application domain
 - show main window when it is hidden and the user clicks on the
@@ -40,6 +40,12 @@ Priority 3 (not important)
   (what's that?)
 - check the dragging source's operation mask
 - read Human Interface Guidelines
+- when the user chooses the unace executable in the preferences dialog,
+  a check should be made if the chosen file really is executable.
+  This seems to be not so easy in Java, although in Obj-C the class
+  NSFileManager can be used (isExecutableFileAtPath)
+- show an icon in the preferences in the popup button for selecting the
+  unace executable
 
 Mac OS X 10.3
 -------------

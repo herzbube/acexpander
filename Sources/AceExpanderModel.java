@@ -100,7 +100,7 @@ public class AceExpanderModel
    }
    
    // ======================================================================
-   // Accessor methods
+   // Accessor methods for manipulating the internal list of items
    // ======================================================================
 
    public void addItem(String fileName)
@@ -138,7 +138,7 @@ public class AceExpanderModel
       // Update the table
       m_theTable.reloadData();
    }
-   
+
    // Return the item that matches the given filename
    public AceExpanderItem getItem(String fileName)
    {
@@ -153,6 +153,16 @@ public class AceExpanderModel
       }
       return null;
    }
+   
+   // Return the item at the given index position
+   public AceExpanderItem getItem(int iIndexPosition)
+   {
+      return (AceExpanderItem)m_itemList.objectAtIndex(iIndexPosition);
+   }
+
+   // ======================================================================
+   // Accessor methods for options
+   // ======================================================================
 
    public void setOverwriteFiles(boolean bOverwriteFiles)
    {

@@ -12,6 +12,12 @@ unaceBin=$1
 archiveDir=$2
 shift 2
 
+# Get the version information
+if test "--version" = "$archiveDir"; then
+   "$unaceBin" --version | grep -v "^$" | head -2
+   exit 0
+fi
+
 # Change working directory
 cd "$archiveDir"
 if test $? -ne 0; then exit $?; fi

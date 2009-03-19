@@ -60,14 +60,14 @@ public class AceExpanderThread extends Thread
    public static final int LIST = 1;
    public static final int TEST = 2;
 
-   // Parameters for the unace frontend to turn on/off debug mode
+   // Parameters for the unace frontend
    private static final String m_unaceFrontEndEnableDebug = "1";
    private static final String m_unaceFrontEndDisableDebug = "0";
+   private static final String m_unaceFrontEndVersionParameter = "--version";
 
    // Information about unace
    private static final String m_unaceFrontEnd = NSBundle.mainBundle().pathForResource("unace.sh", null);
-   private static final String m_unaceBin = "unace";
-   private static final String m_unacePath = NSPathUtilities.stringByDeletingLastPathComponent(m_unaceFrontEnd) + "/" + m_unaceBin;
+   private static final String m_unaceBundledExecutable = NSBundle.mainBundle().pathForResource("unace", null);
    private static final String m_unaceCmdExtract = "e";
    private static final String m_unaceCmdExtractWithFullPath = "x";
    private static final String m_unaceCmdList = "l";
@@ -85,6 +85,7 @@ public class AceExpanderThread extends Thread
    private NSMutableArray m_itemList = new NSMutableArray();
 
    // The command line arguments
+   private String m_unaceExecutable = m_unaceBundledExecutable;
    private String m_unaceFrontendDebugParameter = m_unaceFrontEndDisableDebug;
    private String m_unaceCommand = "";
    private NSMutableArray m_unaceSwitchList = new NSMutableArray();
@@ -109,6 +110,10 @@ public class AceExpanderThread extends Thread
    // Constructors
    // ======================================================================
 
+   // Use this constructor if you just want to get unace's version
+   public AceExpanderThread() {}
+
+   // Use this constructor if you want to expand items
    public AceExpanderThread(AceExpanderModel theModel)
    {
       m_theModel = theModel;
@@ -129,6 +134,8 @@ public class AceExpanderThread extends Thread
       m_bIsRunning = true;
       m_bStopRunning = false;
 
+      determineUnaceToUse();
+      
       java.util.Enumeration enumerator = m_itemList.objectEnumerator();
       while (enumerator.hasMoreElements())
       {
@@ -215,7 +222,7 @@ public class AceExpanderThread extends Thread
       // (empty string followed by .ace)
       String[] command = new String[6 + m_unaceSwitchList.count()];
       command[0] = m_unaceFrontEnd;
-      command[1] = m_unacePath;
+      command[1] = m_unaceExecutable;
       command[2] = archiveDir;
       command[3] = m_unaceFrontendDebugParameter;
       command[4] = m_unaceCommand;
@@ -349,7 +356,6 @@ public class AceExpanderThread extends Thread
          line = reader.readLine();
          while (line != null)
          {
-            System.out.println(line);
             buffer.append(line);
             buffer.append(System.getProperty("line.separator"));
 
@@ -363,5 +369,58 @@ public class AceExpanderThread extends Thread
          System.out.println("Caught IOException while reading from stream");
          return null;
       }
+   }
+
+   // Try to get the executable to use from the user defaults. If the
+   // default says to use the bundled executable, we set the value
+   // from our constants
+   private void determineUnaceToUse()
+   {
+      m_unaceExecutable = NSUserDefaults.standardUserDefaults().stringForKey(AceExpanderPreferences.ExecutablePath);
+      if (m_unaceExecutable.equals(AceExpanderPreferences.BundledExecutablePath))
+      {
+         m_unaceExecutable = m_unaceBundledExecutable;
+      }
+   }
+
+   // Launch unace in a separate process to get information about the
+   // executable's version. If somethings goes wrong, null is returned
+   // instead of the version string.
+   public String getVersion()
+   {
+      determineUnaceToUse();
+      
+      String[] command = {m_unaceFrontEnd, m_unaceExecutable, m_unaceFrontEndVersionParameter};
+      try
+      {
+         m_unaceProcess = Runtime.getRuntime().exec(command);
+         try
+         {
+            m_unaceProcess.waitFor();
+            m_iExitValue = m_unaceProcess.exitValue();
+            if (0 != m_iExitValue)
+            {
+               m_messageStdout = null;
+            }
+            else
+            {
+               java.io.BufferedReader stdoutReader = new java.io.BufferedReader(new java.io.InputStreamReader(m_unaceProcess.getInputStream()));
+               m_messageStdout = getMessageFromReader(stdoutReader);
+            }
+         }
+         catch(java.lang.InterruptedException e)
+         {
+            System.out.println("Caught InterruptedException while waiting for process to terminate");
+            m_messageStdout = null;
+         }
+      }
+      catch(java.io.IOException e)
+      {
+         System.out.println("Caught IOException while executing process");
+         m_messageStdout = null;
+      }
+
+      m_unaceProcess = null;
+      return m_messageStdout;
    }
 }

@@ -46,9 +46,13 @@ public class AceExpanderPreferences
    // Constants
    private final static String RegistrationDomainDefaultsFileName = "RegistrationDomainDefaults.plist";
    private final static String PreferencesDialogNibName = "PreferencesDialog";
+   public final static String BundledExecutablePath = "<bundled>";
    // Keys for the defaults
    public final static String MainWindowFrameName = "MainWindow";
+   public final static String ResultWindowFrameName = "ResultWindow";
    public final static String QuitAppWhenMainWindowIsClosed = "QuitAppWhenMainWindowIsClosed";
+   public final static String ShowResultWindow = "ShowResultWindow";
+   public final static String ExecutablePath = "ExecutablePath";
 
    // The shared defaults object
    private NSUserDefaults m_userDefaults = null;
@@ -58,9 +62,11 @@ public class AceExpanderPreferences
 
    // These variables are outlets and therefore initialized in the .nib
    private NSButton m_quitAppWhenMainWindowIsClosedButton;
+   private NSPopUpButton m_setExecutablePathButton;
 
    // Other variables
    private boolean m_bPreferencesDialogCancelClicked = false;
+   private String m_executablePath;   // Stores the entire path
 
    // ======================================================================
    // Constructors
@@ -115,10 +121,104 @@ public class AceExpanderPreferences
       m_bPreferencesDialogCancelClicked = true;
       NSApplication.sharedApplication().stopModal();
    }
-   
+
    // ======================================================================
-   // Methods that are actions and therefore connected in the .nib.
+   // Methods writing to/reading from the GUI
    // ======================================================================
+
+   // Set up the various GUI elements to reflect the current defaults
+   private void writeDefaultsToGUI()
+   {
+      // ------------------------------------------------------------
+      // QuitAppWhenMainWindowIsClosed
+      if (m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed))
+         m_quitAppWhenMainWindowIsClosedButton.setState(NSCell.OnState);
+      else
+         m_quitAppWhenMainWindowIsClosedButton.setState(NSCell.OffState);
+
+      // ------------------------------------------------------------
+      // ExecutablePath
+      m_executablePath = m_userDefaults.stringForKey(ExecutablePath);
+      updateExecutablePathButton();
+   }
+
+   // Analyzes the state of the various GUI elements and sets the
+   // appropriate defaults in the application domain.
+   // Note: Defaults are only set if their new value is different from the
+   // value already stored in the user defaults. The effect of this is
+   // that if the user never changes a default's value from the value stored
+   // in the NSRegistration domain, the default is never written to the
+   // application domain. As soon as the user changes the default's value
+   // for the first time, it is written to the application domain. It
+   // remains there, even if the user changes its value back to the value
+   // stored in the NSRegistration domain.
+   private void readDefaultsFromGUI()
+   {
+      // ------------------------------------------------------------
+      // QuitAppWhenMainWindowIsClosed
+      boolean bChecked;
+      int iState = m_quitAppWhenMainWindowIsClosedButton.state();
+      if (NSCell.OnState == iState)
+         bChecked = true;
+      else
+         bChecked = false;
+      if (bChecked != m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed))
+      {
+         m_userDefaults.setBooleanForKey(bChecked, QuitAppWhenMainWindowIsClosed);
+      }
+
+      // ------------------------------------------------------------
+      // ExecutablePath
+      // The full path is stored in m_executablePath, not the GUI)
+      m_userDefaults.setObjectForKey(m_executablePath, ExecutablePath);
+   }
+
+   // ======================================================================
+   // Methods that are actions, related to setting the executable
+   // ======================================================================
+
+   // Sets the executable path to a dummy default value which indicates
+   // that the bundled version of unace will be used.
+   public void setExecutableToBundled(Object sender)
+   {
+      m_executablePath = BundledExecutablePath;
+      updateExecutablePathButton();
+   }
+
+   // Lets the user choose from an open panel which executable to use.
+   public void setExecutableChooseLocation(Object sender)
+   {
+      NSOpenPanel openPanel = NSOpenPanel.openPanel();
+      openPanel.setAllowsMultipleSelection(false);
+      openPanel.setCanChooseDirectories(false);
+      String directory = null;
+      String selectedFile = null;
+      NSArray fileTypes = null;
+      int iResult = openPanel.runModalInDirectory(directory, selectedFile, fileTypes, m_preferencesDialog);
+      if (NSPanel.OKButton == iResult)
+      {
+         // We trust the panel to return at least one item!
+         m_executablePath = (String)openPanel.filenames().objectAtIndex(0);
+      }
+
+      // Update the button: the user's action selected a menu item -> this
+      // must be undone even if the user clicked "cancel" on the open panel
+      updateExecutablePathButton();
+   }
+
+   // No action, just a helper.
+   // Updates the top-most menu item in the popup button, e.g. the menu
+   // item that is visible when the button's popup menu is closed
+   private void updateExecutablePathButton()
+   {
+      m_setExecutablePathButton.removeItemAtIndex(0);
+      m_setExecutablePathButton.insertItemAtIndex(NSPathUtilities.lastPathComponent(m_executablePath), 0);
+      m_setExecutablePathButton.selectItemAtIndex(0);
+      // TODO: make it work! With this code, the image displayed when the
+      // popup menu is closed is far too big!
+      // NSMenuItem menuItem = m_setExecutablePathButton.itemAtIndex(0);
+      // menuItem.setImage(new NSFileWrapper(m_executablePath, false).icon());
+   }
 
    // ======================================================================
    // Methods
@@ -154,41 +254,6 @@ public class AceExpanderPreferences
       else
       {
          // TODO: throw an exception or do something...
-      }
-   }
-
-   // Set up the various GUI elements to reflect the current defaults
-   private void writeDefaultsToGUI()
-   {
-      if (m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed))
-         m_quitAppWhenMainWindowIsClosedButton.setState(NSCell.OnState);
-      else
-         m_quitAppWhenMainWindowIsClosedButton.setState(NSCell.OffState);
-   }
-
-   // Analyzes the state of the various GUI elements and sets the
-   // appropriate defaults in the application domain.
-   // Note: Defaults are only set if their new value is different from the
-   // value already stored in the user defaults. The effect of this is
-   // that if the user never changes a default's value from the value stored
-   // in the NSRegistration domain, the default is never written to the
-   // application domain. As soon as the user changes the default's value
-   // for the first time, it is written to the application domain. It
-   // remains there, even if the user changes its value back to the value
-   // stored in the NSRegistration domain.
-   private void readDefaultsFromGUI()
-   {
-      boolean bChecked;
-      int iState = m_quitAppWhenMainWindowIsClosedButton.state();
-      if (NSCell.OnState == iState)
-         bChecked = true;
-      else
-         bChecked = false;
-      System.out.println("bChecked = " + bChecked);
-      System.out.println("defaults = " + m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed));
-      if (bChecked != m_userDefaults.booleanForKey(QuitAppWhenMainWindowIsClosed))
-      {
-         m_userDefaults.setBooleanForKey(bChecked, QuitAppWhenMainWindowIsClosed);
       }
    }
 }
