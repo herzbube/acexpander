@@ -1,3 +1,29 @@
+Tue Nov 21 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- added state diagrams for AceXpanderItem states
+- if destination folder does not exist it is now created including all its
+  parent directories
+
+Thu Nov 16 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- removed shell script frontend to the unace binary, AceXpander now executes
+  the unace binary directly in an NSTask
+- removed "Debug mode" item from the Options menu; this mode is no longer
+  available because the shell script frontend no longer exists
+
+Wed Nov 15 2006   "Patrick Näf" <acexpander@herzbube.ch>
+- fixed a nasty bug where unace would hang when AceXpander was launched
+  from the Finder
+  - this bug is present in 1.0.2, which makes the release all but useless :-(
+  - I was completely clueless what was going on until I found the crucial hint
+    at the following URL
+    http://forum.macbidouille.com/lofiversion/index.php/t53823.html
+  - thanks a lot to the author of iUnacer (another unace GUI frontend that
+    seems to be no longer available)
+- moved NSTask related stuff from AceXpanderThread to new class AceXpanderTask
+- moved all constants from various .h and .m files to new file
+  AceXpanderGlobals.h
+- AceXpanderThread is now a proper thread with a main method that sleeps
+  until it gets new items to process
+
 Sat Nov 11 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - bug fixed where command thread seemed to run forever when no item was
   selected and the "expand" button was clicked

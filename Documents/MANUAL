@@ -149,7 +149,7 @@ stored in the user preferences file
 - if you select "Remember as my defaults" from the Options menu, the
   current option settings are stored in the user preferences file (with the
   exception of the password, which is too sensitive to be kept in a clear text
-  preferences file, and the "Debug mode" option, which is not an unace option)
+  preferences file)
 - the last directory you selected in the File-Open dialog
 - the last items you opened in AceXpander (see the "Open Recent" sub-menu
   in the File menu)
@@ -196,16 +196,7 @@ of AceXpander.
   Note: the password will be passed to unace as a command line argument
   in clear text. If someone watches your system's process list that person
   might be able to catch the password as it is part of the unace command
-  line. It is also possible (notably if you also turn on the option
-  "Debug mode") that the password might appear in clear text in one of the
-  text boxes in the result window.
-- Debug mode
-  This option is an AceXpander option only, it has nothing to do with
-  unace. If you turn on this option, the result window will contain
-  additional information in the standard output text box about the
-  parameters that were used to start unace.
-  Note: if the "Use password" option is also on, the password will be
-  displayed in clear text in the standard output text box!!!!!
+  line.
 
 
 Listing and testing

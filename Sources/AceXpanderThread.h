@@ -76,7 +76,6 @@
 
   /// @brief The command line arguments
   //@{
-  NSString* m_unaceFrontendDebugParameter;
   NSString* m_unaceCommand;
   NSMutableArray* m_unaceSwitchList;
   //@}
@@ -128,8 +127,7 @@
        showComments:(BOOL)showComments
       listVerbosely:(BOOL)listVerbosely
         usePasswort:(BOOL)usePassword
-           password:(NSString*)password
-          debugMode:(BOOL)debugMode;
+           password:(NSString*)password;
 + (NSString*) unaceVersion;
 //@}
 

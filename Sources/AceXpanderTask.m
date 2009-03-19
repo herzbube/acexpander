@@ -36,6 +36,7 @@
 @interface AceXpanderTask(Private)
 - (void) dealloc;
 - (BOOL) terminated;
++ (BOOL) createDirectoriesAtPath:(NSString*)path attributes:(NSDictionary*)attributes;
 @end
 
 @implementation AceXpanderTask
@@ -51,8 +52,10 @@
   if (! self)
     return nil;
 
-  // Init members
+  // Initialize members
   m_terminated = false;
+  m_terminatedLock = [[NSLock alloc] init];
+  m_taskLock = [[NSLock alloc] init];
 
   // Return
   return self;
@@ -63,14 +66,24 @@
 // -----------------------------------------------------------------------------
 - (void) dealloc
 {
+  if (m_terminatedLock)
+    [m_terminatedLock autorelease];
+  if (m_taskLock)
+    [m_taskLock lock];
   if (m_task)
+  {
     [m_task autorelease];
+    m_task = nil;
+  }
+  if (m_taskLock)
+  {
+    [m_taskLock unlock];
+    [m_taskLock autorelease];
+  }
   if (m_unaceExecutablePath)
     [m_unaceExecutablePath autorelease];
   if (m_destinationFolder)
     [m_destinationFolder autorelease];
-  if (m_unaceFrontendDebugParameter)
-    [m_unaceFrontendDebugParameter autorelease];
   if (m_unaceCommand)
     [m_unaceCommand autorelease];
   if (m_unaceSwitchList)
@@ -114,24 +127,6 @@
     m_destinationFolder = [destinationFolder retain];
   else
     m_destinationFolder = nil;
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Configures this AceXpanderTask with a debug switch for the unace
-/// frontend shell script located within the application bundle.
-///
-/// This parameter is optional.
-// -----------------------------------------------------------------------------
-- (void) setUnaceFrontendDebugParameter:(NSString*)unaceFrontendDebugParameter
-{
-  if (m_unaceFrontendDebugParameter == unaceFrontendDebugParameter)
-    return;
-  if (m_unaceFrontendDebugParameter)
-    [m_unaceFrontendDebugParameter autorelease];
-  if (unaceFrontendDebugParameter)
-    m_unaceFrontendDebugParameter = [unaceFrontendDebugParameter retain];
-  else
-    m_unaceFrontendDebugParameter = nil;
 }
 
 // -----------------------------------------------------------------------------
@@ -208,12 +203,9 @@
   // Get the item's filename
   NSString* fileName = [m_item fileName];
 
-  // Get path to the unace front-end inside the application bundle
-  NSString* unaceFrontEnd = [[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil];
-  
   // Check for important arguments
   BOOL failed = false;
-  if (! fileName || ! m_unaceExecutablePath || ! m_unaceCommand || ! m_unaceSwitchList || ! unaceFrontEnd)
+  if (! fileName || ! m_unaceExecutablePath || ! m_unaceCommand || ! m_unaceSwitchList)
     failed = true;
   // m_destinationFolder is only required for ExpandCommand
   else if (ExpandCommand == m_command && ! m_destinationFolder)
@@ -225,6 +217,39 @@
     return;
   }
 
+  // Create destination folder if it does not exist yet
+  if (ExpandCommand == m_command && m_destinationFolder)
+  {
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    if (fileManager)
+    {
+      BOOL isDirectory;
+      if (! [fileManager fileExistsAtPath:m_destinationFolder isDirectory:&isDirectory])
+      {
+        BOOL success = [AceXpanderTask createDirectoriesAtPath:m_destinationFolder attributes:nil];
+        if (! success)
+        {
+          [m_item setState:FailureState];
+          [m_item setMessageStdout:nil
+                     messageStderr:@"Unable to create destination folder"
+                   containsListing:NO];
+          return;
+        }
+      }
+      else
+      {
+        if (! isDirectory)
+        {
+          [m_item setState:FailureState];
+          [m_item setMessageStdout:nil
+                     messageStderr:@"Unable to create destination folder, file exists with the same name"
+                   containsListing:NO];
+          return;
+        }
+      }
+    }
+  }
+
   // Build command line
   // Note: it is important that the command line is built in a way that retains
   // spaces in path names! Also, special care must be taken that no empty
@@ -232,38 +257,46 @@
   // and will try to expand an archive named ".ace" (empty string followed by
   // extension ".ace")
   NSMutableArray* arguments = [NSMutableArray array];
-  [arguments addObject:m_unaceExecutablePath];
-  if (m_destinationFolder)
-  {
-    [arguments addObject:unaceFrontDestinationFolderParameter];
-    [arguments addObject:m_destinationFolder];
-  }
-  if (m_unaceFrontendDebugParameter)
-    [arguments addObject:m_unaceFrontendDebugParameter];
   [arguments addObject:m_unaceCommand];
   [arguments addObjectsFromArray:m_unaceSwitchList];
   [arguments addObject:fileName];
 
-  /// @todo change working directory first so that the stuff that
-  /// gets un-archived by unace is placed in the right directory
-  /// If the process correctly inherits the working directory, we
-  /// can do without the shell front end and execute unace directly.
-
-  // Create pipe
+  // Create pipes
+  // Note: we must set both stdin and stdout, otherwise unace will hang when the
+  // AceXpander application is launched from the Finder. It never hangs, though,
+  // when AceXpander is launched from within Xcode, or from a terminal shell
+  // like this: ./AceXpander.app/Contents/MacOS/AceXpander.
+  NSPipe* stdinPipe = [NSPipe pipe];
   NSPipe* stdoutPipe = [NSPipe pipe];
   NSPipe* stderrPipe = [NSPipe pipe];
   // Create and configure task
+  if (m_taskLock)
+    [m_taskLock lock];
   m_task = [[NSTask alloc] init];
-  [m_task setStandardOutput:stdoutPipe]; 
-  [m_task setStandardError:stderrPipe]; 
-  [m_task setLaunchPath:unaceFrontEnd];
+  [m_task setStandardInput:stdinPipe];
+  [m_task setStandardOutput:stdoutPipe];
+  [m_task setStandardError:stderrPipe];
+  [m_task setLaunchPath:m_unaceExecutablePath];
   [m_task setArguments:arguments];
+  if (m_destinationFolder)
+    [m_task setCurrentDirectoryPath:m_destinationFolder];
 
   // Execute task and wait for its termination
   @try
   {
     [m_task launch];
+    // Note: while we wait for the task's termination, we release the lock
+    // that allows for task termination by terminate:()
+    if (m_taskLock)
+      [m_taskLock unlock];
+    // There is a small loop hole here - if dealloc() acquires m_taskLock right
+    // now and destroys m_task, we are in trouble. Practically this should not
+    // happen, as AceXpanderThread will not release this AceXpanderTask object
+    // until this method returns.
     [m_task waitUntilExit];
+    // Lock again so that we can release the task
+    if (m_taskLock)
+      [m_taskLock lock];
   }
   @catch(NSException* exception)
   {
@@ -300,52 +333,71 @@
   if (messageStderr)
     [messageStderr autorelease];
 
-  NSAlert* alert = [NSAlert alertWithMessageText:@"xxx!"
-                                   defaultButton:@"foo"
-                                 alternateButton:nil
-                                     otherButton:nil
-                       informativeTextWithFormat:messageStdout];
-  [alert setAlertStyle:NSCriticalAlertStyle];
-  int buttonClicked = [alert runModal];
-  
   // Cleanup
   [m_task release];
   m_task = nil;
+  if (m_taskLock)
+    [m_taskLock unlock];
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Terminates the command process that is currently running.
 ///
 /// This method does nothing if no command process is currently running.
+///
+/// @note This method is called in the GUI thread context.
 // -----------------------------------------------------------------------------
 - (void) terminate
 {
-  /// @todo protect this, is called from the GUI thread context
+  if (m_terminatedLock)
+    [m_terminatedLock lock];
   m_terminated = true;
+  if (m_terminatedLock)
+    [m_terminatedLock unlock];
+
+  if (m_taskLock)
+    [m_taskLock lock];
   if (m_task && [m_task isRunning])
     [m_task terminate];
+  if (m_taskLock)
+    [m_taskLock unlock];
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Returns whether the command process was forcefully terminated by
 /// terminate:().
+///
+/// @note This method is called in the AceXpanderThread context.
 // -----------------------------------------------------------------------------
 - (BOOL) terminated
 {
-  /// @todo protect this, is called from the AceXpanderThread context
-  return m_terminated;
+  if (m_terminatedLock)
+    [m_terminatedLock lock];
+  // Make a copy while we have the lock
+  BOOL terminated = m_terminated;
+  if (m_terminatedLock)
+    [m_terminatedLock unlock];
+  // Return the copied value after we have released the lock
+  return terminated;
 }
 
 // -----------------------------------------------------------------------------
 /// @brief Returns whether or not the command process is currently running.
+///
+/// @note This method is called in the GUI thread context.
 // -----------------------------------------------------------------------------
 - (BOOL) isRunning
 {
-  /// @todo protect this, is called from the GUI thread context
+  if (m_taskLock)
+    [m_taskLock lock];
+  // Get the state while we have the lock
+  BOOL isRunning = false;
   if (m_task)
-    return [m_task isRunning];
-  else
-    return false;
+    isRunning = [m_task isRunning];
+  if (m_taskLock)
+    [m_taskLock unlock];
+  // Return the state after we have released the lock
+  return isRunning;
 }
 
 // -----------------------------------------------------------------------------
@@ -364,35 +416,36 @@
   if (! unaceExecutablePath)
     return nil;
 
+  // Build command line
+  // Note: it is important that the command line is built in a way that retains
+  // spaces in path names! Also, special care must be taken that no empty
+  // strings are passed as arguments to unace because it is confused by this
+  // and will try to expand an archive named ".ace" (empty string followed by
+  // extension ".ace")
   NSMutableArray* arguments = [NSMutableArray array];
-  [arguments addObject:unaceExecutablePath];
-  [arguments addObject:unaceFrontEndVersionParameter];
+  [arguments addObject:unaceSwitchVersion];
 
-  // Create pipe
+  // Create pipes
+  // Note: we must set both stdin and stdout, otherwise unace will hang when the
+  // AceXpander application is launched from the Finder. It never hangs, though,
+  // when AceXpander is launched from within Xcode, or from a terminal shell
+  // like this: ./AceXpander.app/Contents/MacOS/AceXpander.
+  NSPipe* stdinPipe = [NSPipe pipe];
   NSPipe* stdoutPipe = [NSPipe pipe];
+  NSPipe* stderrPipe = [NSPipe pipe];
   // Create and configure task
-  NSTask* unaceTask = [[NSTask alloc] init];
-  [unaceTask setStandardOutput:stdoutPipe]; 
-  [unaceTask setLaunchPath:[[NSBundle mainBundle] pathForResource:unaceFrontEndResourceName ofType:nil]];
-  [unaceTask setArguments:arguments];
-
-  // The result we want to return
-  NSString* messageStdout = nil;
+  NSTask* task = [[NSTask alloc] init];
+  [task setStandardInput:stdinPipe];
+  [task setStandardOutput:stdoutPipe];
+  [task setStandardError:stderrPipe];
+  [task setLaunchPath:unaceExecutablePath];
+  [task setArguments:arguments];
 
   // Execute task and wait for its termination
   @try
   {
-    [unaceTask launch];
-    [unaceTask waitUntilExit];
-
-    // Evaluate task result
-    int exitValue = [unaceTask terminationStatus];
-    if (0 == exitValue)
-    {
-      NSFileHandle* readHandle = [stdoutPipe fileHandleForReading];
-      NSData* stdoutData = [readHandle readDataToEndOfFile];
-      messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-    }
+    [task launch];
+    [task waitUntilExit];
   }
   @catch(NSException* exception)
   {
@@ -401,14 +454,82 @@
                                                         object:[exception reason]];
   }
 
-  // Release objects
-  [unaceTask autorelease];
+  // The result we want to return
+  NSString* messageStdout = nil;
 
-  // Return entire standard output as the version string
+  // Evaluate task result
+  // -> we are not interested in the [task terminationStatus] because unace
+  //    always returns a non-zero status when we pass "--version" to it
+  NSFileHandle* stdoutReadHandle = [stdoutPipe fileHandleForReading];
+  NSData* stdoutData = [stdoutReadHandle readDataToEndOfFile];
+  messageStdout = [[NSString alloc] initWithData:stdoutData encoding:NSASCIIStringEncoding];
   if (messageStdout)
-    return [[messageStdout retain] autorelease];
-  else
-    return nil;
+  {
+    [messageStdout autorelease];
+    // Parse message in the following way:
+    // - filter out all empty lines (regexp ^$)
+    // - discard all but the first two lines
+    // This should result in a string that is sufficiently readable if
+    // displayed in an alert panel.
+    NSEnumerator* enumerator = [[messageStdout componentsSeparatedByString:@"\n"] objectEnumerator];
+    messageStdout = nil;
+    id anObject;
+    while (anObject = [enumerator nextObject])
+    {
+      NSString* messageLine = (NSString*)anObject;
+      // Discard empty lines
+      if ([messageLine length] == 0)
+        continue;
+      // The first line
+      if (! messageStdout)
+        messageStdout = messageLine;
+      else
+      {
+        // The second line
+        messageStdout = [[messageStdout stringByAppendingString:@"\n"] stringByAppendingString:messageLine];
+        // Discard remaining lines
+        break;
+      }
+    }
+  }
+
+  // Cleanup
+  [task release];
+
+  // Return result
+  return messageStdout;
+}
+
+// -----------------------------------------------------------------------------
+/// @brief Similar to -[NSFileManager createDirectoryAtPath:attributes:] but
+/// parent directory doesn't have to exist; this does it for you. You must pass
+/// in a standardized path; e.g. no ~ is allowed.
+///
+/// Implementation of this method by Dan Wood, found at
+/// http://lists.apple.com/archives/cocoa-dev/2003/Feb/msg00200.html
+/// Thanks for the lifesaver at 3am, Dan!
+// -----------------------------------------------------------------------------
++ (BOOL) createDirectoriesAtPath:(NSString*)path attributes:(NSDictionary *)attributes
+{
+  NSArray* components = [path pathComponents];
+  BOOL result = YES;
+  int i;
+  int iCount = [components count];
+  for (i = 1 ; i <= iCount; i++)
+  {
+    NSArray* subComponents = [components subarrayWithRange:NSMakeRange(0, i)];
+    NSString* subPath = [NSString pathWithComponents:subComponents];
+    BOOL isDir;
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:subPath isDirectory:&isDir];
+    if (! exists)
+    {
+      result = [[NSFileManager defaultManager] createDirectoryAtPath:subPath attributes:attributes];
+      if (! result)
+        return result;
+    }
+  }
+  return result;
 }
 
 @end
+

@@ -28,7 +28,6 @@
                 showUnaceVersion = id; 
                 testItems = id; 
                 toggleAssumeYes = id; 
-                toggleDebugMode = id; 
                 toggleExtractFullPath = id; 
                 toggleListVerbosely = id; 
                 toggleOverwriteFiles = id; 
@@ -42,7 +41,6 @@
             OUTLETS = {
                 "m_assumeYesMenuItem" = NSMenuItem; 
                 "m_cancelButton" = NSButton; 
-                "m_debugModeMenuItem" = NSMenuItem; 
                 "m_expandButton" = NSButton; 
                 "m_expandMenuItem" = NSMenuItem; 
                 "m_extractFullPathMenuItem" = NSMenuItem; 

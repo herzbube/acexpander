@@ -75,7 +75,6 @@
   bool m_listVerbosely;
   bool m_usePassword;
   NSString* m_password;
-  bool m_debugMode;
   //@}
 
   /// @name Other variables
@@ -120,8 +119,6 @@
 - (bool) usePassword;
 - (NSString*) password;
 - (void) setUsePassword:(bool)usePassword withPassword:(NSString*)password;
-- (bool) debugMode;
-- (void) setDebugMode:(bool)debugMode;
 //@}
 
 /// @name Other accessors

@@ -59,7 +59,6 @@
   //@{
   NSString* m_unaceExecutablePath;
   NSString* m_destinationFolder;
-  NSString* m_unaceFrontendDebugParameter;
   int m_command;
   NSString* m_unaceCommand;
   NSMutableArray* m_unaceSwitchList;
@@ -68,6 +67,11 @@
 
   /// @brief Is true if this task was terminated
   BOOL m_terminated;
+
+  /// @brief This lock protects access to the m_terminated flag
+  NSLock* m_terminatedLock;
+  /// @brief This lock protects access to the member m_task
+  NSLock* m_taskLock;
 }
 
 /// @name Initializers
@@ -79,7 +83,6 @@
 //@{
 - (void) setUnaceExecutablePath:(NSString*)unaceExecutablePath;
 - (void) setDestinationFolder:(NSString*)destinationFolder;
-- (void) setUnaceFrontendDebugParameter:(NSString*)unaceFrontendDebugParameter;
 - (void) setUnaceCommand:(int)command commandSwitch:(NSString*)unaceCommand;
 - (void) setUnaceSwitchList:(NSArray*)unaceSwitchList;
 - (void) setItem:(AceXpanderItem*)item;

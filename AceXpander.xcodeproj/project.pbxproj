@@ -24,7 +24,6 @@
 		CDBC093B0A5B3486008C18B4 /* Application.icns in Resources */ = {isa = PBXBuildFile; fileRef = CDBC09390A5B3486008C18B4 /* Application.icns */; };
 		CDBC093C0A5B3486008C18B4 /* Document.icns in Resources */ = {isa = PBXBuildFile; fileRef = CDBC093A0A5B3486008C18B4 /* Document.icns */; };
 		CDBC09400A5B34B0008C18B4 /* unace in Resources */ = {isa = PBXBuildFile; fileRef = CDBC093E0A5B34B0008C18B4 /* unace */; };
-		CDBC09410A5B34B0008C18B4 /* unace.sh in Resources */ = {isa = PBXBuildFile; fileRef = CDBC093F0A5B34B0008C18B4 /* unace.sh */; };
 		CDBC09440A5B34E8008C18B4 /* RegistrationDomainDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = CDBC09430A5B34E8008C18B4 /* RegistrationDomainDefaults.plist */; };
 		CDBC096B0A5B37C4008C18B4 /* PasswordDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDBC09670A5B37C4008C18B4 /* PasswordDialog.nib */; };
 		CDBC096C0A5B37C4008C18B4 /* PreferencesDialog.nib in Resources */ = {isa = PBXBuildFile; fileRef = CDBC09690A5B37C4008C18B4 /* PreferencesDialog.nib */; };
@@ -63,7 +62,6 @@
 		CDBC09390A5B3486008C18B4 /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Application.icns; path = Graphics/Application.icns; sourceTree = "<group>"; };
 		CDBC093A0A5B3486008C18B4 /* Document.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Document.icns; path = Graphics/Document.icns; sourceTree = "<group>"; };
 		CDBC093E0A5B34B0008C18B4 /* unace */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = unace; path = unace/unace; sourceTree = "<group>"; };
-		CDBC093F0A5B34B0008C18B4 /* unace.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = unace.sh; path = unace/unace.sh; sourceTree = "<group>"; };
 		CDBC09420A5B34DE008C18B4 /* distribute.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = distribute.sh; sourceTree = "<group>"; };
 		CDBC09430A5B34E8008C18B4 /* RegistrationDomainDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = RegistrationDomainDefaults.plist; sourceTree = "<group>"; };
 		CDBC09680A5B37C4008C18B4 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PasswordDialog.nib; sourceTree = "<group>"; };
@@ -235,7 +233,6 @@
 			isa = PBXGroup;
 			children = (
 				CDBC093E0A5B34B0008C18B4 /* unace */,
-				CDBC093F0A5B34B0008C18B4 /* unace.sh */,
 			);
 			name = unace;
 			sourceTree = "<group>";
@@ -316,7 +313,6 @@
 				CDBC093B0A5B3486008C18B4 /* Application.icns in Resources */,
 				CDBC093C0A5B3486008C18B4 /* Document.icns in Resources */,
 				CDBC09400A5B34B0008C18B4 /* unace in Resources */,
-				CDBC09410A5B34B0008C18B4 /* unace.sh in Resources */,
 				CDBC09440A5B34E8008C18B4 /* RegistrationDomainDefaults.plist in Resources */,
 				CDBC096B0A5B37C4008C18B4 /* PasswordDialog.nib in Resources */,
 				CDBC096C0A5B37C4008C18B4 /* PreferencesDialog.nib in Resources */,

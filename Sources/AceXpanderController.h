@@ -100,7 +100,6 @@
   NSMenuItem* m_showCommentsMenuItem;
   NSMenuItem* m_listVerboselyMenuItem;
   NSMenuItem* m_usePasswordMenuItem;
-  NSMenuItem* m_debugModeMenuItem;
   NSMenuItem* m_showMainWindowMenuItem;
   NSMenuItem* m_showResultWindowMenuItem;
   NSMenuItem* m_homepageMenuItem;

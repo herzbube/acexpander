@@ -121,7 +121,6 @@
 - (void) toggleListVerbosely:(id)sender;
 - (void) toggleShowComments:(id)sender;
 - (void) toggleOverwriteFiles:(id)sender;
-- (void) toggleDebugMode:(id)sender;
 - (void) rememberMyDefaults:(id)sender;
 - (void) forgetMyDefaults:(id)sender;
 //@}
@@ -875,21 +874,6 @@
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Toggles the "debug mode" option. This option is not stored in the
-/// user preferences.
-///
-/// @note This is an action method.
-// -----------------------------------------------------------------------------
-- (void) toggleDebugMode:(id)sender
-{
-  if (! m_theModel)
-    return;
-  BOOL newState = ! [m_theModel debugMode];
-  [m_theModel setDebugMode:newState];
-  [self setMenuItem:(NSMenuItem*)sender state:newState];
-}
-
-// -----------------------------------------------------------------------------
 /// @brief Makes the current option settings into default settings that will
 /// be reloaded the next time the application is started.
 ///
@@ -1208,7 +1192,6 @@
   [self setMenuItem:m_showCommentsMenuItem state:[m_theModel showComments]];
   [self setMenuItem:m_listVerboselyMenuItem state:[m_theModel listVerbosely]];
   [self setMenuItem:m_usePasswordMenuItem state:[m_theModel usePassword]];
-  [self setMenuItem:m_debugModeMenuItem state:[m_theModel debugMode]];
 }
 
 // -----------------------------------------------------------------------------

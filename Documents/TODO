@@ -24,8 +24,6 @@ Priority 1 (important)
   should get the focus automatically so that Cmd-A can immediately select
   all items, without having to use the mouse to give the focus to the
   table
-- password should not appear in clear text in result window. update
-  README if you implement this
 - add basic file checks (exists, readable) to AceXpanderThread; this
   will provide better error handling than what unace can provide; it
   will also prevent the unnecessary creation of a folder when the archive

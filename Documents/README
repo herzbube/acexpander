@@ -81,9 +81,7 @@ Limitations of AceXpander
 - If you turn on the "Use password" option, the password you enter will
   be passed to unace in clear text. If someone watches your system's
   process list that person might be able to catch the password as it is part
-  of the unace command line. It is also possible (notably if you also turn
-  on the option "Debug mode") that the password might appear in clear text
-  in one of the text boxes in the result window.
+  of the unace command line.
 
 - AceXpander has too many features. I tried to keep them down to a
   reasonable number, but as this is a learning project for me, I often

@@ -71,7 +71,6 @@ static NSString* columnIdentifierState = @"state";
   m_showComments = false;
   m_listVerbosely = false;
   m_usePassword = false;
-  m_debugMode = false;
   m_interactive = false;
   m_theDocumentController = [[NSDocumentController sharedDocumentController] retain];
 
@@ -533,22 +532,6 @@ static NSString* columnIdentifierState = @"state";
 }
 
 // -----------------------------------------------------------------------------
-/// @brief Returns the value of the "debug mode" option.
-// -----------------------------------------------------------------------------
-- (bool) debugMode
-{
-  return m_debugMode;
-}
-
-// -----------------------------------------------------------------------------
-/// @brief Sets the value of the "debug mode" option to @a debugMode.
-// -----------------------------------------------------------------------------
-- (void) setDebugMode:(bool)debugMode
-{
-  m_debugMode = debugMode;
-}
-
-// -----------------------------------------------------------------------------
 /// @brief Returns the value of the "interactive" option.
 // -----------------------------------------------------------------------------
 - (bool) interactive
@@ -677,8 +660,7 @@ static NSString* columnIdentifierState = @"state";
                  showComments:m_showComments
                 listVerbosely:m_listVerbosely
                   usePasswort:m_usePassword
-                     password:m_password
-                    debugMode:m_debugMode];
+                     password:m_password];
 
   // Start processing items
   [m_commandThread processItems:tempItemList];

@@ -122,12 +122,6 @@ static NSString* listVerboselyOptionKey = @"ListVerboselyOption";
 /// @name Constants related to unace executable
 // -----------------------------------------------------------------------------
 //@{
-// Parameters for the unace frontend
-static NSString* unaceFrontEndEnableDebug = @"1";
-static NSString* unaceFrontEndDisableDebug = @"0";
-static NSString* unaceFrontEndVersionParameter = @"--version";
-static NSString* unaceFrontDestinationFolderParameter = @"--folder";
-// Information about unace
 static NSString* unaceCmdExtract = @"e";
 static NSString* unaceCmdExtractWithFullPath = @"x";
 static NSString* unaceCmdList = @"l";
@@ -137,6 +131,8 @@ static NSString* unaceSwitchShowComments = @"-c";
 static NSString* unaceSwitchOverwriteFiles = @"-o";
 static NSString* unaceSwitchUsePassword = @"-p";
 static NSString* unaceSwitchAssumeYes = @"-y";
+/// @brief This is a pseudo switch - unace does not know "--version"
+static NSString* unaceSwitchVersion = @"--version";
 //@}
 
 
@@ -144,7 +140,6 @@ static NSString* unaceSwitchAssumeYes = @"-y";
 /// @name Resource file names
 // -----------------------------------------------------------------------------
 //@{
-static NSString* unaceFrontEndResourceName = @"unace.sh";
 static NSString* unaceBundledResourceName = @"unace";
 static NSString* registrationDomainDefaultsFileName = @"RegistrationDomainDefaults.plist";
 // .nib file names

@@ -102,7 +102,6 @@ enum AceXpanderThreadCondition
   // The following members are always filled with constants -> we don't have to
   // release these members
   // - m_unaceCommand
-  // - m_unaceFrontendDebugParameter
 
   if (m_mainLock)
     [m_mainLock autorelease];
@@ -225,7 +224,6 @@ enum AceXpanderThreadCondition
       // Configure task
       [m_task setUnaceExecutablePath:unaceExecutablePath];
       [m_task setDestinationFolder:destinationFolder];
-      [m_task setUnaceFrontendDebugParameter:m_unaceFrontendDebugParameter];
       [m_task setUnaceCommand:m_command commandSwitch:m_unaceCommand];
       [m_task setUnaceSwitchList:m_unaceSwitchList];
       [m_task setItem:iterItem];
@@ -363,7 +361,6 @@ enum AceXpanderThreadCondition
       listVerbosely:(BOOL)listVerbosely
         usePasswort:(BOOL)usePassword
            password:(NSString*)password
-          debugMode:(BOOL)debugMode
 {
   if (m_mainLock)
     [m_mainLock lockWhenCondition:NoProcessingCondition];
@@ -422,11 +419,6 @@ enum AceXpanderThreadCondition
     switchString = [unaceSwitchUsePassword stringByAppendingString:password];
     [m_unaceSwitchList addObject:switchString];
   }
-
-  if (debugMode)
-    m_unaceFrontendDebugParameter = unaceFrontEndEnableDebug;
-  else
-    m_unaceFrontendDebugParameter = unaceFrontEndDisableDebug;
 
   if (m_mainLock)
     [m_mainLock unlock];
