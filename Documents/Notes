@@ -21,4 +21,6 @@
 - it is important that AceExpanderPreferences is created at the earliest
   possible time so that it can set up the user defaults database for the
   other classes to use
-  
+- OpenRecent: the maximum number of entries in the OpenRecent menu is
+  determined by the value of the user default NSRecentDocumentsLimit. The
+  value is of type Integer.

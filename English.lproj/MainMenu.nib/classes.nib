@@ -5,6 +5,7 @@
             ACTIONS = {
                 cancelCommand = id; 
                 expandItems = id; 
+                gotoHomepage = id; 
                 listItems = id; 
                 queueAllItems = id; 
                 queueItems = id; 
@@ -39,6 +40,7 @@
                 "m_debugModeMenuItem" = NSMenuItem; 
                 "m_expandButton" = NSButton; 
                 "m_extractFullPathMenuItem" = NSMenuItem; 
+                "m_homepageMenuItem" = NSMenuItem; 
                 "m_listVerboselyMenuItem" = NSMenuItem; 
                 "m_mainWindow" = NSWindow; 
                 "m_overwriteFilesMenuItem" = NSMenuItem; 
@@ -49,6 +51,8 @@
                 "m_showResultWindowMenuItem" = NSMenuItem; 
                 "m_stderrTextView" = NSTextView; 
                 "m_stdoutTextView" = NSTextView; 
+                "m_textView" = NSTextView; 
+                "m_textViewWindow" = NSWindow; 
                 "m_theModel" = "ch.herzbube.aceexpander.AceExpanderModel"; 
                 "m_theTable" = "ch.herzbube.aceexpander.AceExpanderTableView"; 
                 "m_usePasswordMenuItem" = NSMenuItem; 

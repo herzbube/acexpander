@@ -67,7 +67,11 @@ public class AceExpanderController
 
    // Constants
    private final static String PasswordDialogNibName = "PasswordDialog";
-   
+   private final static String GnuGPLFileName = "COPYING";
+   private final static String ReadMeFileName = "README";
+   private final static String ChangeLogFileName = "ChangeLog";
+   private final static String HomePageURL = "http://www.herzbube.ch/Software/AceExpander/AceExpanderIndex.shtml";
+
    // These variables are outlets and therefore initialized in the .nib
    // --- from MainMenu.nib
    private AceExpanderModel m_theModel;
@@ -79,6 +83,8 @@ public class AceExpanderController
    private NSWindow m_resultWindow;
    private NSTextView m_stdoutTextView;
    private NSTextView m_stderrTextView;
+   private NSWindow m_textViewWindow;
+   private NSTextView m_textView;
    private NSMenuItem m_overwriteFilesMenuItem;
    private NSMenuItem m_extractFullPathMenuItem;
    private NSMenuItem m_assumeYesMenuItem;
@@ -88,6 +94,7 @@ public class AceExpanderController
    private NSMenuItem m_debugModeMenuItem;
    private NSMenuItem m_showMainWindowMenuItem;
    private NSMenuItem m_showResultWindowMenuItem;
+   private NSMenuItem m_homepageMenuItem;
 
    // --- from PasswordDialog.nib
    private NSPanel m_passwordDialog;
@@ -413,17 +420,29 @@ public class AceExpanderController
 
    public void showGPL(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
+      showTextFileInWindow(GnuGPLFileName);
    }
 
    public void showReadme(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
+      showTextFileInWindow(ReadMeFileName);
    }
 
    public void showChangeLog(Object sender)
    {
-      NSAlertPanel.runInformationalAlert("Sorry", "Not yet implemented", "OK", null, null);
+      showTextFileInWindow(ChangeLogFileName);
+   }
+
+   public void gotoHomepage(Object sender)
+   {
+      try
+      {
+         NSWorkspace.sharedWorkspace().openURL(new java.net.URL(HomePageURL));
+      }
+      catch(java.net.MalformedURLException e)
+      {
+         // do nothing - we know :-) that our URL is correct
+      }
    }
 
    // ======================================================================
@@ -643,5 +662,18 @@ public class AceExpanderController
          m_stdoutTextView.setString(item.getMessageStdout());
          m_stderrTextView.setString(item.getMessageStderr());
       }
+   }
+
+   private void showTextFileInWindow(String textFileName)
+   {
+      NSBundle mainBundle = NSBundle.mainBundle();
+      String textFilePath = mainBundle.pathForResource(textFileName, null);
+      java.net.URL textFileURL = NSPathUtilities.URLWithPath(textFilePath);
+      NSStringReference textFileContent = new NSStringReference(textFileURL, NSStringReference.UTF8StringEncoding);
+
+      m_textView.setString(textFileContent.string());
+      m_textViewWindow.setTitle(textFileName);
+      m_textViewWindow.makeKeyAndOrderFront(this);
+      // No need to call makeMainWindow()
    }
 }

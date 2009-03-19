@@ -22,7 +22,9 @@ Limitations of AceExpander
 --------------------------
 - I developed and tested AceExpander on Mac OS X 10.2.8, so I can only
   hope that it also works on later OS versions. It definitely does
-  not run on pre 10.2 systems, because the .nib file format is >= 10.2.
+  not run on pre-10.2 systems, because the .nib file format is >= 10.2
+  and because a number of classes and methods are used that are not
+  available on pre-10.2 systems.
 
 
 Limitations of unace

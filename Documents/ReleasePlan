@@ -30,15 +30,15 @@ Version 0.7
 
 Version 0.8
 - new user default for "open recent"
-- implement menu items "show info in finder" and "reveal in finder"
+- display text files (e.g. GPL) in the help menu
+- add help menu item "AceExpander Homepage"
 
 Version 0.9
-- display text files (e.g. GPL) in the help menu
-- process entire folders
+- implement menu items "show info in finder" and "reveal in finder"
+- add application icon
 
 Version 1.0
-- add application icon
-- add help menu item "AceExpander Homepage"
+- process entire folders
 - add a couple of UML diagrams to complete documentation
 
 Version 1.1
@@ -47,8 +47,11 @@ Version 1.1
 - add unit tests (possibly use OCUnit from Sen:te)
 
 Version 1.3
-- Implement the f switch (full path matching)
-- Implement the x switch (exclude files from process)
+- implement the f switch (full path matching)
+- implement the x switch (exclude files from process)
+
+Features to implement at leasure:
+- user default to set the number of documents in the File-OpenRecent menu
 
 ----------------------------------------
 Old release plan

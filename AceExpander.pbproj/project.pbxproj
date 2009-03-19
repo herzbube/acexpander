@@ -288,7 +288,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>0.7</string>
+	<string>0.8</string>
 	<key>NSJavaNeeded</key>
 	<string>YES</string>
 	<key>NSJavaPath</key>
@@ -422,6 +422,13 @@
 //CD2
 //CD3
 //CD4
+		CD0BAA7D068498D300A80104 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = Testing;
+			path = Documents/Testing;
+			refType = 2;
+		};
 		CD8139B90678D05F00A80104 = {
 			children = (
 				CDBF8E490678D14900A80104,
@@ -432,6 +439,7 @@
 				CDBF8E4C0678D14900A80104,
 				CDBF8E4D0678D14900A80104,
 				CDBF8E4E0678D14900A80104,
+				CD0BAA7D068498D300A80104,
 			);
 			isa = PBXGroup;
 			name = Documents;

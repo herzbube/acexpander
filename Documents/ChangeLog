@@ -1,60 +1,78 @@
+Sat June 19 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- finished version 0.8
+- added NSDocumentController to the model to manage the File-OpenRecent menu
+- added separate window that can be used to display a text file
+- implemented items in menu Help that show the GPL, README and ChangeLog
+  text files
+- added item to Help menu (including implementation) that opens the
+  AceExpander home page in a separate browser
+
 Thu June 17 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.7
-- implemented handling of preferences "CreateSurroundingFolder" and
-  "DestinationFolderType"
+- finished version 0.7
+- implemented application handling of user defaults
+  "CreateSurroundingFolder" and "DestinationFolderType"
 
 Wed June 16 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- added preference items "QuitAfterExpanding", "AlwaysQuitAfterExpanding"
+- added user defaults "QuitAfterExpand", "AlwaysQuitAfterExpand"
   and "CreateSurroundingFolder"
-- implemented handling of preferences "StartExpandingAfterLaunch",
-  "QuitAfterExpanding" and "AlwaysQuitAfterExpanding"
+- updated preferences dialog to manage these user defaults
+- implemented application handling of user defaults
+  "StartExpandingAfterLaunch", "QuitAfterExpanding" and
+  "AlwaysQuitAfterExpanding"
 
 Tue June 15 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - application now has two modes: interactive and non-interactive (default)
 - application terminates automatically if all items that were specified
   on launch time (e.g. by double-clicking archives in the Finder) have
   expanded successfully
-- added preference items "StartExpandingAfterLaunch",
-  "DestinationFolderType" and "DestinationFolder" to the preferences
-  dialog. The implementation that knows how the handle these preferences is
-  still missing, though.
+- added user defaults "StartExpandingAfterLaunch", "DestinationFolderType"
+  and "DestinationFolder"
+- updated preferences dialog to manage these user defaults
+- the application does not yet handle these user defaults
 
 Mon June 14 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.6
-- added result window to show stdout and stderr
+- finished version 0.6
+- added result window, in order to show stdout and stderr from the
+  expand process
 - the result window's frame is saved to user defaults
-- save to user defaults whether or not the result window is visible
-  on application start
-- added preference item where the user can choose a different executable
-  than the one bundled with the application
-- added menu item to show version information about the unace executable
+- added user default "ShowResultWindow", i.e. whether or not the result
+  window is visible on application startup
+- added user default "ExecutablePath", which lets the user specify a
+  different unace executable than the one bundled with the application
+- updated preferences dialog to manage this user default
+- added item to application menu that shows version information about the
+  unace executable
 
 Thu June 10 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.5
-- added preference item "QuitAppWhenMainWindowIsClosed"
+- finished version 0.5
+- added user default "QuitAppWhenMainWindowIsClosed"
+- updated pereferences dialog to manage this user default
 - implemented saving of preferences to user defaults system
 - implemented loading of application defaults from plist file (instead
   of hardcoding the defaults into the application program code)
-- fixed bug that preferences are not saved when application is terminated
+- fixed bug where user defaults are not saved when application is terminated
   because the main window is closed
-- main window frame is now saved to preferences
+- main window frame is now saved to user defaults
 
 Wed June 09 2004   "Patrick Näf" <aceexpander@herzbube.ch>
+- updated the ReleasePlan document
 - added new class AceExpanderPreferences
 - added preferences dialog
-- updated the ReleasePlan document
 - added hidden button to main window that reacts to the user pressing
   the Backspace key
-- added menu item "main window"
+- added item "main window" to the Window menu
 
 Tue June 08 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.4 (without localization)
+- finished version 0.4; this is the last version made in accordance with
+  the old release plan
 - placed all classes in package ch.herzbube.aceexpander
-- replaced queue-all, unqueue-all and remove-selected buttons by menu items
-- added menu items remove-all, (re)queue-selected, unqueue-selected
+- replaced queue-all, unqueue-all and remove-selected buttons by items in
+  menu Edit
+- added items remove-all, (re)queue-selected, unqueue-selected to Edit menu
 - added keyboard shortcuts to menu items
 - implemented File-Open menu item
-- added debug mode menu item for the shell-script frontend to unace
+- added "Debug mode" item to the Options menu; this mode tells the shell
+  script frontend to unace to print some extra information on stdout
 
 Sun June 06 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - added support for password encrypted archives
@@ -63,13 +81,13 @@ Sun June 06 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - output of these two commands cannot be viewed yet
 
 Sat June 05 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- added "Command" and "Options" menu items
-- added dummy implementations for command menu items
-- added real handling for option menu items
+- added menus "Commands" and "Options"
+- added dummy implementations for Commands menu items
+- added real handling for Options menu items
 
 Thu June 03 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - expansion is now handled by a separate thread; the actual expansion
-  is still done by unace in a separate process
+  done by unace runs in a process spawned from this thread
 
 Wed June 02 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - added support for drag&drop into the main window table
@@ -78,7 +96,7 @@ Tue June 01 2004   "Patrick Näf" <aceexpander@herzbube.ch>
 - values in the GUI table are displayed correctly (including icon images)
  
 Mon May 31 2004   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.2
+- finished version 0.2
 - trashed the original project and started over with a new project
 - replaced the original GUI, which was pretty much a failure, with
   a new idea that uses NSTableView as the key element
@@ -92,7 +110,7 @@ Tue Sept 02 2003   "Patrick Näf" <aceexpander@herzbube.ch>
   on Sept 01 2003
 
 Fri Aug 29 2003   "Patrick Näf" <aceexpander@herzbube.ch>
-- version 0.1
+- finished version 0.1
 - first version of a working program
 - contains a preliminary version of unace mailed to me by Kolja on
   Aug 26 2003

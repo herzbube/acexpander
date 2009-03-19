@@ -75,6 +75,7 @@ public class AceExpanderModel
 
    // Other variables
    private boolean m_bInteractive = false;
+   private NSDocumentController m_theDocumentController;
 
    // ======================================================================
    // Constructors
@@ -82,6 +83,7 @@ public class AceExpanderModel
 
    public AceExpanderModel()
    {
+      m_theDocumentController = NSDocumentController.sharedDocumentController();
    }
 
    // ======================================================================
@@ -113,6 +115,9 @@ public class AceExpanderModel
 
       // Update the table
       m_theTable.reloadData();
+
+      // Let the document controller update the File-OpenRecent menu
+      m_theDocumentController.noteNewRecentDocumentURL(NSPathUtilities.URLWithPath(fileName));
    }
 
    // Remove all items selected in the table
