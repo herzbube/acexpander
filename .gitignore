@@ -1,0 +1,12 @@
+# Build products
+build/
+# Doxygen output
+doxygen/html/
+# Distribution files
+dist/
+# Xcode files
+AceXpander.xcodeproj/*.pbxuser
+AceXpander.xcodeproj/*.mode1v3
+AceXpander.xcodeproj/*.mode2v3
+AceXpander.xcodeproj/*.perspectivev3
+

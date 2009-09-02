@@ -27,7 +27,7 @@ ACE archives can only be created with WinAce. For more information about
 this Windows application, see http://www.winace.com.
 
 You can check for the most recent version of AceXpander on its homepage
-http://www.herzbube.ch/drupal/?q=acexpander
+http://www.herzbube.ch/acexpander.
 
 If you are interested in AceXpander as a developer, you should have a look
 at the README.developer document.
@@ -61,9 +61,10 @@ and choose the appropriate item in the Help menu to view the detailed
 license.
 
 The source code for AceXpander can be downloaded from its homepage
-http://www.herzbube.ch/drupal/?q=acexpander. You will get the source files
-ready for building with Xcode. Alternatively you may also get the source
-code from this subversion respository: http://herzbube.ch/svn/acexpander/
+http://www.herzbube.ch/acexpander. You will get the source files
+ready for building with Xcode. Alternatively you may browse through the
+source code online (http://www.herzbube.ch/cgi-bin/gitweb.cgi/dgsmonx.git)
+or clone the Git repository (http://herzbube.ch/git/dgsmonx.git).
 
 
 unace binary

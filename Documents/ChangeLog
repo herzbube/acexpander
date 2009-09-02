@@ -1,3 +1,9 @@
+Wed Sep 02 2009   "Patrick Näf" <herzbube@herzbube.ch>
+- [project] project has moved from Subversion to Git (includes replacing all
+  references to Subversion with references to Git, and adding .gitignore)
+- [project] updated all references to project website so that they now point
+  to the correct URL http://www.herzbube.ch/acexpander
+
 Thu Nov 23 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - added context menu to main table
 - menu items "requeue all", "unqueue all" and "remove all" are now disabled

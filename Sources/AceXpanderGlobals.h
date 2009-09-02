@@ -152,7 +152,7 @@ static NSString* readMeFileName = @"README";
 static NSString* changeLogFileName = @"ChangeLog";
 static NSString* releasePlanFileName = @"ReleasePlan";
 static NSString* toDoFileName = @"TODO";
-static NSString* homePageURL = @"http://www.herzbube.ch/drupal/?q=acexpander";
+static NSString* homePageURL = @"http://www.herzbube.ch/acexpander";
 //@}
 
 // -----------------------------------------------------------------------------

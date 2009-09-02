@@ -17,10 +17,12 @@ Perform the following steps to make a release
 - source control
   - commit all changes
     cd <projectdir>
-    svn commit
+    git add .
+	git commit
+	git push
   - tag the release
     cd <projectdir>
-    svn copy http://herzbube.ch/svn/acexpander/trunk http://herzbube.ch/svn/acexpander/tags/release-1.0.2
+    git tag -s -m "tagging release x.y" x.y <commit hash>
 - to make the binary distribution
   - launch disk copy
   - create a new empty disk image with the following properties:
