@@ -4,7 +4,7 @@ Wed Sep 02 2009   "Patrick Näf" <herzbube@herzbube.ch>
 - [project] updated all references to project website so that they now point
   to the correct URL http://www.herzbube.ch/acexpander
 
-Thu Nov 23 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Thu Nov 23 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - added context menu to main table
 - menu items "requeue all", "unqueue all" and "remove all" are now disabled
   if table does not contain any items at all
@@ -17,18 +17,18 @@ Thu Nov 23 2006   "Patrick Näf" <acexpander@herzbube.ch>
   phase from the "AceXpander" to the new "Doxygen" target
 - released version 1.1
 
-Tue Nov 21 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Tue Nov 21 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - added state diagrams for AceXpanderItem states
 - if destination folder does not exist it is now created including all its
   parent directories
 
-Thu Nov 16 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Thu Nov 16 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - removed shell script frontend to the unace binary, AceXpander now executes
   the unace binary directly in an NSTask
 - removed "Debug mode" item from the Options menu; this mode is no longer
   available because the shell script frontend no longer exists
 
-Wed Nov 15 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Wed Nov 15 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - fixed a nasty bug where unace would hang when AceXpander was launched
   from the Finder
   - this bug is present in 1.0.2, which makes the release all but useless :-(
@@ -43,29 +43,29 @@ Wed Nov 15 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - AceXpanderThread is now a proper thread with a main method that sleeps
   until it gets new items to process
 
-Sat Nov 11 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Sat Nov 11 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - bug fixed where command thread seemed to run forever when no item was
   selected and the "expand" button was clicked
 - expand button is now disabled if no archive is selected
 
-Thu Nov 09 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Thu Nov 09 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - objects are now deallocated when the application terminates
 - various retain/release bugs found (and fixed) while testing deallocation
   on application shutdown
 
-Mon Nov 06 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Mon Nov 06 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - any command that is still running is now cancelled when the application
   terminates (this fixes a bug where AceXpander would leave a still running
   command hanging around as an orphaned process)
 
-Fri Nov 04 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Fri Nov 04 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - added UML folder & created MagicDraw project to draw class + sequence diagrams
 
-Mon Oct 31 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Mon Oct 31 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - added "Credits.rtf" to application bundle for improved "About" panel
   (see NSApplication::orderFrontStandardAboutPanelWithOptions:())
 
-Wed Oct 25 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Wed Oct 25 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - completed re-implementation of project with Objective-C
 - added "run doxygen" build phase to Xcode project
 - added universal binary support to Xcode project
@@ -77,18 +77,18 @@ Wed Oct 25 2006   "Patrick Näf" <acexpander@herzbube.ch>
   1.0.1                 10.4.6 (?)
   1.0.2                 10.4.8
 
-Sun July 09 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Sun July 09 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - source code documentation is now possible using the doxygen tool
 
-Tue July 04 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Tue July 04 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - created new Xcode project for Objective-C sources
 - started re-implementation of project with Objective-C
 
-Sun July 02 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Sun July 02 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - released version 1.0.1
 - added application and document icons
 
-Sat May 13 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Sat May 13 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - eliminated InfoPlist.strings, which was a localized file in English.lproj;
   the information in the file does not need to be localized, instead everything
   can be placed into the target-specific Info.plist
@@ -97,7 +97,7 @@ Sat May 13 2006   "Patrick Näf" <acexpander@herzbube.ch>
 - menu items "requeue", "unqueue", "remove", "expand", "list content" and
   "test integrity" are now disabled if no archive is selected
 
-Sat April 29 2006   "Patrick Näf" <acexpander@herzbube.ch>
+Sat April 29 2006   "Patrick Näf" <herzbube@herzbube.ch>
 - renamed project to AceXpander (old name was AceExpander)
 - re-created .nib files from scratch (renaming project broke something)
 

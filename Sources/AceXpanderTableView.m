@@ -22,7 +22,7 @@
 // application bundle.
 //
 // The author of this program can be contacted by email at
-// acexpander@herzbube.ch
+// herzbube@herzbube.ch
 // -----------------------------------------------------------------------------
 
 

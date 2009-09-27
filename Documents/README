@@ -55,7 +55,7 @@ For more details see the ChangeLog document.
 
 License and source code
 -----------------------
-AceXpander is licensed under the GNU General Public License (GPL). See
+AceXpander is licensed under the GNU General Public License (GPLv2). See
 the file COPYING inside the application bundle, or start the application
 and choose the appropriate item in the Help menu to view the detailed
 license.
@@ -193,4 +193,4 @@ Source software that I release. As such it is probably full of shortcomings,
 if not bugs. If you see something that needs improvement, please don't
 hesitate to let me know.
 
-Patrick Näf <acexpander@herzbube.ch>
+Patrick Näf <herzbube@herzbube.ch>
